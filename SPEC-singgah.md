@@ -22,7 +22,10 @@ one still exists. The owner uses it on their next ride — that is the real acce
    are public. Owner approves via the Supabase dashboard (no admin UI in MVP).
 3. **UI language:** Indonesian only.
 4. **Build style:** ZCode builds the whole MVP, then gives a guided tour of every file.
-5. **Platform:** web-first; PWA/mobile-app transition is out of scope for MVP.
+5. **Platform:** web-first — the MVP runs in the browser at a URL, opened on a laptop OR a phone
+   (most users are cyclists on the road, so the layout is mobile-first and desktop gets a widened
+   two-pane version of the same screens). "Mobile" in the mockup means "viewed in a phone
+   browser", not a native app. App-store packaging (PWA/TWA) is out of scope for MVP.
 
 ## Tech Stack
 

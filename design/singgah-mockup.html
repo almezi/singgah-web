@@ -1,0 +1,846 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Singgah — UI Mockup v0.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{color-scheme:light dark}
+  body{margin:0;min-height:100vh;padding:28px 18px;display:flex;justify-content:center;
+    background:light-dark(#F3F1EA,#141A17);font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+  #singgah-mock-root{max-width:960px}
+</style>
+</head>
+<body>
+<div id="singgah-mock-root" data-palette="oasis" data-mode="light">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+#singgah-mock-root{
+  font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  /* ---- Singgah product tokens (light · Oasis default) ---- */
+  --bg:#F6F4EE; --surface:#FFFFFF; --surface-2:#EFEBE1; --line:#E4DFD2;
+  --ink:#12332C; --ink2:#5A6E67;
+  --primary:#0E7C66; --primary-ink:#FFFFFF; --primary-deep:#0B5D4E; --primary-soft:#DDEEE8;
+  --success:#15803D; --success-soft:#DCF3E2;
+  --amber:#B45309; --amber-soft:#FBEEDA;
+  --water:#0E7490; --water-soft:#DCF0F5;
+  --rose:#9333EA; --rose-soft:#F1E6FB;
+  --map-land:#EFECE2; --map-block:#E6E2D4; --map-park:#CFE3C4; --map-water:#B8DDE7;
+  --map-road:#FFFFFF; --map-casing:#D9D4C4; --map-label:#8A948D;
+  --shadow:0 10px 30px rgba(18,51,44,.14);
+}
+#singgah-mock-root[data-palette="senja"]{
+  --primary:#C2410C; --primary-deep:#9A3412; --primary-soft:#FCEADF; --bg:#FAF5EF; --surface-2:#F2E9DE; --line:#EAE0D2;
+}
+#singgah-mock-root[data-palette="laut"]{
+  --primary:#0E7490; --primary-deep:#155E75; --primary-soft:#DBF0F5; --bg:#F2F6F5; --surface-2:#E6EEEC; --line:#DCE6E3;
+}
+#singgah-mock-root[data-mode="dark"]{
+  --bg:#101B17; --surface:#16241F; --surface-2:#1D2C26; --line:#24352E;
+  --ink:#E8EFEA; --ink2:#9DB4A9;
+  --primary:#3DBFA3; --primary-ink:#06231C; --primary-deep:#2E9C86; --primary-soft:#14332B;
+  --success:#4ADE80; --success-soft:#12331F;
+  --amber:#FBBF24; --amber-soft:#33270D;
+  --water:#38BDF8; --water-soft:#0C2A38;
+  --rose:#C084FC; --rose-soft:#241533;
+  --map-land:#15201B; --map-block:#1B2923; --map-park:#1E3325; --map-water:#12303D;
+  --map-road:#2A3B33; --map-casing:#101B17; --map-label:#7E948D;
+  --shadow:0 10px 30px rgba(0,0,0,.45);
+}
+#singgah-mock-root *{box-sizing:border-box;margin:0;padding:0}
+#singgah-mock-root [hidden]{display:none !important}
+@media (prefers-reduced-motion: reduce){
+  #singgah-mock-root *{transition:none !important;animation:none !important}
+}
+
+/* ---- board chrome (theme-aware, outside the product) ---- */
+#singgah-mock-root .sg-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;padding:2px 4px 12px;
+  color:light-dark(#3D4A45,#C9D6CF)}
+#singgah-mock-root .sg-head b{font-size:16px;font-weight:700}
+#singgah-mock-root .sg-head span{font-size:12.5px;opacity:.75}
+#singgah-mock-root .sg-tabs{display:flex;flex-wrap:wrap;gap:8px;padding:0 2px 4px}
+#singgah-mock-root .sg-tab{font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:999px;
+  border:1px solid light-dark(#D8DED9,#33423B);background:transparent;color:light-dark(#4A5A54,#B9C9C1);transition:background .15s,color .15s}
+#singgah-mock-root .sg-tab.on{background:light-dark(#12332C,#3DBFA3);color:light-dark(#fff,#06231C);border-color:transparent}
+#singgah-mock-root .sg-foot{padding:14px 4px 2px;font-size:12px;color:light-dark(#6B7A73,#8FA39A)}
+#singgah-mock-root .sg-stage{display:flex;justify-content:center;padding:18px 8px 8px}
+
+/* ---- phone ---- */
+#singgah-mock-root .sg-phone{width:375px;height:800px;border-radius:46px;border:11px solid #131F1B;overflow:hidden;
+  position:relative;background:var(--bg);box-shadow:0 24px 60px rgba(0,0,0,.35);color:var(--ink);flex:none}
+#singgah-mock-root .sg-notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:118px;height:26px;
+  background:#131F1B;border-radius:999px;z-index:40}
+#singgah-mock-root .sg-status{position:absolute;top:14px;left:0;right:0;display:flex;justify-content:space-between;
+  align-items:center;padding:4px 26px 0;z-index:41;font-size:13px;font-weight:700;color:var(--ink)}
+#singgah-mock-root .sg-status .sg-sic{display:flex;gap:5px;align-items:center}
+#singgah-mock-root .sg-sic span{width:14px;height:14px;display:inline-flex}
+#singgah-mock-root .sg-screen{position:absolute;inset:0}
+#singgah-mock-root svg.sg-map{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+/* product icons */
+#singgah-mock-root .si{display:inline-flex;align-items:center;justify-content:center;flex:none}
+#singgah-mock-root .si svg{width:100%;height:100%}
+
+/* ---- search + chips ---- */
+#singgah-mock-root .sg-search{position:absolute;top:52px;left:16px;right:16px;z-index:20;display:flex;align-items:center;gap:10px;
+  background:var(--surface);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow)}
+#singgah-mock-root .sg-search .si{width:18px;height:18px;color:var(--ink2)}
+#singgah-mock-root .sg-search em{font-style:normal;font-size:14px;color:var(--ink2);flex:1}
+#singgah-mock-root .sg-search .si.flt{width:18px;height:18px;color:var(--primary)}
+#singgah-mock-root .sg-chiprow{position:absolute;top:112px;left:0;right:0;z-index:19;display:flex;gap:8px;padding:2px 16px 10px;overflow:hidden}
+#singgah-mock-root .sg-chip{font-family:inherit;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:999px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink2);white-space:nowrap;transition:all .15s}
+#singgah-mock-root .sg-chip.on{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+
+/* ---- FAB ---- */
+#singgah-mock-root .sg-fab{position:absolute;right:16px;bottom:214px;z-index:22;display:flex;align-items:center;gap:7px;
+  background:var(--primary);color:var(--primary-ink);border:none;border-radius:999px;padding:13px 18px;
+  font-family:inherit;font-size:14px;font-weight:700;box-shadow:var(--shadow)}
+#singgah-mock-root .sg-fab .si{width:17px;height:17px}
+
+/* ---- bottom sheet ---- */
+#singgah-mock-root .sg-sheet{position:absolute;left:0;right:0;bottom:0;z-index:25;background:var(--surface);
+  border-radius:24px 24px 0 0;box-shadow:0 -12px 40px rgba(10,30,25,.22);padding:10px 18px 20px}
+#singgah-mock-root .sg-handle{width:44px;height:5px;border-radius:99px;background:var(--line);border:none;display:block;margin:0 auto 12px}
+#singgah-mock-root .sg-sh-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+#singgah-mock-root .sg-sh-head b{font-size:17px;font-weight:700}
+#singgah-mock-root .sg-sh-head span{font-size:12px;color:var(--ink2);font-weight:600}
+
+/* ---- spot card ---- */
+#singgah-mock-root .sg-card{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+#singgah-mock-root .sg-card:first-of-type{border-top:none}
+#singgah-mock-root .sg-tile{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none}
+#singgah-mock-root .sg-tile .si{width:21px;height:21px}
+#singgah-mock-root .sg-t1{background:var(--primary-soft);color:var(--primary)}
+#singgah-mock-root .sg-t2{background:var(--success-soft);color:var(--success)}
+#singgah-mock-root .sg-t3{background:var(--amber-soft);color:var(--amber)}
+#singgah-mock-root .sg-t4{background:var(--water-soft);color:var(--water)}
+#singgah-mock-root .sg-t5{background:var(--rose-soft);color:var(--rose)}
+#singgah-mock-root .sg-cbody{flex:1;min-width:0}
+#singgah-mock-root .sg-cbody b{display:block;font-size:15px;font-weight:700;line-height:1.25}
+#singgah-mock-root .sg-cmeta{font-size:12px;color:var(--ink2);margin:2px 0 7px}
+#singgah-mock-root .sg-minis{display:flex;flex-wrap:wrap;gap:5px}
+#singgah-mock-root .sg-mini{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--ink2);
+  background:var(--surface-2);border-radius:7px;padding:4px 7px}
+#singgah-mock-root .sg-mini .si{width:11px;height:11px;color:var(--primary)}
+#singgah-mock-root .sg-vtag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--success);
+  background:var(--success-soft);border-radius:7px;padding:4px 8px;white-space:nowrap}
+#singgah-mock-root .sg-vtag .si{width:11px;height:11px}
+#singgah-mock-root .sg-vtag.off{color:var(--ink2);background:var(--surface-2)}
+
+/* ---- pins ---- */
+#singgah-mock-root .pinf{stroke:var(--surface);stroke-width:2.5}
+#singgah-mock-root .sg-map-label{font-size:10px;fill:var(--map-label);font-weight:600}
+
+/* ---- detail screen ---- */
+#singgah-mock-root .sg-dim{position:absolute;inset:0;background:rgba(10,28,23,.42)}
+#singgah-mock-root .sg-dsheet{position:absolute;left:0;right:0;bottom:0;top:66px;background:var(--surface);
+  border-radius:24px 24px 0 0;padding:12px 20px 18px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+#singgah-mock-root .sg-dtop{display:flex;align-items:center;gap:10px}
+#singgah-mock-root .sg-rbtn{width:34px;height:34px;border-radius:99px;border:1px solid var(--line);background:var(--surface);
+  color:var(--ink);display:flex;align-items:center;justify-content:center}
+#singgah-mock-root .sg-rbtn .si{width:16px;height:16px}
+#singgah-mock-root .sg-dtop .spacer{flex:1}
+#singgah-mock-root .sg-dtitle b{display:block;font-size:20px;font-weight:800;line-height:1.2}
+#singgah-mock-root .sg-dtitle span{font-size:12.5px;color:var(--ink2)}
+#singgah-mock-root .sg-badges{display:flex;flex-wrap:wrap;gap:6px}
+#singgah-mock-root .sg-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;
+  border-radius:9px;padding:6px 10px}
+#singgah-mock-root .sg-badge .si{width:13px;height:13px}
+#singgah-mock-root .sg-infos{border-top:1px solid var(--line)}
+#singgah-mock-root .sg-irow{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+#singgah-mock-root .sg-irow .si{width:17px;height:17px;color:var(--primary);margin-top:1px}
+#singgah-mock-root .sg-irow div b{display:block;font-size:11px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.4px}
+#singgah-mock-root .sg-irow div span{font-size:14px;font-weight:500}
+#singgah-mock-root .sg-note{display:flex;gap:10px;background:var(--amber-soft);border-radius:14px;padding:12px 14px}
+#singgah-mock-root .sg-note .si{width:16px;height:16px;color:var(--amber);margin-top:2px}
+#singgah-mock-root .sg-note p{font-size:12.5px;line-height:1.5;color:var(--ink)}
+#singgah-mock-root .sg-actions{display:flex;gap:10px;margin-top:auto}
+#singgah-mock-root .sg-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;
+  padding:14px 10px;font-family:inherit;font-size:14px;font-weight:700;border:none}
+#singgah-mock-root .sg-btn .si{width:16px;height:16px}
+#singgah-mock-root .sg-btn.main{background:var(--primary);color:var(--primary-ink)}
+#singgah-mock-root .sg-btn.ok{background:var(--success-soft);color:var(--success);border:1.5px solid var(--success)}
+#singgah-mock-root .sg-verified{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink2);font-weight:600}
+#singgah-mock-root .sg-verified .si{width:13px;height:13px;color:var(--success)}
+#singgah-mock-root .sg-toast{position:absolute;top:76px;left:20px;right:20px;z-index:60;background:var(--success-soft);
+  color:var(--success);font-size:13px;font-weight:700;border-radius:12px;padding:12px 14px;display:flex;gap:8px;align-items:center;
+  box-shadow:var(--shadow)}
+#singgah-mock-root .sg-toast .si{width:15px;height:15px}
+
+/* ---- add flow ---- */
+#singgah-mock-root .sg-banner{position:absolute;top:52px;left:16px;right:16px;z-index:24;background:var(--ink);color:var(--bg);
+  border-radius:14px;padding:12px 14px;font-size:13px;font-weight:600;display:flex;gap:9px;align-items:center;box-shadow:var(--shadow)}
+#singgah-mock-root .sg-banner .si{width:16px;height:16px;flex:none}
+#singgah-mock-root .sg-cross{position:absolute;left:50%;top:382px;transform:translate(-50%,-50%);z-index:15;pointer-events:none}
+#singgah-mock-root .sg-pinbox{position:absolute;left:0;right:0;bottom:0;z-index:26;background:var(--surface);
+  border-radius:24px 24px 0 0;padding:18px 20px 22px;box-shadow:0 -12px 40px rgba(10,30,25,.22)}
+#singgah-mock-root .sg-pinbox b{font-size:16px;font-weight:700;display:block}
+#singgah-mock-root .sg-pinbox p{font-size:12.5px;color:var(--ink2);margin:4px 0 14px}
+
+/* ---- form ---- */
+#singgah-mock-root .sg-fhead{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+#singgah-mock-root .sg-fhead b{font-size:18px;font-weight:800}
+#singgah-mock-root .sg-form{display:flex;flex-direction:column;gap:13px;overflow:hidden;flex:1}
+#singgah-mock-root .sg-field label{display:block;font-size:11.5px;font-weight:700;color:var(--ink2);text-transform:uppercase;
+  letter-spacing:.4px;margin-bottom:6px}
+#singgah-mock-root .sg-input{width:100%;font-family:inherit;font-size:14px;font-weight:500;color:var(--ink);
+  background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;outline-color:var(--primary)}
+#singgah-mock-root .sg-input::placeholder{color:var(--ink2);opacity:.7}
+#singgah-mock-root select.sg-input{appearance:none;background-image:linear-gradient(45deg,transparent 49%,var(--ink2) 50%),linear-gradient(135deg,var(--ink2) 50%,transparent 51%);
+  background-position:calc(100% - 18px) 55%,calc(100% - 13px) 55%;background-size:5px 5px;background-repeat:no-repeat}
+#singgah-mock-root .sg-chipset{display:flex;flex-wrap:wrap;gap:7px}
+#singgah-mock-root .sg-chipset button{display:inline-flex;align-items:center;gap:6px;font-family:inherit;font-size:12px;font-weight:700;
+  padding:8px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink2);transition:all .15s}
+#singgah-mock-root .sg-chipset button .si{width:13px;height:13px}
+#singgah-mock-root .sg-chipset button.on{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+#singgah-mock-root .sg-swrow{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line)}
+#singgah-mock-root .sg-swrow:last-of-type{border-bottom:none}
+#singgah-mock-root .sg-swrow b{font-size:14px;font-weight:600}
+#singgah-mock-root .sg-swrow small{display:block;font-size:11.5px;color:var(--ink2);font-weight:500;margin-top:1px}
+#singgah-mock-root .sg-sw{position:relative;width:44px;height:26px;flex:none}
+#singgah-mock-root .sg-sw input{position:absolute;opacity:0;inset:0;margin:0;cursor:inherit}
+#singgah-mock-root .sg-sw .tr{position:absolute;inset:0;border-radius:99px;background:var(--line);transition:background .2s}
+#singgah-mock-root .sg-sw .tr::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:99px;
+  background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+#singgah-mock-root .sg-sw input:checked + .tr{background:var(--primary)}
+#singgah-mock-root .sg-sw input:checked + .tr::after{transform:translateX(18px)}
+#singgah-mock-root .sg-hint{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:var(--ink2);line-height:1.45}
+#singgah-mock-root .sg-hint .si{width:13px;height:13px;margin-top:1px;color:var(--success);flex:none}
+
+/* ---- success ---- */
+#singgah-mock-root .sg-ok-wrap{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:0 34px;gap:0}
+#singgah-mock-root .sg-ok-ic{width:92px;height:92px;border-radius:99px;background:var(--success-soft);color:var(--success);
+  display:flex;align-items:center;justify-content:center;margin-bottom:22px}
+#singgah-mock-root .sg-ok-ic .si{width:44px;height:44px}
+#singgah-mock-root .sg-ok-wrap h2{font-size:23px;font-weight:800;margin-bottom:10px}
+#singgah-mock-root .sg-ok-wrap p{font-size:14.5px;line-height:1.6;color:var(--ink2);margin-bottom:18px}
+#singgah-mock-root .sg-ok-info{display:flex;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:13px 15px;text-align:left;margin-bottom:26px}
+#singgah-mock-root .sg-ok-info .si{width:16px;height:16px;color:var(--primary);margin-top:2px;flex:none}
+#singgah-mock-root .sg-ok-info p{font-size:12.5px;margin:0;color:var(--ink)}
+#singgah-mock-root .sg-ok-wrap .sg-btn{flex:none;padding:14px 34px}
+
+/* ---- desktop (web) ---- */
+#singgah-mock-root .sg-screen-wide{position:relative;inset:auto}
+#singgah-mock-root .sg-desktop{width:100%;max-width:920px;height:600px;border-radius:16px;overflow:hidden;
+  border:1px solid light-dark(#D5D2C6,#33423B);box-shadow:0 18px 44px rgba(0,0,0,.25);
+  display:flex;flex-direction:column;background:var(--bg);color:var(--ink)}
+#singgah-mock-root .sg-browser{display:flex;align-items:center;gap:12px;padding:10px 14px;
+  background:light-dark(#E9E6DC,#1C2823);border-bottom:1px solid light-dark(#D5D2C6,#2A3831)}
+#singgah-mock-root .sg-browser .dots{display:flex;gap:6px}
+#singgah-mock-root .sg-browser .dots i{width:10px;height:10px;border-radius:99px;background:light-dark(#C7C2B2,#3A4B43);display:block}
+#singgah-mock-root .sg-urlbar{flex:1;max-width:360px;margin:0 auto;text-align:center;font-size:12px;font-weight:600;
+  color:light-dark(#6B7A73,#8FA39A);background:light-dark(#FFFFFF,#22302A);border-radius:99px;padding:6px 14px}
+#singgah-mock-root .sg-dwrap{flex:1;display:flex;min-height:0}
+#singgah-mock-root .sg-dside{flex:0 0 330px;min-width:215px;background:var(--surface);border-right:1px solid var(--line);
+  padding:14px 16px;overflow:hidden;display:flex;flex-direction:column}
+#singgah-mock-root .sg-brand{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+#singgah-mock-root .sg-logo{width:36px;height:36px;border-radius:11px;background:var(--primary);color:var(--primary-ink);
+  display:flex;align-items:center;justify-content:center;flex:none}
+#singgah-mock-root .sg-logo .si{width:19px;height:19px}
+#singgah-mock-root .sg-brand b{font-size:16px;font-weight:800;display:block;line-height:1.1}
+#singgah-mock-root .sg-brand small{font-size:10.5px;color:var(--ink2);font-weight:600}
+#singgah-mock-root .sg-dmap{flex:1;position:relative;min-width:0}
+
+/* ---- tokens / design system panel ---- */
+#singgah-mock-root .sg-tokens{width:min(600px,100%);background:#FFFFFF;color:#12332C;border-radius:22px;
+  box-shadow:0 18px 50px rgba(0,0,0,.28);padding:26px 28px}
+#singgah-mock-root .sg-tokens h3{font-size:18px;font-weight:800;margin-bottom:2px}
+#singgah-mock-root .sg-tokens .sub{font-size:12.5px;color:#5A6E67;margin-bottom:18px}
+#singgah-mock-root .sg-tsec{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#8CA099;margin:18px 0 10px}
+#singgah-mock-root .sg-swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+#singgah-mock-root .sg-swatch{border:1px solid #E4DFD2;border-radius:12px;overflow:hidden}
+#singgah-mock-root .sg-swatch i{display:block;height:38px}
+#singgah-mock-root .sg-swatch span{display:block;font-size:10.5px;font-weight:700;padding:6px 9px}
+#singgah-mock-root .sg-swatch small{display:block;font-size:10px;color:#5A6E67;font-weight:500}
+#singgah-mock-root .sg-type-row{display:flex;align-items:baseline;gap:14px;padding:7px 0;border-bottom:1px dashed #E4DFD2}
+#singgah-mock-root .sg-type-row small{font-size:10.5px;color:#8CA099;font-weight:700;width:92px;flex:none}
+#singgah-mock-root .sg-iconrow{display:flex;flex-wrap:wrap;gap:10px}
+#singgah-mock-root .sg-iconrow span{width:38px;height:38px;border-radius:11px;background:#DDEEE8;color:#0E7C66;
+  display:inline-flex;align-items:center;justify-content:center}
+#singgah-mock-root .sg-iconrow span .si{width:18px;height:18px}
+#singgah-mock-root .sg-comp-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+#singgah-mock-root .sg-tokens .sg-chip,#singgah-mock-root .sg-tokens .sg-btn,#singgah-mock-root .sg-tokens .sg-mini,
+#singgah-mock-root .sg-tokens .sg-vtag{border-color:#E4DFD2}
+#singgah-mock-root .sg-tok-note{margin-top:18px;font-size:11.5px;color:#5A6E67;line-height:1.55}
+</style>
+
+<div class="sg-head">
+  <b>Singgah — UI mockup v0.1</b>
+  <span>mobile-first · 6 layar + design system · Bahasa Indonesia</span>
+</div>
+
+<div class="sg-tabs" role="tablist" aria-label="Layar mockup">
+  <button type="button" class="sg-tab cursor-interaction on" data-screen="beranda" aria-selected="true">Beranda</button>
+  <button type="button" class="sg-tab cursor-interaction" data-screen="daftar" aria-selected="false">Daftar spot</button>
+  <button type="button" class="sg-tab cursor-interaction" data-screen="detail" aria-selected="false">Detail spot</button>
+  <button type="button" class="sg-tab cursor-interaction" data-screen="pin" aria-selected="false">Tambah · pin</button>
+  <button type="button" class="sg-tab cursor-interaction" data-screen="form" aria-selected="false">Tambah · form</button>
+  <button type="button" class="sg-tab cursor-interaction" data-screen="sukses" aria-selected="false">Sukses</button>
+  <button type="button" class="sg-tab cursor-interaction" data-screen="desktop" aria-selected="false">Desktop (web)</button>
+  <button type="button" class="sg-tab cursor-interaction" data-screen="tokens" aria-selected="false">Design system</button>
+</div>
+
+<div class="sg-stage viz-dotted-background">
+
+<!-- ================= PHONE ================= -->
+<div class="sg-phone" role="img" aria-label="Mockup aplikasi Singgah">
+  <div class="sg-notch"></div>
+  <div class="sg-status"><span>09:41</span>
+    <span class="sg-sic"><span class="si"><i data-lucide="signal" aria-hidden="true"></i></span><span class="si"><i data-lucide="wifi" aria-hidden="true"></i></span><span class="si"><i data-lucide="battery-full" aria-hidden="true"></i></span></span>
+  </div>
+
+  <!-- ===== SCREEN: BERANDA ===== -->
+  <section class="sg-screen" data-screen="beranda" aria-label="Beranda — peta">
+    <svg class="sg-map" viewBox="0 0 375 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <rect width="375" height="800" fill="var(--map-land)"/>
+      <path d="M-30 560 Q60 520 120 560 T260 600 Q300 640 250 690 T60 700 Q-10 660 -30 560Z" fill="var(--map-park)"/>
+      <path d="M250 60 Q330 40 390 90 L390 -10 L300 -10 Z" fill="var(--map-park)" opacity=".8"/>
+      <g fill="var(--map-block)">
+        <rect x="46" y="96" width="72" height="52" rx="7"/><rect x="132" y="86" width="58" height="64" rx="7"/>
+        <rect x="250" y="140" width="70" height="56" rx="7"/><rect x="60" y="210" width="64" height="58" rx="7"/>
+        <rect x="270" y="330" width="66" height="52" rx="7"/><rect x="42" y="470" width="70" height="58" rx="7"/>
+        <rect x="150" y="500" width="56" height="48" rx="7"/><rect x="250" y="470" width="80" height="50" rx="7"/>
+      </g>
+      <path d="M-20 250 C80 230 130 300 205 292 C285 284 320 205 400 215" stroke="var(--map-water)" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <g stroke="var(--map-casing)" fill="none" stroke-linecap="round">
+        <path d="M-20 410 L395 335" stroke-width="15"/><path d="M185 -20 L215 820" stroke-width="15"/>
+        <path d="M-20 615 C100 585 230 655 400 615" stroke-width="11"/><path d="M62 -20 L40 820" stroke-width="10"/>
+        <path d="M-20 160 L395 210" stroke-width="9"/>
+      </g>
+      <g stroke="var(--map-road)" fill="none" stroke-linecap="round">
+        <path d="M-20 410 L395 335" stroke-width="11"/><path d="M185 -20 L215 820" stroke-width="11"/>
+        <path d="M-20 615 C100 585 230 655 400 615" stroke-width="7.5"/><path d="M62 -20 L40 820" stroke-width="6.5"/>
+        <path d="M-20 160 L395 210" stroke-width="5"/>
+      </g>
+      <g class="sg-map-label">
+        <text x="222" y="366" transform="rotate(-10 222 366)">Jl. Malioboro</text>
+        <text x="196" y="640" transform="rotate(-4 196 640)">Jl. Ring Road</text>
+        <text x="58" y="588">Taman Pecangaan</text>
+      </g>
+      <g>
+        <g transform="translate(120,305)"><path class="pinf" fill="var(--rose)" d="M0 0 C-8 -12 -13 -17 -13 -25 a13 13 0 1 1 26 0 C13 -17 8 -12 0 0Z"/><circle cx="0" cy="-25" r="5.5" fill="var(--surface)"/></g>
+        <g transform="translate(283,258)"><path class="pinf" fill="var(--water)" d="M0 0 C-8 -12 -13 -17 -13 -25 a13 13 0 1 1 26 0 C13 -17 8 -12 0 0Z"/><circle cx="0" cy="-25" r="5.5" fill="var(--surface)"/></g>
+        <g transform="translate(92,487)"><path class="pinf" fill="var(--amber)" d="M0 0 C-8 -12 -13 -17 -13 -25 a13 13 0 1 1 26 0 C13 -17 8 -12 0 0Z"/><circle cx="0" cy="-25" r="5.5" fill="var(--surface)"/></g>
+        <g transform="translate(312,540)"><path class="pinf" fill="var(--success)" d="M0 0 C-8 -12 -13 -17 -13 -25 a13 13 0 1 1 26 0 C13 -17 8 -12 0 0Z"/><circle cx="0" cy="-25" r="5.5" fill="var(--surface)"/></g>
+        <g transform="translate(200,442)">
+          <circle cx="0" cy="-26" r="26" fill="var(--primary)" opacity=".18"/>
+          <path class="pinf" fill="var(--primary)" d="M0 0 C-11 -16 -18 -23 -18 -33 a18 18 0 1 1 36 0 C18 -23 11 -16 0 0Z"/>
+          <circle cx="0" cy="-33" r="7.5" fill="var(--surface)"/>
+          <g transform="translate(-58,-92)"><rect x="0" y="0" width="118" height="30" rx="9" fill="var(--ink)"/><text x="12" y="20" font-size="12" font-weight="700" fill="var(--bg)" font-family="inherit">Musala Giwangan</text></g>
+        </g>
+      </g>
+    </svg>
+    <div class="sg-search"><span class="si"><i data-lucide="search" aria-hidden="true"></i></span><em>Cari masjid, musala, SPBU…</em><span class="si flt"><i data-lucide="sliders-horizontal" aria-hidden="true"></i></span></div>
+    <button type="button" class="sg-fab cursor-interaction" data-go="pin"><span class="si"><i data-lucide="plus" aria-hidden="true"></i></span>Tambah spot</button>
+    <div class="sg-sheet">
+      <button type="button" class="sg-handle cursor-interaction" data-go="daftar" aria-label="Buka daftar spot"></button>
+      <div class="sg-sh-head"><b>Spot terdekat</b><span>128 spot · Yogya</span></div>
+      <div class="sg-card">
+        <div class="sg-tile sg-t3"><span class="si"><i data-lucide="bus" aria-hidden="true"></i></span></div>
+        <div class="sg-cbody">
+          <b>Musala Terminal Giwangan</b>
+          <div class="sg-cmeta">Musala Blok C · Terminal Giwangan · 1,2 km</div>
+          <div class="sg-minis">
+            <span class="sg-mini"><span class="si"><i data-lucide="droplets" aria-hidden="true"></i></span>Air mandi</span>
+            <span class="sg-mini"><span class="si"><i data-lucide="clock" aria-hidden="true"></i></span>24 jam</span>
+            <span class="sg-mini"><span class="si"><i data-lucide="bike" aria-hidden="true"></i></span>Parkir</span>
+          </div>
+        </div>
+        <span class="sg-vtag"><span class="si"><i data-lucide="badge-check" aria-hidden="true"></i></span>2 jam lalu</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN: DAFTAR ===== -->
+  <section class="sg-screen" data-screen="daftar" aria-label="Daftar spot" hidden>
+    <svg class="sg-map" viewBox="0 0 375 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <rect width="375" height="800" fill="var(--map-land)"/>
+      <path d="M-30 560 Q60 520 120 560 T260 600 Q300 640 250 690 T60 700 Q-10 660 -30 560Z" fill="var(--map-park)"/>
+      <path d="M-20 250 C80 230 130 300 205 292 C285 284 320 205 400 215" stroke="var(--map-water)" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <g stroke="var(--map-road)" fill="none" stroke-linecap="round">
+        <path d="M-20 410 L395 335" stroke-width="11"/><path d="M185 -20 L215 820" stroke-width="11"/>
+      </g>
+    </svg>
+    <div class="sg-sheet" style="top:44px">
+      <button type="button" class="sg-handle cursor-interaction" data-go="beranda" aria-label="Tutup daftar"></button>
+      <div class="sg-search" style="position:static;box-shadow:none;border:1.5px solid var(--line);margin-bottom:12px">
+        <span class="si"><i data-lucide="search" aria-hidden="true"></i></span><em>Cari nama spot atau alamat…</em>
+      </div>
+      <div class="sg-chiprow" style="position:static;padding:0 0 10px">
+        <button type="button" class="sg-chip on">Semua</button>
+        <button type="button" class="sg-chip">Masjid</button>
+        <button type="button" class="sg-chip">Musala</button>
+        <button type="button" class="sg-chip">Terminal</button>
+        <button type="button" class="sg-chip">SPBU</button>
+      </div>
+      <div class="sg-card">
+        <div class="sg-tile sg-t3"><span class="si"><i data-lucide="bus" aria-hidden="true"></i></span></div>
+        <div class="sg-cbody">
+          <b>Musala Terminal Giwangan</b>
+          <div class="sg-cmeta">Terminal · 1,2 km</div>
+          <div class="sg-minis">
+            <span class="sg-mini"><span class="si"><i data-lucide="droplets" aria-hidden="true"></i></span>Air mandi</span>
+            <span class="sg-mini"><span class="si"><i data-lucide="clock" aria-hidden="true"></i></span>24 jam</span>
+            <span class="sg-mini"><span class="si"><i data-lucide="bike" aria-hidden="true"></i></span>Parkir</span>
+          </div>
+        </div>
+        <span class="sg-vtag"><span class="si"><i data-lucide="badge-check" aria-hidden="true"></i></span>2 jam lalu</span>
+      </div>
+      <div class="sg-card">
+        <div class="sg-tile sg-t1"><span class="si"><i data-lucide="moon-star" aria-hidden="true"></i></span></div>
+        <div class="sg-cbody">
+          <b>Masjid Jogokariyan</b>
+          <div class="sg-cmeta">Masjid besar · 2,4 km</div>
+          <div class="sg-minis">
+            <span class="sg-mini"><span class="si"><i data-lucide="droplets" aria-hidden="true"></i></span>Air mandi</span>
+            <span class="sg-mini"><span class="si"><i data-lucide="clock" aria-hidden="true"></i></span>24 jam</span>
+            <span class="sg-mini"><span class="si"><i data-lucide="user" aria-hidden="true"></i></span>Ramah perempuan</span>
+          </div>
+        </div>
+        <span class="sg-vtag"><span class="si"><i data-lucide="badge-check" aria-hidden="true"></i></span>1 hari lalu</span>
+      </div>
+      <div class="sg-card">
+        <div class="sg-tile sg-t1"><span class="si"><i data-lucide="moon-star" aria-hidden="true"></i></span></div>
+        <div class="sg-cbody">
+          <b>Masjid Gede Kauman</b>
+          <div class="sg-cmeta">Masjid besar · 2,8 km</div>
+          <div class="sg-minis">
+            <span class="sg-mini"><span class="si"><i data-lucide="droplets" aria-hidden="true"></i></span>Wudhu + mandi</span>
+            <span class="sg-mini"><span class="si"><i data-lucide="clock" aria-hidden="true"></i></span>04.00–21.00</span>
+          </div>
+        </div>
+        <span class="sg-vtag"><span class="si"><i data-lucide="badge-check" aria-hidden="true"></i></span>3 hari lalu</span>
+      </div>
+      <div class="sg-card">
+        <div class="sg-tile sg-t4"><span class="si"><i data-lucide="fuel" aria-hidden="true"></i></span></div>
+        <div class="sg-cbody">
+          <b>SPBU Jl. Kaliurang KM 5</b>
+          <div class="sg-cmeta">SPBU · 4,1 km</div>
+          <div class="sg-minis">
+            <span class="sg-mini"><span class="si"><i data-lucide="droplets" aria-hidden="true"></i></span>Air isi ulang</span>
+            <span class="sg-mini"><span class="si"><i data-lucide="clock" aria-hidden="true"></i></span>24 jam</span>
+          </div>
+        </div>
+        <span class="sg-vtag off">Belum diverifikasi</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN: DETAIL ===== -->
+  <section class="sg-screen" data-screen="detail" aria-label="Detail spot" hidden>
+    <svg class="sg-map" viewBox="0 0 375 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <rect width="375" height="800" fill="var(--map-land)"/>
+      <path d="M-20 410 L395 335" stroke="var(--map-road)" stroke-width="11" fill="none" stroke-linecap="round"/>
+      <path d="M185 -20 L215 820" stroke="var(--map-road)" stroke-width="11" fill="none" stroke-linecap="round"/>
+    </svg>
+    <div class="sg-dim"></div>
+    <div class="sg-dsheet">
+      <div class="sg-dtop">
+        <button type="button" class="sg-rbtn cursor-interaction" data-go="daftar" aria-label="Kembali"><span class="si"><i data-lucide="arrow-left" aria-hidden="true"></i></span></button>
+        <span class="spacer"></span>
+        <button type="button" class="sg-rbtn cursor-interaction" aria-label="Simpan"><span class="si"><i data-lucide="heart" aria-hidden="true"></i></span></button>
+        <button type="button" class="sg-rbtn cursor-interaction" aria-label="Bagikan"><span class="si"><i data-lucide="share-2" aria-hidden="true"></i></span></button>
+      </div>
+      <div class="sg-dtitle">
+        <b>Musala Terminal Giwangan</b>
+        <span>Musala Blok C, Terminal Giwangan · 1,2 km dari kamu</span>
+      </div>
+      <div class="sg-badges">
+        <span class="sg-badge" style="background:var(--primary-soft);color:var(--primary)"><span class="si"><i data-lucide="bus" aria-hidden="true"></i></span>Terminal</span>
+        <span class="sg-badge" style="background:var(--water-soft);color:var(--water)"><span class="si"><i data-lucide="droplets" aria-hidden="true"></i></span>Air mandi</span>
+        <span class="sg-badge" style="background:var(--success-soft);color:var(--success)"><span class="si"><i data-lucide="bike" aria-hidden="true"></i></span>Parkir sepeda</span>
+      </div>
+      <div class="sg-infos">
+        <div class="sg-irow"><span class="si"><i data-lucide="droplets" aria-hidden="true"></i></span><div><b>Air</b><span>Kran mandi + wudhu (sisi Blok C)</span></div></div>
+        <div class="sg-irow"><span class="si"><i data-lucide="clock" aria-hidden="true"></i></span><div><b>Jam</b><span>24 jam</span></div></div>
+        <div class="sg-irow"><span class="si"><i data-lucide="bike" aria-hidden="true"></i></span><div><b>Parkir sepeda</b><span>Ada, area terbuka dekat gate</span></div></div>
+        <div class="sg-irow"><span class="si"><i data-lucide="user" aria-hidden="true"></i></span><div><b>Ramah perempuan</b><span style="color:var(--ink2)">Belum ada info</span></div></div>
+      </div>
+      <div class="sg-note">
+        <span class="si"><i data-lucide="info" aria-hidden="true"></i></span>
+        <p>Etiket musafir: izin dulu ke marbot untuk istirahat — bilang “saya musafir”. Jangan shampoo di keran wudhu. Titip kotak amal kalau sempat.</p>
+      </div>
+      <div class="sg-verified"><span class="si"><i data-lucide="badge-check" aria-hidden="true"></i></span>Diverifikasi 2 jam lalu oleh 3 musafir</div>
+      <div class="sg-actions">
+        <button type="button" class="sg-btn ok cursor-interaction" data-verify><span class="si"><i data-lucide="shield-check" aria-hidden="true"></i></span>Masih ada ✓</button>
+        <button type="button" class="sg-btn main cursor-interaction"><span class="si"><i data-lucide="navigation" aria-hidden="true"></i></span>Rute</button>
+      </div>
+    </div>
+    <div class="sg-toast" data-toast hidden><span class="si"><i data-lucide="check" aria-hidden="true"></i></span>Terima kasih! Verifikasi tercatat.</div>
+  </section>
+
+  <!-- ===== SCREEN: TAMBAH · PIN ===== -->
+  <section class="sg-screen" data-screen="pin" aria-label="Tambah spot — pilih lokasi" hidden>
+    <svg class="sg-map" viewBox="0 0 375 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <rect width="375" height="800" fill="var(--map-land)"/>
+      <path d="M-30 560 Q60 520 120 560 T260 600 Q300 640 250 690 T60 700 Q-10 660 -30 560Z" fill="var(--map-park)"/>
+      <path d="M-20 250 C80 230 130 300 205 292 C285 284 320 205 400 215" stroke="var(--map-water)" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <g fill="var(--map-block)"><rect x="46" y="96" width="72" height="52" rx="7"/><rect x="270" y="330" width="66" height="52" rx="7"/><rect x="150" y="500" width="56" height="48" rx="7"/></g>
+      <g stroke="var(--map-casing)" fill="none" stroke-linecap="round">
+        <path d="M-20 410 L395 335" stroke-width="15"/><path d="M185 -20 L215 820" stroke-width="15"/><path d="M62 -20 L40 820" stroke-width="10"/>
+      </g>
+      <g stroke="var(--map-road)" fill="none" stroke-linecap="round">
+        <path d="M-20 410 L395 335" stroke-width="11"/><path d="M185 -20 L215 820" stroke-width="11"/><path d="M62 -20 L40 820" stroke-width="6.5"/>
+      </g>
+      <g class="sg-map-label"><text x="222" y="366" transform="rotate(-10 222 366)">Jl. Malioboro</text></g>
+    </svg>
+    <div class="sg-cross">
+      <svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="34" fill="var(--primary)" opacity=".14"/>
+        <circle cx="60" cy="60" r="34" fill="none" stroke="var(--primary)" stroke-width="1.5" opacity=".5"/>
+        <line x1="60" y1="8" x2="60" y2="34" stroke="var(--primary)" stroke-width="2"/>
+        <line x1="60" y1="86" x2="60" y2="112" stroke="var(--primary)" stroke-width="2"/>
+        <line x1="8" y1="60" x2="34" y2="60" stroke="var(--primary)" stroke-width="2"/>
+        <line x1="86" y1="60" x2="112" y2="60" stroke="var(--primary)" stroke-width="2"/>
+        <path d="M60 108 C-3 60 -8 54 -8 44 a 0 0" fill="none"/>
+        <path class="pinf" fill="var(--primary)" d="M60 104 C48 88 42 80 42 70 a18 18 0 1 1 36 0 C78 80 72 88 60 104Z"/>
+        <circle cx="60" cy="70" r="7" fill="var(--surface)"/>
+      </svg>
+    </div>
+    <div class="sg-banner"><span class="si"><i data-lucide="locate-fixed" aria-hidden="true"></i></span>Geser peta sampai pin tepat di lokasi spot</div>
+    <button type="button" class="sg-rbtn cursor-interaction" style="position:absolute;top:112px;left:16px;z-index:24" data-go="beranda" aria-label="Batal"><span class="si"><i data-lucide="x" aria-hidden="true"></i></span></button>
+    <div class="sg-pinbox">
+      <b>Pin di titik ini?</b>
+      <p>Depok Street, dekat persimpangan · akurat ± 10 m</p>
+      <div class="sg-actions" style="margin:0">
+        <button type="button" class="sg-btn main cursor-interaction" data-go="form"><span class="si"><i data-lucide="pencil" aria-hidden="true"></i></span>Lanjut isi info</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN: TAMBAH · FORM ===== -->
+  <section class="sg-screen" data-screen="form" aria-label="Tambah spot — formulir" hidden>
+    <div style="position:absolute;inset:0;background:var(--bg)"></div>
+    <div style="position:absolute;top:44px;left:0;right:0;bottom:0;padding:16px 20px 16px;display:flex;flex-direction:column">
+      <div class="sg-fhead">
+        <button type="button" class="sg-rbtn cursor-interaction" data-go="pin" aria-label="Kembali"><span class="si"><i data-lucide="arrow-left" aria-hidden="true"></i></span></button>
+        <b>Info spot</b>
+      </div>
+      <div class="sg-form">
+        <div class="sg-field">
+          <label for="sg-nama">Nama spot</label>
+          <input class="sg-input" id="sg-nama" type="text" placeholder="cth: Musala Jami Al-Ikhlas">
+        </div>
+        <div class="sg-field">
+          <label>Tipe spot</label>
+          <div class="sg-chipset" role="group" aria-label="Tipe spot">
+            <button type="button" class="cursor-interaction"><span class="si"><i data-lucide="moon-star" aria-hidden="true"></i></span>Masjid</button>
+            <button type="button" class="cursor-interaction on"><span class="si"><i data-lucide="landmark" aria-hidden="true"></i></span>Musala</button>
+            <button type="button" class="cursor-interaction"><span class="si"><i data-lucide="bus" aria-hidden="true"></i></span>Terminal</button>
+            <button type="button" class="cursor-interaction"><span class="si"><i data-lucide="fuel" aria-hidden="true"></i></span>SPBU</button>
+            <button type="button" class="cursor-interaction"><span class="si"><i data-lucide="tent" aria-hidden="true"></i></span>Rest area</button>
+          </div>
+        </div>
+        <div class="sg-field">
+          <label for="sg-air">Kondisi air</label>
+          <select class="sg-input" id="sg-air">
+            <option>Air mandi terang</option><option selected>Hanya air wudhu</option>
+            <option>Air isi ulang</option><option>Tidak ada air</option><option>Belum tahu</option>
+          </select>
+        </div>
+        <div class="sg-field">
+          <label for="sg-jam">Jam buka</label>
+          <input class="sg-input" id="sg-jam" type="text" value="24 jam" placeholder="cth: 04.00–21.00 / 24 jam">
+        </div>
+        <div class="sg-field" style="border:1.5px solid var(--line);border-radius:12px;padding:2px 14px;background:var(--surface)">
+          <div class="sg-swrow"><span><b>Parkir sepeda</b><small>Ada tempat parkir yang aman</small></span>
+            <label class="sg-sw"><input type="checkbox" checked aria-label="Parkir sepeda"><span class="tr"></span></label></div>
+          <div class="sg-swrow"><span><b>Ramah perempuan</b><small>Ruang tunggu terpisah / terpantau</small></span>
+            <label class="sg-sw"><input type="checkbox" aria-label="Ramah perempuan"><span class="tr"></span></label></div>
+        </div>
+        <div class="sg-field">
+          <label for="sg-not">Catatan (opsional)</label>
+          <input class="sg-input" id="sg-not" type="text" placeholder="cth: izin dulu ke marbot untuk tidur">
+        </div>
+        <div class="sg-hint" style="margin-top:auto"><span class="si"><i data-lucide="shield-check" aria-hidden="true"></i></span>Spot baru ditinjau dulu sebelum tampil di peta — supaya data tetap bersih.</div>
+        <button type="button" class="sg-btn main cursor-interaction" data-go="sukses" style="width:100%">Kirim untuk ditinjau</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN: SUKSES ===== -->
+  <section class="sg-screen" data-screen="sukses" aria-label="Berhasil dikirim" hidden>
+    <div class="sg-ok-wrap">
+      <div class="sg-ok-ic"><span class="si"><i data-lucide="check" aria-hidden="true"></i></span></div>
+      <h2>Terima kasih!</h2>
+      <p>Spot kamu sedang ditinjau. Kalau disetujui, langsung muncul di peta dan membantu musafir lain.</p>
+      <div class="sg-ok-info">
+        <span class="si"><i data-lucide="info" aria-hidden="true"></i></span>
+        <p>Peninjauan biasanya selesai kurang dari 24 jam. Kamu bisa lanjut mencari spot lain sambil menunggu.</p>
+      </div>
+      <button type="button" class="sg-btn main cursor-interaction" data-go="beranda">Kembali ke peta</button>
+    </div>
+  </section>
+</div>
+
+<!-- ===== DESKTOP (WEB) ===== -->
+<section class="sg-screen sg-screen-wide" data-screen="desktop" aria-label="Tampilan desktop web" hidden>
+  <div class="sg-desktop">
+    <div class="sg-browser">
+      <span class="dots"><i></i><i></i><i></i></span>
+      <span class="sg-urlbar">singgah.app — mandi &amp; istirahat gratis untuk musafir</span>
+      <span style="width:52px"></span>
+    </div>
+    <div class="sg-dwrap">
+      <aside class="sg-dside">
+        <div class="sg-brand">
+          <span class="sg-logo"><span class="si"><i data-lucide="moon-star" aria-hidden="true"></i></span></span>
+          <span><b>Singgah</b><small>mandi &amp; istirahat gratis musafir</small></span>
+          <button type="button" class="sg-btn main cursor-interaction" style="flex:none;margin-left:auto;padding:9px 12px;font-size:12px;border-radius:10px"><span class="si"><i data-lucide="plus" aria-hidden="true"></i></span>Tambah</button>
+        </div>
+        <div class="sg-search" style="position:static;box-shadow:none;border:1.5px solid var(--line);margin-bottom:10px">
+          <span class="si"><i data-lucide="search" aria-hidden="true"></i></span><em>Cari spot…</em>
+        </div>
+        <div class="sg-chiprow" style="position:static;padding:0 0 4px">
+          <button type="button" class="sg-chip on">Semua</button>
+          <button type="button" class="sg-chip">Masjid</button>
+          <button type="button" class="sg-chip">Musala</button>
+          <button type="button" class="sg-chip">Terminal</button>
+          <button type="button" class="sg-chip">SPBU</button>
+        </div>
+        <div class="sg-card">
+          <div class="sg-tile sg-t3"><span class="si"><i data-lucide="bus" aria-hidden="true"></i></span></div>
+          <div class="sg-cbody">
+            <b>Musala Terminal Giwangan</b>
+            <div class="sg-cmeta">Terminal · 1,2 km</div>
+            <div class="sg-minis">
+              <span class="sg-mini"><span class="si"><i data-lucide="droplets" aria-hidden="true"></i></span>Air mandi</span>
+              <span class="sg-mini"><span class="si"><i data-lucide="clock" aria-hidden="true"></i></span>24 jam</span>
+              <span class="sg-mini"><span class="si"><i data-lucide="bike" aria-hidden="true"></i></span>Parkir</span>
+            </div>
+          </div>
+          <span class="sg-vtag"><span class="si"><i data-lucide="badge-check" aria-hidden="true"></i></span>2 jam</span>
+        </div>
+        <div class="sg-card">
+          <div class="sg-tile sg-t1"><span class="si"><i data-lucide="moon-star" aria-hidden="true"></i></span></div>
+          <div class="sg-cbody">
+            <b>Masjid Jogokariyan</b>
+            <div class="sg-cmeta">Masjid besar · 2,4 km</div>
+            <div class="sg-minis">
+              <span class="sg-mini"><span class="si"><i data-lucide="droplets" aria-hidden="true"></i></span>Air mandi</span>
+              <span class="sg-mini"><span class="si"><i data-lucide="clock" aria-hidden="true"></i></span>24 jam</span>
+              <span class="sg-mini"><span class="si"><i data-lucide="user" aria-hidden="true"></i></span>Ramah perempuan</span>
+            </div>
+          </div>
+          <span class="sg-vtag"><span class="si"><i data-lucide="badge-check" aria-hidden="true"></i></span>1 hari</span>
+        </div>
+        <div class="sg-card">
+          <div class="sg-tile sg-t1"><span class="si"><i data-lucide="moon-star" aria-hidden="true"></i></span></div>
+          <div class="sg-cbody">
+            <b>Masjid Gede Kauman</b>
+            <div class="sg-cmeta">Masjid besar · 2,8 km</div>
+            <div class="sg-minis">
+              <span class="sg-mini"><span class="si"><i data-lucide="droplets" aria-hidden="true"></i></span>Wudhu + mandi</span>
+              <span class="sg-mini"><span class="si"><i data-lucide="clock" aria-hidden="true"></i></span>04.00–21.00</span>
+            </div>
+          </div>
+          <span class="sg-vtag"><span class="si"><i data-lucide="badge-check" aria-hidden="true"></i></span>3 hari</span>
+        </div>
+        <div class="sg-card">
+          <div class="sg-tile sg-t4"><span class="si"><i data-lucide="fuel" aria-hidden="true"></i></span></div>
+          <div class="sg-cbody">
+            <b>SPBU Jl. Kaliurang KM 5</b>
+            <div class="sg-cmeta">SPBU · 4,1 km</div>
+            <div class="sg-minis">
+              <span class="sg-mini"><span class="si"><i data-lucide="droplets" aria-hidden="true"></i></span>Air isi ulang</span>
+              <span class="sg-mini"><span class="si"><i data-lucide="clock" aria-hidden="true"></i></span>24 jam</span>
+            </div>
+          </div>
+          <span class="sg-vtag off">Belum diverifikasi</span>
+        </div>
+      </aside>
+      <div class="sg-dmap">
+        <svg class="sg-map" viewBox="0 0 620 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="620" height="560" fill="var(--map-land)"/>
+          <path d="M-30 430 Q90 380 180 430 T380 470 Q440 500 380 540 T120 545 Q20 500 -30 430Z" fill="var(--map-park)"/>
+          <g fill="var(--map-block)">
+            <rect x="80" y="60" width="90" height="60" rx="7"/><rect x="200" y="50" width="70" height="70" rx="7"/>
+            <rect x="340" y="90" width="90" height="56" rx="7"/><rect x="90" y="200" width="70" height="64" rx="7"/>
+            <rect x="360" y="210" width="80" height="60" rx="7"/><rect x="470" y="300" width="90" height="60" rx="7"/>
+          </g>
+          <path d="M-20 180 C120 160 200 240 320 230 C440 220 500 130 640 140" stroke="var(--map-water)" stroke-width="16" fill="none" stroke-linecap="round"/>
+          <g stroke="var(--map-road)" fill="none" stroke-linecap="round">
+            <path d="M-20 320 L640 280" stroke-width="11"/><path d="M260 -20 L290 580" stroke-width="11"/>
+            <path d="M-20 470 C200 440 420 500 640 460" stroke-width="8"/><path d="M480 -20 L500 580" stroke-width="8"/>
+          </g>
+          <g class="sg-map-label">
+            <text x="330" y="292" transform="rotate(-4 330 292)">Jl. Malioboro</text>
+            <text x="492" y="120" transform="rotate(4 492 120)">Jl. Kaliurang</text>
+          </g>
+          <g>
+            <g transform="translate(150,205)"><path class="pinf" fill="var(--rose)" d="M0 0 C-8 -12 -13 -17 -13 -25 a13 13 0 1 1 26 0 C13 -17 8 -12 0 0Z"/><circle cx="0" cy="-25" r="5.5" fill="var(--surface)"/></g>
+            <g transform="translate(470,235)"><path class="pinf" fill="var(--water)" d="M0 0 C-8 -12 -13 -17 -13 -25 a13 13 0 1 1 26 0 C13 -17 8 -12 0 0Z"/><circle cx="0" cy="-25" r="5.5" fill="var(--surface)"/></g>
+            <g transform="translate(520,395)"><path class="pinf" fill="var(--amber)" d="M0 0 C-8 -12 -13 -17 -13 -25 a13 13 0 1 1 26 0 C13 -17 8 -12 0 0Z"/><circle cx="0" cy="-25" r="5.5" fill="var(--surface)"/></g>
+            <g transform="translate(120,455)"><path class="pinf" fill="var(--success)" d="M0 0 C-8 -12 -13 -17 -13 -25 a13 13 0 1 1 26 0 C13 -17 8 -12 0 0Z"/><circle cx="0" cy="-25" r="5.5" fill="var(--surface)"/></g>
+            <g transform="translate(295,330)">
+              <circle cx="0" cy="-26" r="26" fill="var(--primary)" opacity=".18"/>
+              <path class="pinf" fill="var(--primary)" d="M0 0 C-11 -16 -18 -23 -18 -33 a18 18 0 1 1 36 0 C18 -23 11 -16 0 0Z"/>
+              <circle cx="0" cy="-33" r="7.5" fill="var(--surface)"/>
+              <g transform="translate(-64,-92)"><rect width="132" height="30" rx="9" fill="var(--ink)"/><text x="12" y="20" font-size="12" font-weight="700" fill="var(--bg)" font-family="inherit">Masjid Jogokariyan</text></g>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DESIGN SYSTEM PANEL ================= -->
+<div class="sg-tokens" data-tokens aria-label="Design system Singgah" hidden>
+  <h3>Singgah Design System</h3>
+  <div class="sub">“Oasis” — air + istirahat. Tenang, hangat, terbaca di bawah matahari.</div>
+
+  <div class="sg-tsec">Warna</div>
+  <div class="sg-swatches">
+    <div class="sg-swatch"><i style="background:#0E7C66"></i><span>Primary<small>#0E7C66 · oasis teal</small></span></div>
+    <div class="sg-swatch"><i style="background:#0B5D4E"></i><span>Primary deep<small>#0B5D4E</small></span></div>
+    <div class="sg-swatch"><i style="background:#DDEEE8"></i><span>Primary soft<small>#DDEEE8</small></span></div>
+    <div class="sg-swatch"><i style="background:#F6F4EE"></i><span>Sand<small>#F6F4EE · background</small></span></div>
+    <div class="sg-swatch"><i style="background:#12332C"></i><span>Ink<small>#12332C · teks</small></span></div>
+    <div class="sg-swatch"><i style="background:#B45309"></i><span>Amber<small>#B45309 · terminal</small></span></div>
+    <div class="sg-swatch"><i style="background:#0E7490"></i><span>Water<small>#0E7490 · SPBU</small></span></div>
+    <div class="sg-swatch"><i style="background:#15803D"></i><span>Success<small>#15803D · terverifikasi</small></span></div>
+  </div>
+
+  <div class="sg-tsec">Tipografi — Plus Jakarta Sans</div>
+  <div class="sg-type-row"><small>Display 23/800</small><span style="font-size:23px;font-weight:800">Musala Giwangan</span></div>
+  <div class="sg-type-row"><small>Title 17/700</small><span style="font-size:17px;font-weight:700">Spot terdekat · 128</span></div>
+  <div class="sg-type-row"><small>Body 15/500</small><span style="font-size:15px;font-weight:500">Kran mandi + wudhu (sisi Blok C)</span></div>
+  <div class="sg-type-row" style="border-bottom:none"><small>Caption 12/600</small><span style="font-size:12px;font-weight:600;color:#5A6E67">Diverifikasi 2 jam lalu oleh 3 musafir</span></div>
+  <div class="sg-tok-note">Font karya desainer Indonesia (Tokotype) — gratis di Google Fonts. Satu keluarga font, empat tingkat ukuran. Selesai.</div>
+
+  <div class="sg-tsec">Ikon — Lucide</div>
+  <div class="sg-iconrow">
+    <span><span class="si"><i data-lucide="moon-star" aria-hidden="true"></i></span></span>
+    <span><span class="si"><i data-lucide="landmark" aria-hidden="true"></i></span></span>
+    <span><span class="si"><i data-lucide="bus" aria-hidden="true"></i></span></span>
+    <span><span class="si"><i data-lucide="fuel" aria-hidden="true"></i></span></span>
+    <span><span class="si"><i data-lucide="tent" aria-hidden="true"></i></span></span>
+    <span><span class="si"><i data-lucide="droplets" aria-hidden="true"></i></span></span>
+    <span><span class="si"><i data-lucide="clock" aria-hidden="true"></i></span></span>
+    <span><span class="si"><i data-lucide="bike" aria-hidden="true"></i></span></span>
+    <span><span class="si"><i data-lucide="badge-check" aria-hidden="true"></i></span></span>
+    <span><span class="si"><i data-lucide="shield-check" aria-hidden="true"></i></span></span>
+    <span><span class="si"><i data-lucide="navigation" aria-hidden="true"></i></span></span>
+    <span><span class="si"><i data-lucide="search" aria-hidden="true"></i></span></span>
+  </div>
+
+  <div class="sg-tsec">Komponen</div>
+  <div class="sg-comp-row" style="margin-bottom:12px">
+    <button type="button" class="sg-btn main" style="flex:none;padding:12px 18px">Tambah spot</button>
+    <button type="button" class="sg-btn ok" style="flex:none;padding:12px 18px">Masih ada ✓</button>
+  </div>
+  <div class="sg-comp-row" style="margin-bottom:12px">
+    <span class="sg-badge" style="background:#DDEEE8;color:#0E7C66">Terminal</span>
+    <span class="sg-badge" style="background:#DCF0F5;color:#0E7490">Air mandi</span>
+    <span class="sg-vtag">2 jam lalu</span>
+    <span class="sg-vtag off">Belum diverifikasi</span>
+  </div>
+  <div class="sg-comp-row" style="border:1.5px solid #E4DFD2;border-radius:12px;padding:2px 14px">
+    <div class="sg-swrow" style="flex:1;border-bottom:none"><span><b>Parkir sepeda</b><small>contoh baris toggle</small></span>
+      <label class="sg-sw"><input type="checkbox" checked aria-label="Toggle contoh"><span class="tr"></span></label></div>
+  </div>
+
+  <div class="sg-tok-note">Coba panel pengaturan (Tweak): ganti palet <b>Oasis / Senja / Laut</b> dan mode gelap — seluruh layar ikut berubah karena semua warna memakai token di atas.</div>
+</div>
+
+</div><!-- /stage -->
+
+<div class="sg-foot">Interaktif: coba geser handle sheet, tombol “Masih ada ✓”, chip tipe di form, dan toggle. Warna & mode gelap via panel Tweak.</div>
+</div>
+
+<script>
+(function(){
+  var root=document.getElementById('singgah-mock-root');
+  if(!root) return;
+  var tabs=Array.prototype.slice.call(root.querySelectorAll('.sg-tab'));
+  var screens={};
+  Array.prototype.forEach.call(root.querySelectorAll('.sg-screen'),function(p){screens[p.getAttribute('data-screen')]=p;});
+  var phone=root.querySelector('.sg-phone');
+  var tokens=root.querySelector('.sg-tokens');
+  var state={screen:'beranda',palette:'oasis',dark:false};
+
+  function apply(){
+    tabs.forEach(function(t){
+      var on=t.getAttribute('data-screen')===state.screen;
+      t.classList.toggle('on',on);
+      t.setAttribute('aria-selected',on?'true':'false');
+    });
+    Object.keys(screens).forEach(function(k){screens[k].hidden=(k!==state.screen);});
+    if(phone) phone.hidden=(state.screen==='tokens'||state.screen==='desktop');
+    if(tokens) tokens.hidden=(state.screen!=='tokens');
+    root.setAttribute('data-palette',state.palette);
+    root.setAttribute('data-mode',state.dark?'dark':'light');
+  }
+  function save(){
+    if(window.zcode&&window.zcode.setWidgetState){
+      window.zcode.setWidgetState({screen:state.screen,palette:state.palette,dark:state.dark}).catch(function(){});
+    }
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click',function(){state.screen=t.getAttribute('data-screen');apply();save();});
+  });
+  Array.prototype.forEach.call(root.querySelectorAll('[data-go]'),function(el){
+    el.addEventListener('click',function(){state.screen=el.getAttribute('data-go');apply();save();});
+  });
+  var vbtn=root.querySelector('[data-verify]');
+  var toast=root.querySelector('[data-toast]');
+  var tt;
+  if(vbtn&&toast){
+    vbtn.addEventListener('click',function(){
+      toast.hidden=false;
+      if(tt)clearTimeout(tt);
+      tt=setTimeout(function(){toast.hidden=true;},2400);
+    });
+  }
+  Array.prototype.forEach.call(root.querySelectorAll('.sg-chipset'),function(set){
+    set.addEventListener('click',function(e){
+      var b=e.target.closest('button');
+      if(!b||!set.contains(b))return;
+      Array.prototype.forEach.call(set.querySelectorAll('button'),function(x){
+        var on=(x===b);
+        x.classList.toggle('on',on);
+        x.setAttribute('aria-pressed',on?'true':'false');
+      });
+    });
+  });
+  try{
+    var w=window.zcode&&window.zcode.widgetState;
+    if(w&&typeof w==='object'){
+      if(w.screen&&screens[w.screen])state.screen=w.screen;
+      if(w.palette)state.palette=w.palette;
+      if(typeof w.dark==='boolean')state.dark=w.dark;
+    }
+  }catch(e){}
+  window.addEventListener('zcode:set_globals',function(e){
+    try{
+      var g=e.detail&&e.detail.globals&&e.detail.globals.widgetState;
+      if(g){
+        if(g.screen&&screens[g.screen])state.screen=g.screen;
+        if(g.palette)state.palette=g.palette;
+        if(typeof g.dark==='boolean')state.dark=g.dark;
+        apply();
+      }
+    }catch(err){}
+  });
+  if(globalThis.Tweak){
+    var t=new Tweak({container:root,onChange:function(){apply();save();}});
+    t.addSelect(state,'palette',{options:[{label:'Oasis (default)',value:'oasis'},{label:'Senja',value:'senja'},{label:'Laut',value:'laut'}],label:'Palette',reference:'--primary'});
+    t.addToggle(state,'dark',{label:'Dark mode',reference:'--bg'});
+  }
+  apply();
+})();
+</script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+  if(window.lucide){lucide.createIcons({attrs:{width:16,height:16}});}
+</script>
+</body>
+</html>
