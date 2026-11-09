@@ -4,7 +4,8 @@
 paste this into ZCode:
 
 > Read `MOCKUP-PROMPT-singgah.md` in this workspace and follow it exactly, using the
-> FigCraft MCP tools to build the mockup. Work at mobile frame size 390×844.
+> FigCraft MCP tools to build the mockup. Start with the desktop frame at 1440×900,
+> then do the mobile frames at 390×844.
 
 The prompt below is self-contained — the design agent needs no other files.
 
@@ -18,7 +19,10 @@ neighborhood musala, terminal musala, SPBU, and highway rest areas. The core que
 answers: *"di mana saya bisa mandi dan istirahat gratis?"*
 
 ### Frame setup
-- Mobile frames at **390×844**. One desktop Home variant at 1440×900 is a bonus, not required.
+- **Desktop first:** one browser frame at **1440×900** — this is the web-first launch product.
+- **Then mobile:** the same app at **390×844** — this is how it is really used on a trip.
+  These phone frames are also the future "mobile app": the plan is to wrap the same web app
+  (PWA/TWA) later, so there is no separate native design to invent.
 - Single-page app concept: map is the home; list, detail, and add-form are layers over it.
 - Light mode only. Clean, airy, friendly — this is a tool used at roadside rest stops, on
   mobile data, often at night. Legibility beats decoration.
@@ -33,6 +37,13 @@ answers: *"di mana saya bisa mandi dan istirahat gratis?"*
   **the app has no photos**.
 
 ### Screens to design (in this order)
+
+**0. Desktop — web home (the launch product)**
+A browser window at 1440×900 showing the same single-page app on a bigger canvas —
+not a separate desktop product. Light map fills the screen; search bar and filter chips
+centered on top; FAB `+ Tambah`; the spot list as a slim left sidebar panel using the
+exact same cards as the mobile list (grab-handle omitted). Keep whitespace generous and
+the map the hero.
 
 **1. Home — map view**
 Full-screen map with scattered markers around Yogyakarta. Overlaid, top to bottom:
@@ -87,10 +98,11 @@ No login prompt, no email field, nothing else.
 2. Show unknown data as **`Belum ada info`** — never as a guessed default.
 3. No accounts, no login/signup screens, no photos, no reviews/ratings/comments, no ads.
 4. New submissions are **pending review** — the UI must communicate this without scolding.
-5. Mobile-first: everything reachable with a thumb; bottom sheets over modals.
+5. Mobile-first on the phone frames: everything reachable with a thumb; bottom sheets
+   over modals. On the desktop frame, the same components, just arranged on a bigger canvas.
 
 ### Done when
-- 6 mobile frames exist (bonus 7th desktop Home).
+- 1 desktop frame + 6 phone frames exist, and they read as one and the same app.
 - Every string is Indonesian; `Belum ada info` appears at least once.
 - The `Masih ada ✓` verify button is present on the detail card.
 - The add-spot flow makes the pending-review step obvious.

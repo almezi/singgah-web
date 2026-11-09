@@ -1,0 +1,1098 @@
+<!doctype html>
+<html lang="id" data-page-node-id="3aehjiGufCUORAza9gcZot">
+<head data-page-node-id="F3sZ3XtIuL6gYBFbQ5wHju">
+<meta charset="utf-8" data-page-node-id="GCd88MdkyxhAfdiI0x8PQ4">
+<meta name="viewport" content="width=device-width, initial-scale=1" data-page-node-id="q77cdWOx059sb0Npm3UDoQ">
+<title>Singgah — rancangan tampilan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" data-page-node-id="CZT6MAORnCI6vQpWrnyem2">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin data-page-node-id="Nb5jtKCYLCI5VcYfpTlr8q">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" data-page-node-id="I0loKgkf0H6JTqLAhtjtse">
+<style>
+/* Singgah product tokens — taken from the approved design/singgah-mockup.html */
+:root{
+  --bg:#F6F4EE; --surface:#FFFFFF; --surface-2:#F1EFE6; --line:#E4DFD2;
+  --ink:#12332C; --ink2:#5A6E67;
+  --primary:#0E7C66; --primary-deep:#0B5D4E; --primary-soft:#DDEEE8;
+  --success:#15803D; --success-soft:#DCF3E2;
+  --amber:#B45309; --amber-soft:#FBEEDA;
+  --water:#0E7490; --water-soft:#DCF0F5;
+  --violet:#9333EA; --violet-soft:#F1E6FB;
+  /* darker ink variants for TEXT on soft tints — every pair >= 4.5:1 (WCAG AA) */
+  --teal-ink:#0B5D4E; --success-ink:#166534; --amber-ink:#92400E;
+  --water-ink:#0E7490; --violet-ink:#7E22CE;
+  --placeholder:#5A6E67; --map-label:#5A6E67;
+  --shadow:0 10px 30px rgba(18,51,44,.14);
+  /* marker colours by spot type */
+  --c-masjid:#0E7C66; --c-musala:#9333EA; --c-terminal:#B45309; --c-spbu:#0E7490; --c-rest:#15803D;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:#0F1714;color:#E8EFEA;font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+.defs{position:absolute;width:0;height:0;overflow:hidden}
+:focus-visible{outline:3px solid #3DBFA3;outline-offset:3px}
+/* No animation is used; keep the board still under reduced-motion anyway. */
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* ---------- board chrome (outside the product) ---------- */
+.board{max-width:1360px;margin:0 auto;padding:44px 28px 64px}
+.board-head{padding-bottom:26px;border-bottom:1px solid #26372F;margin-bottom:36px}
+.board-mark{display:flex;align-items:center;gap:11px;margin-bottom:22px}
+.board-mark i{width:38px;height:38px;border-radius:12px;background:#3DBFA3;color:#06231C;display:flex;align-items:center;justify-content:center;font-style:normal}
+.board-mark i .ic{width:20px;height:20px}
+.board-mark b{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.board-head h1{font-size:34px;font-weight:800;letter-spacing:-.025em;line-height:1.12;margin:0 0 10px}
+.board-head p{font-size:14px;line-height:1.65;color:#9DB4A9;margin:0;max-width:640px}
+.sec{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 12px;margin:0 0 18px}
+.sec .n{font-size:11px;font-weight:800;color:#3DBFA3;border:1px solid #2B4A3F;border-radius:8px;padding:5px 9px}
+.sec b{font-size:15px;font-weight:800}
+.sec span{font-size:12.5px;color:#89A095}
+.board-sec{margin-bottom:52px}
+.board-foot{border-top:1px solid #26372F;padding-top:20px;font-size:12.5px;line-height:1.7;color:#89A095;max-width:900px}
+.board-foot b{color:#C9D6CF;font-weight:700}
+
+/* ---------- icon + map primitives ---------- */
+.ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block;flex:none}
+.map{position:absolute;inset:0;width:100%;height:100%;display:block}
+.pins{position:absolute;inset:0;pointer-events:none}
+.pin{position:absolute;width:34px;height:46px;transform:translate(-50%,-100%);overflow:visible}
+.pin.big{width:46px;height:62px}
+
+/* Type tokens: --t = icon/dot (>=3:1), --ti = TEXT on --ts (>=4.5:1), --ts = soft tint */
+.t-masjid{--t:#0E7C66;--ti:#0B5D4E;--ts:#DDEEE8}
+.t-musala{--t:#9333EA;--ti:#7E22CE;--ts:#F1E6FB}
+.t-terminal{--t:#B45309;--ti:#92400E;--ts:#FBEEDA}
+.t-spbu{--t:#0E7490;--ti:#0E7490;--ts:#DCF0F5}
+.t-rest{--t:#15803D;--ti:#166534;--ts:#DCF3E2}
+
+/* ---------- phone shell ---------- */
+.phone-grid{display:grid;grid-template-columns:repeat(3,390px);gap:40px 24px;justify-content:center}
+@media(max-width:1300px){.phone-grid{grid-template-columns:repeat(2,390px)}}
+@media(max-width:860px){.phone-grid{grid-template-columns:390px}}
+.frame{width:390px;margin:0}
+.frame figcaption{margin:0 0 12px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.frame figcaption b{font-size:13px;font-weight:800;color:#E8EFEA}
+.frame figcaption span{font-size:12px;color:#89A095}
+.phone{width:390px;height:844px;border-radius:46px;border:10px solid #17231F;background:var(--bg);
+  position:relative;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.45);color:var(--ink)}
+.notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:112px;height:25px;background:#17231F;border-radius:999px;z-index:45}
+.statusbar{position:absolute;top:0;left:0;right:0;height:46px;display:flex;align-items:center;justify-content:space-between;
+  padding:8px 26px 0;z-index:44;font-size:12.5px;font-weight:800;color:var(--ink)}
+.statusbar .ics{display:flex;gap:5px;align-items:center}
+.statusbar .ic{width:15px;height:15px}
+.screen{position:absolute;inset:0}
+
+/* ---------- search, chips, floating buttons ---------- */
+.search{position:absolute;top:52px;left:16px;right:16px;z-index:20;display:flex;align-items:center;gap:10px;
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:13px 14px;box-shadow:var(--shadow)}
+.search .ic{width:18px;height:18px;color:var(--ink2)}
+.search em{font-style:normal;font-size:14px;font-weight:500;color:var(--ink2);flex:1}
+.search .trail{width:18px;height:18px;color:var(--primary)}
+.chips{position:absolute;top:112px;left:0;right:0;z-index:19;display:flex;gap:8px;padding:2px 16px 12px;overflow:hidden}
+.chip{font-family:inherit;font-size:12.5px;font-weight:700;min-height:44px;padding:0 15px;border-radius:999px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink2);white-space:nowrap;display:inline-flex;align-items:center}
+.chip.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+.fab{position:absolute;right:16px;z-index:22;display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 18px;
+  background:var(--primary);color:#fff;border:none;border-radius:999px;font-family:inherit;font-size:14px;font-weight:800;box-shadow:var(--shadow)}
+.fab .ic{width:17px;height:17px}
+.geo{position:absolute;left:16px;z-index:22;width:48px;height:48px;border-radius:999px;background:var(--surface);
+  border:1px solid var(--line);color:var(--primary);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+.geo .ic{width:20px;height:20px}
+
+/* ---------- bottom sheets ---------- */
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:25;background:var(--surface);border-radius:24px 24px 0 0;
+  box-shadow:0 -12px 40px rgba(10,30,25,.22);padding:10px 18px 18px}
+.sheet.peek{height:310px;overflow:hidden;padding-bottom:12px}
+.sheet.peek .card{padding:8px 0}
+.sheet.peek .tile{width:40px;height:40px}
+.sheet.peek .card-bot{margin-top:7px;gap:6px}
+.sheet.full{top:44px;display:flex;flex-direction:column;overflow:hidden;padding-bottom:14px}
+.sheet.detail{top:64px;display:flex;flex-direction:column;overflow:hidden;padding-bottom:20px}
+/* Visible bar is 5px; the invisible hit area is 44px tall. */
+.handle{display:block;position:relative;width:44px;height:5px;border-radius:99px;background:var(--line);border:none;margin:0 auto 12px;padding:0}
+.handle::after{content:"";position:absolute;inset:-20px -20px}
+.sheet-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.sheet-head b{font-size:16px;font-weight:800}
+.sheet-head span{font-size:12px;font-weight:600;color:var(--ink2)}
+.head-right{display:inline-flex;align-items:center;gap:4px}
+/* Tap-to-expand: a button alternative to dragging the sheet. */
+.sheet-expand{position:relative;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;color:var(--teal-ink)}
+.sheet-expand::after{content:"";position:absolute;inset:-12px}
+.sheet-expand .ic{width:16px;height:16px}
+.search.static{position:static;box-shadow:none;border:1.5px solid var(--line);margin-bottom:10px;padding:11px 13px}
+.chips.static{position:static;padding:0 0 10px;flex-wrap:nowrap;overflow-x:auto}
+.chips.static .chip{min-height:44px;font-size:12px;padding:0 13px}
+.list-scroll{flex:1;overflow:hidden}
+
+/* ---------- spot card (one component, used on every screen) ---------- */
+.card{padding:11px 0;border-top:1px solid var(--line)}
+.card:first-of-type{border-top:none}
+.card-top{display:flex;gap:12px;align-items:flex-start}
+.tile{width:44px;height:44px;border-radius:13px;background:var(--ts);color:var(--t);display:flex;align-items:center;justify-content:center;flex:none}
+.tile .ic{width:21px;height:21px}
+.card-main{flex:1;min-width:0}
+.card-name{font-size:14px;font-weight:700;line-height:1.3;color:var(--ink)}
+.card-meta{display:flex;align-items:center;gap:8px;margin-top:4px;font-size:12px;font-weight:600;color:var(--ink2)}
+.badge{display:inline-flex;align-items:center;font-size:11.5px;font-weight:800;border-radius:7px;padding:3px 8px;background:var(--ts);color:var(--ti)}
+.card-bot{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:9px}
+.minis{display:flex;flex-wrap:wrap;gap:6px;width:100%}
+.mini{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;color:var(--ink2);
+  background:var(--surface-2);border-radius:7px;padding:4px 7px;white-space:nowrap}
+.mini .ic{width:11px;height:11px;color:var(--teal-ink)}
+.mini.unknown{color:var(--ink2);background:transparent;border:1px dashed var(--line)}
+.verify{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:800;border-radius:7px;
+  padding:4px 8px;white-space:nowrap;align-self:flex-end;color:var(--success-ink);background:var(--success-soft)}
+.verify.off{color:var(--ink2);background:var(--surface-2)}
+.verify .ic{width:11px;height:11px}
+
+/* ---------- detail screen ---------- */
+.detail-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.rbtn{width:44px;height:44px;border-radius:999px;border:1px solid var(--line);background:var(--surface);
+  color:var(--ink);display:flex;align-items:center;justify-content:center;flex:none}
+.rbtn .ic{width:17px;height:17px}
+.spacer{flex:1}
+.detail-title{font-size:19px;font-weight:800;line-height:1.2;margin-bottom:4px}
+.detail-sub{font-size:12.5px;font-weight:600;color:var(--ink2)}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.big-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;border-radius:9px;padding:7px 11px}
+.big-badge .ic{width:13px;height:13px}
+.attrs{border-top:1px solid var(--line)}
+.attr{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+.attr>.ic{width:17px;height:17px;color:var(--teal-ink);margin-top:3px}
+.attr b{display:block;font-size:11.5px;font-weight:800;letter-spacing:.3px;color:var(--ink2);text-transform:uppercase}
+.attr span{display:block;font-size:13.5px;font-weight:600;line-height:1.35;margin-top:2px}
+.attr .unknown{color:var(--ink2);background:var(--surface-2);border-radius:6px;padding:2px 8px;display:inline-block;font-size:13px}
+.note{display:flex;gap:10px;background:var(--amber-soft);border-radius:13px;padding:11px 13px;margin-top:12px}
+.note .ic{width:16px;height:16px;color:var(--amber-ink);margin-top:2px}
+.note p{font-size:12.5px;line-height:1.5;margin:0;color:var(--ink)}
+.verified-line{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--ink2);margin-top:12px}
+.verified-line .ic{width:14px;height:14px;color:var(--success-ink)}
+.actions{display:flex;gap:10px;margin-top:auto;padding-top:14px}
+.btn{flex:1;min-height:50px;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border-radius:14px;border:none;font-family:inherit;font-size:14px;font-weight:800}
+.btn .ic{width:17px;height:17px}
+.btn.primary{background:var(--primary);color:#fff}
+.btn.outline{background:var(--surface);color:var(--primary);border:1.5px solid var(--primary)}
+.btn.ghost{background:var(--surface-2);color:var(--ink2)}
+
+/* ---------- add-spot step 1 ---------- */
+.banner{position:absolute;top:52px;left:16px;right:16px;z-index:24;background:var(--ink);color:#F6F4EE;border-radius:14px;
+  padding:13px 14px;font-size:13px;font-weight:700;display:flex;gap:9px;align-items:center;box-shadow:var(--shadow)}
+.banner .ic{width:17px;height:17px}
+.crosshair{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:15;pointer-events:none;width:180px;height:180px}
+.pinbox{position:absolute;left:0;right:0;bottom:0;z-index:26;background:var(--surface);border-radius:24px 24px 0 0;
+  padding:18px 20px 22px;box-shadow:0 -12px 40px rgba(10,30,25,.22)}
+.pinbox b{font-size:16px;font-weight:800;display:block}
+.pinbox p{font-size:12.5px;font-weight:600;color:var(--ink2);margin:5px 0 16px}
+.pinbox .actions{margin:0;padding:0}
+
+/* ---------- form screen ---------- */
+.form-screen{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;padding:52px 20px 18px}
+.form-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.form-head b{font-size:18px;font-weight:800}
+.form-head .rbtn{margin-left:auto}
+.form-body{display:flex;flex-direction:column;gap:10px;flex:1;overflow:hidden}
+.field label{display:block;font-size:11.5px;font-weight:800;color:var(--ink2);margin-bottom:5px}
+.input{width:100%;font-family:inherit;font-size:13.5px;font-weight:600;color:var(--ink);background:var(--surface);
+  border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;min-height:44px;outline:none}
+.input::placeholder{color:var(--placeholder);font-weight:500}
+select.input{appearance:none;background-image:linear-gradient(45deg,transparent 49%,var(--ink2) 50%),linear-gradient(135deg,var(--ink2) 50%,transparent 51%);
+  background-position:calc(100% - 18px) 55%,calc(100% - 13px) 55%;background-size:5px 5px;background-repeat:no-repeat}
+textarea.input{min-height:60px;resize:none;line-height:1.45}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg .seg-btn{flex:1 1 30%;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font-family:inherit;font-size:11.5px;font-weight:700;border-radius:11px;border:1.5px solid var(--line);
+  background:var(--surface);color:var(--ink2);padding:0 8px;white-space:nowrap}
+.seg .seg-btn .ic{width:14px;height:14px}
+.seg .seg-btn.on{border-color:var(--primary);background:var(--primary-soft);color:var(--teal-ink)}
+.swrow{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1.5px solid var(--line);
+  border-radius:12px;padding:10px 13px;min-height:52px}
+.swrow b{font-size:13px;font-weight:700}
+.sw{position:relative;width:46px;height:28px;flex:none}
+.sw input{position:absolute;inset:-8px 0;opacity:0;margin:0}
+.sw i{position:absolute;inset:0;border-radius:99px;background:var(--line);display:block}
+.sw i::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:99px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.sw input:checked + i{background:var(--primary)}
+.sw input:checked + i::after{transform:translateX(18px)}
+.tristate{display:flex;gap:8px}
+.tristate span{flex:1;min-height:44px;border-radius:11px;border:1.5px solid var(--line);background:var(--surface);
+  color:var(--ink2);font-family:inherit;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.tristate span.on{border-color:var(--primary);background:var(--primary-soft);color:var(--teal-ink)}
+.reassure{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;line-height:1.45;color:var(--ink2);font-weight:600}
+.reassure .ic{width:14px;height:14px;color:var(--success-ink);margin-top:1px}
+/* A submit button is a control, not a flexible spacer: never let flex:1 stretch it
+   vertically inside the form's flex column. Compact CTA with visible side margins
+   on both canvases — right-aligned on desktop, centred on the phone. */
+.submit{flex:0 0 auto;width:auto;min-width:190px;align-self:flex-end;padding:0 26px;min-height:44px}
+.desktop-frame .btn.submit{padding:0 28px}
+.form-screen .btn.submit{align-self:center;min-width:200px}
+
+/* ---------- success screen ---------- */
+.ok-wrap{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 38px}
+.ok-ic{width:96px;height:96px;border-radius:999px;background:var(--success-soft);color:var(--success-ink);
+  display:flex;align-items:center;justify-content:center;margin-bottom:24px}
+.ok-ic .ic{width:46px;height:46px;stroke-width:1.8}
+.ok-wrap h2{font-size:24px;font-weight:800;margin:0 0 10px}
+.ok-wrap p{font-size:14px;line-height:1.6;font-weight:600;color:var(--ink2);margin:0}
+
+/* ---------- desktop frame 1440x900 (scaled to fit the board) ---------- */
+.desktop-wrap{width:950px;height:594px;position:relative;margin:0 auto}
+.desktop-frame{position:absolute;top:0;left:0;width:1440px;height:900px;transform:scale(.6597);transform-origin:top left;
+  background:var(--bg);border-radius:16px;overflow:hidden;border:1px solid #2A3831;box-shadow:0 26px 60px rgba(0,0,0,.45);
+  display:flex;flex-direction:column;color:var(--ink)}
+@media(max-width:1020px){.desktop-wrap{width:720px;height:450px}.desktop-frame{transform:scale(.5)}}
+.browser{height:44px;flex:none;display:flex;align-items:center;gap:14px;padding:0 18px;background:#E9E6DC;border-bottom:1px solid #D5D2C6}
+.browser .dots{display:flex;gap:7px}
+.browser .dots i{width:11px;height:11px;border-radius:99px;background:#C7C2B2;display:block}
+.urlbar{flex:1;max-width:420px;margin:0 auto;text-align:center;font-size:12px;font-weight:700;color:#6B7A73;
+  background:#fff;border-radius:99px;padding:7px 16px}
+.app{flex:1;display:flex;min-height:0}
+.side{width:400px;flex:none;background:var(--surface);border-right:1px solid var(--line);padding:24px 22px;display:flex;flex-direction:column;overflow:hidden}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.brand-logo{width:42px;height:42px;border-radius:13px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.brand-logo .ic{width:22px;height:22px}
+.brand b{font-size:19px;font-weight:800;display:block;line-height:1.1}
+.brand small{font-size:11.5px;font-weight:600;color:var(--ink2)}
+.side-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+.side-head b{font-size:17px;font-weight:800}
+.side-head span{font-size:12px;font-weight:600;color:var(--ink2)}
+.side-note{display:flex;gap:9px;align-items:flex-start;background:var(--primary-soft);border-radius:12px;padding:11px 13px;margin-top:auto}
+.side-note .ic{width:16px;height:16px;color:var(--primary);margin-top:1px}
+.side-note span{font-size:12px;line-height:1.45;font-weight:600;color:var(--primary-deep)}
+.canvas{flex:1;position:relative;min-width:0;overflow:hidden}
+.dsearch{position:absolute;top:26px;left:50%;transform:translateX(-50%);width:460px;z-index:20;display:flex;align-items:center;
+  gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 18px;box-shadow:var(--shadow)}
+.dsearch .ic{width:19px;height:19px;color:var(--ink2)}
+.dsearch em{font-style:normal;font-size:14px;font-weight:500;color:var(--ink2);flex:1}
+.dchips{position:absolute;top:94px;left:50%;transform:translateX(-50%);z-index:19;display:flex;gap:9px}
+.dchips .chip{min-height:44px;font-size:13px}
+.legend{position:absolute;left:28px;bottom:28px;z-index:20;background:var(--surface);border:1px solid var(--line);
+  border-radius:16px;padding:14px 16px;box-shadow:var(--shadow)}
+.legend b{font-size:12px;font-weight:800;display:block;margin-bottom:9px}
+.legend-row{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;color:var(--ink2);padding:3px 0}
+.legend-dot{width:11px;height:11px;border-radius:99px;background:var(--t);flex:none}
+.dfab{right:28px;bottom:28px}
+.dgeo{right:28px;bottom:92px;left:auto}
+.callout{position:absolute;z-index:18;background:var(--ink);color:#F6F4EE;font-size:13px;font-weight:700;
+  border-radius:10px;padding:9px 13px;box-shadow:var(--shadow);white-space:nowrap}
+
+/* ---------- UI/UX audit: responsive ---------- */
+/* A fixed 1440x900 frame scrolls INSIDE its own container, not the whole page. */
+.desktop-scroll{max-width:100%;overflow-x:auto;overflow-y:hidden;padding-bottom:6px}
+.scroll-hint{display:none;font-size:12px;color:#89A095;margin:0 0 10px}
+@media(max-width:520px){
+  .board{padding:24px 12px 40px}
+  .board-head{padding-bottom:18px;margin-bottom:24px}
+  .board-head h1{font-size:26px}
+  .board-head p{font-size:13.5px}
+  .board-sec{margin-bottom:32px}
+  .scroll-hint{display:block}
+  .phone-grid{grid-template-columns:1fr;gap:28px;justify-items:center}
+  .frame{width:100%;max-width:390px}
+  .phone{zoom:.88;margin-inline:auto}
+}
+
+/* ---------- desktop: every screen, built from the phone components ---------- */
+.desktop-stack{display:flex;flex-direction:column;align-items:center;gap:34px}
+.dcap{width:100%;max-width:950px;margin:0 0 12px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.dcap b{font-size:13px;font-weight:800;color:#E8EFEA}
+.board-note{font-size:12.5px;line-height:1.6;color:#9DB4A9;margin:0 0 22px;max-width:950px}
+.chips.wrap{flex-wrap:wrap;overflow-x:visible}
+.side-scroll{flex:1;min-height:0;overflow:hidden}
+.step-number{display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;height:28px;padding:0 12px;
+  border-radius:999px;background:var(--primary-soft);color:var(--teal-ink);font-size:12px;font-weight:800;margin-bottom:14px}
+.stepcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 18px 20px;box-shadow:var(--shadow)}
+.stepcard b{font-size:16px;font-weight:800;display:block}
+.stepcard p{font-size:12.5px;line-height:1.5;font-weight:600;color:var(--ink2);margin:6px 0 16px}
+.stepcard .actions{margin:0;padding:0}
+.step-help{font-size:12.5px;line-height:1.6;font-weight:600;color:var(--ink2);margin:16px 0 0}
+.form-static{position:static;display:flex;flex-direction:column;padding:0;flex:1;min-height:0;overflow:hidden;background:transparent}
+.form-static .form-body{gap:9px}
+.ok-static{position:static;inset:auto;flex:1;min-height:0}
+.ok-static h2{font-size:30px}
+.ok-static .ok-ic{width:112px;height:112px}
+.ok-static .ok-ic .ic{width:54px;height:54px}
+.banner.wide{left:50%;right:auto;transform:translateX(-50%);width:460px;justify-content:center}
+.crosshair.big{width:260px;height:260px}
+.dim{position:absolute;inset:0;background:rgba(10,28,23,.28);z-index:10}
+</style>
+</head>
+<body data-page-node-id="BcduHghVZrTOjEmPdzFu3G">
+<!-- Each frame is a static picture: role="img" + its label describes the screen, and the
+     inner content is inert so no focusable control looks tappable when it does nothing.
+     In the real build the icon-only controls become <button> with names such as
+     "Lokasi saya", "Kembali", "Batal", "Rute", and "Buka daftar". -->
+
+<!-- Reusable icons, map artwork and pin shape. No external JS, no image files. -->
+<svg class="defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" data-page-node-id="AoixKSr5X9AIQojBdH16rp"><defs data-page-node-id="2DbBByzp2MvKpkxDtvrouR">
+  <symbol id="i-search" viewBox="0 0 24 24" data-page-node-id="KAFDj6XcDfPGakBvKZSmoD"><circle cx="11" cy="11" r="7" data-page-node-id="qZ5DHRkR1AlyrfHaa6AJ0P"/><path d="m20 20-3.7-3.7" data-page-node-id="In7QxXTBrSEzH5s6qwifBc"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24" data-page-node-id="htBMhZlLfwHzKv0mxhrtZM"><path d="M4 7h16M4 17h16" data-page-node-id="BTS6hfV05QiWOj43Ta5Cug"/><circle cx="9" cy="7" r="2.5" data-page-node-id="zl7OwjXoLPLGhZQivfom8C"/><circle cx="15" cy="17" r="2.5" data-page-node-id="dEH6DyhgV2nKH6sOg3lOYf"/></symbol>
+  <symbol id="i-crosshair" viewBox="0 0 24 24" data-page-node-id="APxvmOAi4YvxpYkCOt9GiV"><circle cx="12" cy="12" r="8" data-page-node-id="yQeWgnDfhM8vfmTcFYUQGH"/><circle cx="12" cy="12" r="2.3" data-page-node-id="beCds26ym45NH7ZJ0oDNqS"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3" data-page-node-id="MK9e4Cx1TiFAmyx2W8Knzi"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" data-page-node-id="4s2J6LMJogH6fEDRqNMoOk"><path d="M12 5v14M5 12h14" data-page-node-id="aG12pBM1AQYWUnxQYCEoXv"/></symbol>
+  <symbol id="i-droplet" viewBox="0 0 24 24" data-page-node-id="MEtBCauS7JFQVletzuAuVE"><path d="M12 2.5S5.5 10 5.5 14.5a6.5 6.5 0 0 0 13 0C18.5 10 12 2.5 12 2.5Z" data-page-node-id="OAJBpiysutDxNYFWHcaFeU"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" data-page-node-id="Fx4u0i6Xz7yBTUo9ld9Bf6"><circle cx="12" cy="12" r="9" data-page-node-id="clLaFhFCVEv6sM28dhtYEr"/><path d="M12 7v5l3.5 2" data-page-node-id="McZhVincHEDooJbOipR7XO"/></symbol>
+  <symbol id="i-bike" viewBox="0 0 24 24" data-page-node-id="xQfwFceszJLZOzB1UeDhRD"><circle cx="5.5" cy="17" r="3.5" data-page-node-id="kkNvSSLr1NEYHclLGaR8A4"/><circle cx="18.5" cy="17" r="3.5" data-page-node-id="7GZVqfUEvn7D23blyCIkt2"/><path d="M5.5 17 9 8h5l4.5 9M9 8l3 9M13 5h3" data-page-node-id="Ok0kTMTgMP9lj4jPKm5WqI"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" data-page-node-id="wCTSOwTUgq0w5sHkmwM0dH"><path d="m5 12 4.5 4.5L19 7" data-page-node-id="1GBGAOr4fE0qCPyNVHRs28"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" data-page-node-id="Fg2eyfKVaJppTLgllhBFjt"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5l-8-3Z" data-page-node-id="4C2FzgZoy5TYinUSh1bHBY"/><path d="m9 12 2 2 4-4" data-page-node-id="n84B8DD4WN3ib8PXQ8KTc5"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" data-page-node-id="6fxGur6x4UemfOPTa84Esu"><circle cx="12" cy="12" r="9" data-page-node-id="DvH7W1PJdjxxbAwVKy1nnS"/><path d="M12 11v5M12 8h.01" data-page-node-id="UFT6MSiPoMZCXDh7j6temZ"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24" data-page-node-id="9FIgjtEDaAyLa9cd9BUzOG"><path d="M19 12H5m6-6-6 6 6 6" data-page-node-id="J5K12KComjGsXGgsMeHIcd"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" data-page-node-id="KlYDdXgRErq7UzaOeGSrYp"><path d="M6 6l12 12M18 6 6 18" data-page-node-id="LkiFPW9UEtpTbS68wb5yeo"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24" data-page-node-id="pKcWdSTAV1GgW9HFVxTsUH"><path d="m6 9 6 6 6-6" data-page-node-id="HEYbbo2Y4OwsaQznBDoTTh"/></symbol>
+  <symbol id="i-chevron-up" viewBox="0 0 24 24" data-page-node-id="fPrkYz76f4eNKTelbOrPv5"><path d="m6 15 6-6 6 6" data-page-node-id="DMNG3DASD3msf0Lft13s4f"/></symbol>
+  <symbol id="i-navigation" viewBox="0 0 24 24" data-page-node-id="gluQyjT55W1j4axUQQiq2w"><path d="m3 11 18-8-8 18-2-8-8-2Z" data-page-node-id="aoHF8p0DoWr287McjXTm7L"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24" data-page-node-id="qYy7MJa40F4zulXp1nghmB"><circle cx="12" cy="8" r="4" data-page-node-id="phKiUyzci25oDVN7qGXrTI"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7" data-page-node-id="JsiiO7PGU0QI2AdenywWM0"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24" data-page-node-id="VmiWdEVFPqa0GGo5ffKQxv"><circle cx="12" cy="12" r="9" data-page-node-id="8QeAeZJFbT9biYFDeQuTxc"/><path d="m8 12 3 3 5-6" data-page-node-id="FKKAfKEe4GUAnwIcGBhU9J"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24" data-page-node-id="oIvdUVPDboN7QvoHJR2w55"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z" data-page-node-id="EtNS0o2OHUCPCa1xkKst4d"/><path d="M18 2.5v3M16.5 4h3" data-page-node-id="VnPbnPS9Qin48r13gApEKG"/></symbol>
+  <symbol id="i-landmark" viewBox="0 0 24 24" data-page-node-id="IzFuDYxaH5PAr5FxLkI1YW"><path d="M3 10 12 4l9 6M4 10v8M20 10v8M8 10v8M16 10v8M3 21h18" data-page-node-id="mQZHiQFTWiRY2iTaz6uV2x"/></symbol>
+  <symbol id="i-bus" viewBox="0 0 24 24" data-page-node-id="npkM2TMCBbGAXKIk4keUcv"><rect x="4" y="3" width="16" height="15" rx="3" data-page-node-id="GJSmOgTb3i5mxTv6EEJN9S"/><path d="M4 11h16M8 21v-3M16 21v-3M8 14h.01M16 14h.01" data-page-node-id="4eNtQRhl1Bg13Bnw8pchmk"/></symbol>
+  <symbol id="i-fuel" viewBox="0 0 24 24" data-page-node-id="rz31PHUEmJHAG3X77tAxAF"><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h14M7 9h8M17 8h2a2 2 0 0 1 2 2v7a2 2 0 0 0 2 2" data-page-node-id="O0cyCtjF0acR9dJmis8qJF"/></symbol>
+  <symbol id="i-tent" viewBox="0 0 24 24" data-page-node-id="1QJ0sAZGp0CwlK64HClByY"><path d="m12 3 9 17H3L12 3Z" data-page-node-id="KnR3Pwu2OuA8H31D7HGqfm"/><path d="M12 9v11M8 20l4-7 4 7" data-page-node-id="G4LXXAUasuwvbv59VAsimq"/></symbol>
+  <symbol id="i-signal" viewBox="0 0 24 24" data-page-node-id="3A0qyx4TOvAoHTHATllNdr"><path d="M3 20v-3M8 20v-7M13 20v-11M18 20V5" data-page-node-id="4NfsB1fXMu0wdd4EIz7y56"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24" data-page-node-id="Mqh1Tff7IVzlZEYJnV3g1h"><path d="M2.5 9a15 15 0 0 1 19 0M6 12.5a10 10 0 0 1 12 0M9.5 16a5 5 0 0 1 5 0M12 20h.01" data-page-node-id="zWZwJBa406VFm8Z5BJ10Nf"/></symbol>
+  <symbol id="i-battery" viewBox="0 0 24 24" data-page-node-id="tEnZvj5nEoF013BRlZKOqt"><rect x="2" y="7" width="18" height="10" rx="2.5" data-page-node-id="g3eib5Fs6qqWkpqdiiTENg"/><path d="M22 10v4" data-page-node-id="h0qyCH3KHVHyHegLNKR1eL"/><rect x="4.5" y="9.5" width="12" height="5" rx="1" fill="currentColor" stroke="none" data-page-node-id="P3jWUsr6qICwP1YOsrgS8o"/></symbol>
+
+  <g id="pin-shape" data-page-node-id="9jsYUDya8PEYY7wZHreOwW">
+    <path d="M0 0 C-9 -13 -15 -20 -15 -28 a15 15 0 1 1 30 0 C15 -20 9 -13 0 0Z" fill="currentColor" stroke="#FFFFFF" stroke-width="2.5" data-page-node-id="xKuBzIhkKH45irDWkzOWhf"/>
+  </g>
+  <!-- A white glyph inside every pin: spot type stays readable without relying on colour. -->
+  <g id="glyph-masjid" transform="translate(0,-28)" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="GlFyS4EYEIMy0swDHSw4wT"><path d="M-5 1.5 A5 5 0 0 1 5 1.5 M-6 1.5 H6 M0 -3.5 V-6" data-page-node-id="FW5h9IxpzJGFejIPGJfJTW"/></g>
+  <g id="glyph-musala" transform="translate(0,-28)" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="bn4L6mBCs5yUXPRoAtYUBl"><path d="M-5 1.5 L0 -4 L5 1.5 M-6 1.5 H6 M-4 1.5 V5 M4 1.5 V5" data-page-node-id="HtuCsDr6gK9ZY8fowQO72Y"/></g>
+  <g id="glyph-terminal" transform="translate(0,-28)" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="8OGAEEwNTRoz5ZiKrEKiXg"><rect x="-5" y="-4.5" width="10" height="8" rx="2" data-page-node-id="iIQ6bfI3AOvLAS92I1w7k7"/><path d="M-5 0 H5 M-3 3.5 V5.5 M3 3.5 V5.5" data-page-node-id="GBqhe2unflU2LoL1pRCYjW"/></g>
+  <g id="glyph-spbu" transform="translate(0,-28)" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="Zj231ADoulex4PzgvU8L2E"><path d="M0 -5.5 C-3 -1.5 -4.5 0.5 -4.5 2.5 A4.5 4.5 0 0 0 4.5 2.5 C4.5 0.5 3 -1.5 0 -5.5Z" data-page-node-id="DhrpfhHnkJM3txpITAukju"/></g>
+  <g id="glyph-rest" transform="translate(0,-28)" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="GzGuK1J1DV8I39q3nfpGAP"><path d="M-6 5 L0 -5 L6 5 Z M0 -5 V5" data-page-node-id="4jikxImuhMV661oMJNxazX"/></g>
+  <g id="pin-masjid" data-page-node-id="raT93NOPfyEn9vsE8dUblV"><use href="#pin-shape" data-page-node-id="rmjrqZlzRinCdY7QBTeAax"/><use href="#glyph-masjid" data-page-node-id="peKHca5YnF7zwfgvvz52Bv"/></g>
+  <g id="pin-musala" data-page-node-id="94HaqLgRYYlG8PBzqNPshF"><use href="#pin-shape" data-page-node-id="I1CihdFKTdR0WQI6I97F3B"/><use href="#glyph-musala" data-page-node-id="iBB9GLVRjhGL4BTR2GfnYy"/></g>
+  <g id="pin-terminal" data-page-node-id="HY07yzEmtUOflER8Iv76B6"><use href="#pin-shape" data-page-node-id="nFJ6UhHpnjcvLNOrLI7tJA"/><use href="#glyph-terminal" data-page-node-id="Iln6LAx0fS6ASa0AEAx9zw"/></g>
+  <g id="pin-spbu" data-page-node-id="Juar9ZMNa4nkuw88C1E9BA"><use href="#pin-shape" data-page-node-id="6kQIPw8bHTEGMNC2Gr3OAb"/><use href="#glyph-spbu" data-page-node-id="LDir5BWCneQMGVaj4PqWwn"/></g>
+  <g id="pin-rest" data-page-node-id="dCYIObvDAUhx0NpUpf8zRd"><use href="#pin-shape" data-page-node-id="QVFp6SAldIRYlPkSoirEK3"/><use href="#glyph-rest" data-page-node-id="uFVSxXMmNmxZtn5a6PCG53"/></g>
+  <g id="pin-plain" data-page-node-id="2QOAUVH1T9flwOxEKDnMwM"><use href="#pin-shape" data-page-node-id="PDkVGAGolHIkoT7i5oHKzR"/><circle cx="0" cy="-28" r="5.6" fill="#FFFFFF" data-page-node-id="GzgdM2IfO13BFOXqI64JhU"/></g>
+
+  <!-- light, uncluttered vector map — no photos anywhere in the product -->
+  <g id="map-phone" data-page-node-id="eFZ6nALc0mEipAFFBohR40">
+    <rect width="390" height="844" fill="#EFECE2" data-page-node-id="zZay1JlflnJH4tSEXAOEqJ"/>
+    <path d="M-40 600 Q60 550 140 595 T280 640 Q340 680 280 730 T60 745 Q-20 700 -40 600Z" fill="#DDEAD0" data-page-node-id="WQGEldggLzLWMYB0wTm2ZO"/>
+    <path d="M270 40 Q350 25 410 80 L410 -20 L310 -20 Z" fill="#DDEAD0" opacity=".8" data-page-node-id="GqTghqvUfRRjlL1bDuI0v9"/>
+    <g fill="#E3DFD0" data-page-node-id="FvhKFGud5XqNdXNThs4oet">
+      <rect x="40" y="110" width="78" height="56" rx="7" data-page-node-id="HBn4EEynzHVgqIjTdTbsIY"/><rect x="132" y="100" width="60" height="68" rx="7" data-page-node-id="uiGIOQQ9JnHq5RpRnsBdYs"/>
+      <rect x="252" y="150" width="74" height="58" rx="7" data-page-node-id="zaEIJRTwhEYtOAV2YgYAME"/><rect x="56" y="220" width="66" height="60" rx="7" data-page-node-id="xfGeF51dHaNOFZ7STlnFLc"/>
+      <rect x="272" y="330" width="70" height="54" rx="7" data-page-node-id="CwHBVXlB943vALHelFdRL9"/><rect x="40" y="470" width="72" height="60" rx="7" data-page-node-id="qen5KIHH9J1Nbk9a8yArr2"/>
+      <rect x="148" y="500" width="58" height="50" rx="7" data-page-node-id="JdpSR2OO9HOq5XDEU2ciY9"/><rect x="250" y="470" width="84" height="52" rx="7" data-page-node-id="9O1nuz4fk3NYOeaR6CBfNu"/>
+      <rect x="150" y="220" width="54" height="48" rx="7" data-page-node-id="KTbJG8DHncEdFH6YlJqpbq"/><rect x="256" y="620" width="76" height="58" rx="7" data-page-node-id="z8WyNjTllKfQ9isWyvqhAY"/>
+    </g>
+    <path d="M-20 268 C70 248 130 315 205 308 C285 300 320 220 410 230" stroke="#BBDDE6" stroke-width="16" fill="none" stroke-linecap="round" data-page-node-id="IRvD4ESivc9Adcgic9B3BU"/>
+    <g stroke="#D6D1BF" fill="none" stroke-linecap="round" data-page-node-id="bOiG21fd1M0uBFo66C45PC">
+      <path d="M-20 420 L410 345" stroke-width="16" data-page-node-id="HNhGDDxnkl4ZK96vjbFHdk"/><path d="M190 -20 L220 864" stroke-width="16" data-page-node-id="sXxFCmk21yGd2nsCFIoGCG"/>
+      <path d="M-20 625 C100 595 230 665 410 625" stroke-width="12" data-page-node-id="kfMdGSucXtSL2gomm0ffNx"/><path d="M64 -20 L42 864" stroke-width="11" data-page-node-id="ctDa16qJj5QUBQsRbUFsG8"/>
+      <path d="M-20 170 L410 220" stroke-width="10" data-page-node-id="GBmDXgXFdOlcm6xXJsVhla"/>
+    </g>
+    <g stroke="#FFFFFF" fill="none" stroke-linecap="round" data-page-node-id="BbgmvGV7Va8BnXR3RGhtZg">
+      <path d="M-20 420 L410 345" stroke-width="11.5" data-page-node-id="nWgIiRWmxLTmvdA3Mx1yNm"/><path d="M190 -20 L220 864" stroke-width="11.5" data-page-node-id="DhDtDsTJ1dotME16fqnik0"/>
+      <path d="M-20 625 C100 595 230 665 410 625" stroke-width="8" data-page-node-id="MlSQGkowbBMncaltMGOiQK"/><path d="M64 -20 L42 864" stroke-width="7" data-page-node-id="2SPuYH3wfrvKI2Q7HyHv33"/>
+      <path d="M-20 170 L410 220" stroke-width="6" data-page-node-id="U0mIqaTRlzEuSrfDd99LYX"/>
+    </g>
+    <g fill="#5A6E67" font-size="12" font-weight="600" font-family="Plus Jakarta Sans, sans-serif" data-page-node-id="GDbGyFhuu8Pi80oFEs4owe">
+      <text x="226" y="376" transform="rotate(-10 226 376)" data-page-node-id="QZq1CGMBwWcR8I3bzwHb4J">Jl. Malioboro</text>
+      <text x="198" y="650" transform="rotate(-4 198 650)" data-page-node-id="e6mGeEjHcJYEVe71yjX2h4">Jl. Ring Road</text>
+      <text x="52" y="598" data-page-node-id="6JRvVnX8ljgXXwjNBwqXGz">Taman Pecangaan</text>
+      <text x="268" y="292" data-page-node-id="2CSATnW3Jo2dYP4RaOx5uv">Jl. Katamso</text>
+    </g>
+  </g>
+
+  <g id="map-wide" data-page-node-id="r2ZDQ1EUoKQwZ7QF7S2JZW">
+    <rect width="1080" height="856" fill="#EFECE2" data-page-node-id="Y0bRu7NYDD8pFHGFERP1Yq"/>
+    <path d="M-40 620 Q120 560 240 610 T520 660 Q640 700 560 760 T160 790 Q20 740 -40 620Z" fill="#DDEAD0" data-page-node-id="hatzBDQHqipaqK1RhfFbWW"/>
+    <path d="M800 40 Q960 10 1120 90 L1120 -20 L880 -20 Z" fill="#DDEAD0" opacity=".8" data-page-node-id="Exaawosh7sGyezHOgj2t2r"/>
+    <g fill="#E3DFD0" data-page-node-id="4IsS2pvqVVLFPc6YEJbFye">
+      <rect x="90" y="80" width="130" height="90" rx="10" data-page-node-id="dODAnaQGm9eVWv8JmqOiqa"/><rect x="260" y="66" width="100" height="105" rx="10" data-page-node-id="IKdXrm8xRXEq8NE1G01Hrv"/>
+      <rect x="440" y="110" width="130" height="86" rx="10" data-page-node-id="HkN2Aipmns98uZOI8k0Zia"/><rect x="80" y="230" width="110" height="95" rx="10" data-page-node-id="tfZsA71G2ADveRP6mCBfKj"/>
+      <rect x="620" y="240" width="140" height="90" rx="10" data-page-node-id="aL9tU6SnBqQkam3NIcHYD9"/><rect x="830" y="180" width="120" height="100" rx="10" data-page-node-id="7m9IN3UgGWdVyRxBKFQTEp"/>
+      <rect x="250" y="380" width="110" height="90" rx="10" data-page-node-id="gX7MWjmLgHleVtJqySQlLC"/><rect x="480" y="400" width="130" height="80" rx="10" data-page-node-id="0wYGrQwXbkqjzmNoCi6jBM"/>
+      <rect x="760" y="430" width="140" height="95" rx="10" data-page-node-id="soqkUuuzlDziAm72DrG2c6"/><rect x="90" y="500" width="120" height="95" rx="10" data-page-node-id="LSC7Ti23cKZvW05p2RjUwa"/>
+      <rect x="330" y="540" width="110" height="80" rx="10" data-page-node-id="ImmQH0c55A3RZr96w8t5gX"/><rect x="610" y="560" width="150" height="90" rx="10" data-page-node-id="KQzdER9SSomVbVGdscYmdr"/>
+      <rect x="870" y="600" width="140" height="90" rx="10" data-page-node-id="KUTWYZ1ihNf97MF718pTCb"/>
+    </g>
+    <path d="M-20 280 C160 250 280 350 460 340 C640 330 720 230 1100 250" stroke="#BBDDE6" stroke-width="20" fill="none" stroke-linecap="round" data-page-node-id="ztJNIurmy3PMRTk0wcid81"/>
+    <g stroke="#D6D1BF" fill="none" stroke-linecap="round" data-page-node-id="gHXtoo5yYr8lVRbayaq2DA">
+      <path d="M-20 440 L1100 370" stroke-width="20" data-page-node-id="YyeV7FKbwUiKuQ5KXpBFgY"/><path d="M390 -20 L430 880" stroke-width="20" data-page-node-id="7NV5x7UfDUFz6ulBAuxT4r"/>
+      <path d="M-20 690 C250 650 620 740 1100 690" stroke-width="15" data-page-node-id="z2DN0sNOVBm0CrkIUGEFWL"/><path d="M760 -20 L790 880" stroke-width="14" data-page-node-id="9IN94M7pR6wHMZ3HyEBkFu"/>
+      <path d="M-20 160 L1100 210" stroke-width="12" data-page-node-id="dRAgt5VXLWvgaIYmzRF1w8"/>
+    </g>
+    <g stroke="#FFFFFF" fill="none" stroke-linecap="round" data-page-node-id="pyJ7XPOnaiV2DGbC9bEoZD">
+      <path d="M-20 440 L1100 370" stroke-width="14" data-page-node-id="p8zhDhJb3DStEEOyiwZFcc"/><path d="M390 -20 L430 880" stroke-width="14" data-page-node-id="Fp56ezLw1mbJ2UxUK2EYA9"/>
+      <path d="M-20 690 C250 650 620 740 1100 690" stroke-width="10" data-page-node-id="gFVyA3geW75qYmMza05UD2"/><path d="M760 -20 L790 880" stroke-width="9" data-page-node-id="fkiiU2DVx6lIUXZGARIAEg"/>
+      <path d="M-20 160 L1100 210" stroke-width="7" data-page-node-id="duTQdFG1uuVwBBmDlwBzKb"/>
+    </g>
+    <g fill="#5A6E67" font-size="14" font-weight="600" font-family="Plus Jakarta Sans, sans-serif" data-page-node-id="nVvbOHH7JRenRVZDgQNyC9">
+      <text x="470" y="402" transform="rotate(-4 470 402)" data-page-node-id="cf5Zfea0lvUEdCwRY6Wj4W">Jl. Malioboro</text>
+      <text x="820" y="200" transform="rotate(3 820 200)" data-page-node-id="NSdloimKJfMytLfBTSREfO">Jl. Kaliurang</text>
+      <text x="120" y="665" data-page-node-id="xl5hqCpRCj0y3j48YTS5l7">Taman Pecangaan</text>
+      <text x="830" y="700" transform="rotate(-3 830 700)" data-page-node-id="0XHmeQSzuXc9Xnyr2cJaVJ">Jl. Ring Road Selatan</text>
+    </g>
+  </g>
+</defs></svg>
+
+<main class="board" data-page-node-id="iya8GJo2qh06CeYl2s8JPE">
+
+  <header class="board-head" data-page-node-id="3bEsXhvwCCEzU0Uqg9Gktz">
+    <div class="board-mark" data-page-node-id="jCwpgYdWCsgrljpVzF0BfD"><i data-page-node-id="2vrTE4dwmzNfcFwBae4LSh"><svg class="ic" data-page-node-id="hmeY0z7gZ4O6qogTsWtCuB"><use href="#i-droplet" data-page-node-id="aXFSbrNN56v2Ul0OtD1Quz"/></svg></i><b data-page-node-id="51d51BKNBWUXxKLZquCi7G">Singgah</b></div>
+    <h1 data-page-node-id="L0m9QKnW4QDn5oNdXLP1gl">Satu aplikasi, dua ukuran layar.</h1>
+    <p data-page-node-id="cfcZL3FpuAhw2rPZLLrcul">Peta menjawab satu pertanyaan: di mana saya bisa mandi dan istirahat gratis? Enam layar yang sama
+      hadir di komputer dan ponsel — komponennya identik, hanya susunannya yang berubah.</p>
+  </header>
+
+  <!-- ===================== 0 · DESKTOP ===================== -->
+  <section class="board-sec" data-page-node-id="cyX8wJ5wIA1tREcMacmaLb">
+    <div class="sec" data-page-node-id="i10oiMmlbFCEYLLF0ZnfXV"><span class="n" data-page-node-id="Y3SMyNkry6DQsbs6ucu3Hq">1</span><b data-page-node-id="6Jt5lXuXSzFU9WXP8xWqSa">Beranda komputer</b><span data-page-node-id="RQoFeSa9CJpuIAYwzLg5ta">1440 × 900 · produk utama, peta sebagai hero, daftar spot di sisi kiri</span></div>
+    <p class="scroll-hint" data-page-node-id="T7WgAXr1JI6rwOxFgzj1pz">Geser bingkai ke samping untuk melihat seluruhnya.</p>
+    <div class="desktop-scroll" data-page-node-id="Q8iruHrv7RqQ5GDENX1W8p"><div class="desktop-wrap" data-page-node-id="e0urGOiZ9Of8lE1SC7yrNH">
+      <div class="desktop-frame" role="img" aria-label="Tampilan komputer Singgah: peta, pencarian, legenda, dan daftar spot" data-page-node-id="uUeIHhVUv8zJ9CfkZqMJgw">
+        <div class="browser" inert data-page-node-id="N7uSHVkdkaNNTi2toeDRPh">
+          <span class="dots" data-page-node-id="KS5XjhzspDR9fBX5uW0jZc"><i data-page-node-id="CpIBarCxUiyaLKtswB4tsY"></i><i data-page-node-id="8ADdUvFypmQ7iwiwh3z34z"></i><i data-page-node-id="6aTSZupQpcJFtd4ebCqzLI"></i></span>
+          <span class="urlbar" data-page-node-id="X90n235HmcDHM0Q8SRjTNW">singgah.app</span>
+          <span style="width:52px" data-page-node-id="iuRBPo43NIr33VTvODhTPw"></span>
+        </div>
+        <div class="app" inert data-page-node-id="5BuqjjvDMVqjw6x6KMRYvP">
+          <aside class="side" data-page-node-id="FU1GyEbM8yrxMpu3gfSA8i">
+            <div class="brand" data-page-node-id="oDMrxVdrmCAXGXZrqZatAK">
+              <span class="brand-logo" data-page-node-id="ScnSm2vksuNLbPzdpDqBuq"><svg class="ic" data-page-node-id="Gij2DYMv1bY4vDsLS3x7Xl"><use href="#i-droplet" data-page-node-id="qn8RFpkKqscU3gDi2DRk74"/></svg></span>
+              <span data-page-node-id="NKYuCJu6D57FxToSyMokjh"><b data-page-node-id="SOKNaEQiADoIo43wvcZOBh">Singgah</b><small data-page-node-id="DQEhwNhEoKXg1SRxz8YlaO">Mandi &amp; istirahat gratis untuk musafir</small></span>
+            </div>
+            <div class="side-head" data-page-node-id="1mpGmACptbCItcZUrQqFA8"><b data-page-node-id="IqamtnljiJ5bdQErc1zsCf">Terdekat dari saya</b><span data-page-node-id="BgvSL9aRyeXGaTVgmoF1C5">128 spot · Yogya</span></div>
+
+            <article class="card t-musala" data-page-node-id="HuCchdmf5nGO8cnQu0r3kK">
+              <div class="card-top" data-page-node-id="aSom6cGkWAQFTivCuaaw45"><span class="tile" data-page-node-id="XIue2Aygvfu6BAyasfEx6A"><svg class="ic" data-page-node-id="eQFyvmTSBeq34TkKpINswZ"><use href="#i-landmark" data-page-node-id="zQ7iDY7dbHgz3GrP9y0Svw"/></svg></span>
+                <div class="card-main" data-page-node-id="XX3ac7FXbgQjKTV7UG4JVv"><div class="card-name" data-page-node-id="DHutygErAUb9lJOmpVIgci">Musala Terminal Giwangan (Blok C)</div>
+                  <div class="card-meta" data-page-node-id="vHP8KnDfxLJnb21GsN3bHo"><span class="badge" data-page-node-id="0q6n0xEh5a2Lj3Lc8TKB9g">Musala</span><span data-page-node-id="x8NIec1MkX8HGMRVbmS3dk">1,2 km</span></div></div></div>
+              <div class="card-bot" data-page-node-id="FMTNJNDfaLi85LmFIQjGU1"><div class="minis" data-page-node-id="QYYR3DWoxqsgTQ7lBmWpQY">
+                <span class="mini" data-page-node-id="5JYfpCvqorG14DzZNiilR8"><svg class="ic" data-page-node-id="Z8LU720w3zJC2ZZVlcEAW2"><use href="#i-droplet" data-page-node-id="wmNTwLf2e7RLhFJzTTGOZm"/></svg>Wudhu saja</span>
+                <span class="mini" data-page-node-id="23fT4roFsrAtVt9hxtuqJs"><svg class="ic" data-page-node-id="F1XbHXGhHAzRrdFZHHSWlS"><use href="#i-clock" data-page-node-id="iNvvPYeueWufnmbZNHf8fL"/></svg>24 jam</span>
+                <span class="mini" data-page-node-id="1Tzdnbl6T1Pi9c1EI64mKq"><svg class="ic" data-page-node-id="N8hFD1I3CB2731gpKJTcQ3"><use href="#i-bike" data-page-node-id="4r5cDGqTmXn687ZoqERkeX"/></svg>Parkir ✓</span></div>
+                <span class="verify" data-page-node-id="UDnavEr5ircOprXtezkMu0"><svg class="ic" data-page-node-id="4bqeKtUqNHJddDsoPvb0iL"><use href="#i-check" data-page-node-id="MkwFCUOUCSzgOI5buAAWzD"/></svg>Diverifikasi 2 jam lalu</span></div>
+            </article>
+            <article class="card t-masjid" data-page-node-id="jMHUM3K6XpujD7LO0mqnoJ">
+              <div class="card-top" data-page-node-id="kakMamIpClbPg9U0KOqbwY"><span class="tile" data-page-node-id="u0NEpC5haXHyTeFkfrB0kB"><svg class="ic" data-page-node-id="brwWfNqUVTuOU2tKREtIZp"><use href="#i-moon" data-page-node-id="79d58bmjDcwl8vMe6hyjmA"/></svg></span>
+                <div class="card-main" data-page-node-id="dM8G8Q1K1xAq2AFlSaKNju"><div class="card-name" data-page-node-id="5Gs66VtMLIg9ZR6pQAn6CZ">Masjid Jami Ni'matul Ittihad</div>
+                  <div class="card-meta" data-page-node-id="KiFVXOqaFRq7rrQdWmWtuf"><span class="badge" data-page-node-id="q5l9BYVYpbFtByAidHCudn">Masjid Besar</span><span data-page-node-id="jTnr9rmsOv99BouvlmLCbQ">2,4 km</span></div></div></div>
+              <div class="card-bot" data-page-node-id="KD1MAYpFz1kTrGDCRdxg5t"><div class="minis" data-page-node-id="3iPuEXM1H57nPOZFUJxfeZ">
+                <span class="mini" data-page-node-id="fAFBXCTc7EILs66aaagt29"><svg class="ic" data-page-node-id="BF570cGooL9QgtMBAR1R9K"><use href="#i-droplet" data-page-node-id="QMpBuFYJjh0DROBkqQYDQ5"/></svg>Kran mandi</span>
+                <span class="mini" data-page-node-id="O4Xokj5NDHkjIAJ9uKS4XE"><svg class="ic" data-page-node-id="6N8dxEfw0tXPKzgIpVazPk"><use href="#i-clock" data-page-node-id="z8lFlhU2YOIujhX3YwD26T"/></svg>24 jam</span>
+                <span class="mini" data-page-node-id="J52ytB8Nd2UmRusInfgoc3"><svg class="ic" data-page-node-id="qQahGRcEbiHC1GVlUCZvkD"><use href="#i-bike" data-page-node-id="fY47v7u2IryO43QNSmHkEI"/></svg>Parkir ✓</span></div>
+                <span class="verify" data-page-node-id="aBEO6uUek6Wz1fQEHW4sDB"><svg class="ic" data-page-node-id="VAqDzBERChhO52GsON99YS"><use href="#i-check" data-page-node-id="3ALmMjFwaStrXBh9K7q92h"/></svg>Diverifikasi 3 hari lalu</span></div>
+            </article>
+            <article class="card t-spbu" data-page-node-id="vwMNn33KyeqwKRaSBFdXH7">
+              <div class="card-top" data-page-node-id="ikJOMrXVN4SLczpKrVFBak"><span class="tile" data-page-node-id="xPFhFZBiAMLIFf0HGnp8QU"><svg class="ic" data-page-node-id="5IenNJpZXS75ZqW1GpIAsm"><use href="#i-fuel" data-page-node-id="Gul4lYqiTDUpxVDXIalS9k"/></svg></span>
+                <div class="card-main" data-page-node-id="Aj95Qpun6JvSCe3rtuWLad"><div class="card-name" data-page-node-id="2IN96rWv215G50FYybVY2G">SPBU Rest Area Km 419</div>
+                  <div class="card-meta" data-page-node-id="m5TNxG5R8GQzHbYFXXv8Af"><span class="badge" data-page-node-id="IYrxAF5KpYvo9xojR8CqdM">SPBU</span><span data-page-node-id="IL8neeTGeNHVPI8wuo5W32">4,6 km</span></div></div></div>
+              <div class="card-bot" data-page-node-id="V35n25yrNXBgzFFIzeKy2P"><div class="minis" data-page-node-id="EBox4DsE76Wbz6EDRkIbLY">
+                <span class="mini" data-page-node-id="o5O5iWLpBuoxSrECe0FN5z"><svg class="ic" data-page-node-id="GBdAoGR4WR4Jwfnu7V6F4j"><use href="#i-droplet" data-page-node-id="Ga3YKd8p1irLYn5VQ3z9BE"/></svg>Air isi</span>
+                <span class="mini" data-page-node-id="t8EHsq5TwXH7o7pE3k03Wz"><svg class="ic" data-page-node-id="xjZ4VBsYDETYD9Sh1KOqPa"><use href="#i-clock" data-page-node-id="0REtJkiCKcGeSXA4CiOEE5"/></svg>24 jam</span>
+                <span class="mini unknown" data-page-node-id="AK9sHzWI4PtIGJE2u9dzKf">Belum ada info</span></div>
+                <span class="verify off" data-page-node-id="PJSpidQuHpHxDjt3mbV7e5">Belum diverifikasi</span></div>
+            </article>
+            <article class="card t-terminal" data-page-node-id="KKSCU5Teq6SIjMy0DXuhzl">
+              <div class="card-top" data-page-node-id="ocLKA6OsNACU2t6kT8xuh0"><span class="tile" data-page-node-id="HnNbPPOP7C3Xox49rGpCSe"><svg class="ic" data-page-node-id="ECszLUGeTRLLI7AEKsYX1U"><use href="#i-bus" data-page-node-id="2Ey19lyh3YrM2cpcdpWtCE"/></svg></span>
+                <div class="card-main" data-page-node-id="ffzshPIY4zBo7WqcqgpGUk"><div class="card-name" data-page-node-id="XdiJb55CNRGOyx3OpyD2pF">Musala Terminal Arjosari (Blok D)</div>
+                  <div class="card-meta" data-page-node-id="0XB3nI5BKLtihQ6C9WOcsh"><span class="badge" data-page-node-id="konOnoSUcuS3zYY5oZjd1p">Terminal</span><span data-page-node-id="ggsGDNlBy7dJeU8YCK5wCu">5,2 km</span></div></div></div>
+              <div class="card-bot" data-page-node-id="wapilcBZYkLcCN81LzBQZx"><div class="minis" data-page-node-id="oiHjAlazbIPg3gepIqQIVC">
+                <span class="mini" data-page-node-id="hxWonVFcauwhhYBwa9wFAK"><svg class="ic" data-page-node-id="fQzuLHLjqwOSEXt1fs7FD0"><use href="#i-droplet" data-page-node-id="yRL4mVV0CORpFwmeVT5BUM"/></svg>Wudhu saja</span>
+                <span class="mini" data-page-node-id="inuxQ5uuW2yoFkTS0EaCOF"><svg class="ic" data-page-node-id="mnnZZAouOSljxM9XQ7kOA9"><use href="#i-clock" data-page-node-id="1HHdexJbnHRu7NW5X5Vdfa"/></svg>24 jam</span>
+                <span class="mini" data-page-node-id="RoS3QL66g39ghmy6KlwrAQ"><svg class="ic" data-page-node-id="U2gNy0N0d6NhlLxfhzFIjx"><use href="#i-bike" data-page-node-id="V33yQljq1nx2jl071ibAAP"/></svg>Parkir ✓</span></div>
+                <span class="verify" data-page-node-id="ifphsPFvEtnQ710lxIEtkN"><svg class="ic" data-page-node-id="GbKh3qjkZlkNSYFxhPdi5I"><use href="#i-check" data-page-node-id="q35RUhYuHRy7F31UuPwzxC"/></svg>Diverifikasi 5 hari lalu</span></div>
+            </article>
+            <div class="side-note" data-page-node-id="U2SViFe4qVW709miAcYdZg"><svg class="ic" data-page-node-id="EVXNEa7qD3snpnBXsx8944"><use href="#i-shield" data-page-node-id="YgOx3nXOCzJ4pa6ruO0Tst"/></svg>
+              <span data-page-node-id="SnBrO8XokOS8z9UmmroFC0">Spot baru diperiksa dulu sebelum tampil di peta.</span></div>
+          </aside>
+
+          <div class="canvas" data-page-node-id="EhVcFxJRGIZJFzBEdT8gKi">
+            <svg class="map" viewBox="0 0 1080 856" preserveAspectRatio="xMidYMid slice" data-page-node-id="PfLUBHTNLK4ALKv3uhv5oG"><use href="#map-wide" data-page-node-id="1TKdJy2ZVlvrUYvgEut7oG"/></svg>
+            <div class="pins" data-page-node-id="ylFAaFyYgOUT6RBOnYGAjO">
+              <svg class="pin" style="left:16%;top:27%;color:var(--c-masjid)" viewBox="-18 -46 36 48" data-page-node-id="wEUTdLkERVdtCA6nHc5BEX"><use href="#pin-masjid" data-page-node-id="OE8ezH9qQRxdvEFyxEtx2G"/></svg>
+              <svg class="pin" style="left:38%;top:20%;color:var(--c-spbu)" viewBox="-18 -46 36 48" data-page-node-id="8LCHEa8HDEfs3otiB3YpuV"><use href="#pin-spbu" data-page-node-id="GfDLGBSAma9W0MMJ7EPEK5"/></svg>
+              <svg class="pin" style="left:62%;top:29%;color:var(--c-terminal)" viewBox="-18 -46 36 48" data-page-node-id="wbPaJF8PDp9Bp0FG7yDBEQ"><use href="#pin-terminal" data-page-node-id="AX6WGnTuQnT43tjAuHgHcp"/></svg>
+              <svg class="pin" style="left:78%;top:52%;color:var(--c-rest)" viewBox="-18 -46 36 48" data-page-node-id="lmAko76OcY227mfxdQHVQv"><use href="#pin-rest" data-page-node-id="gmOnWzObML2XAu1AEArDRC"/></svg>
+              <svg class="pin" style="left:28%;top:62%;color:var(--c-musala)" viewBox="-18 -46 36 48" data-page-node-id="5AJgOnW36tkY2LzGKrAvUW"><use href="#pin-musala" data-page-node-id="7nKFPxoLhDGXDxLeeHCSOl"/></svg>
+              <svg class="pin" style="left:55%;top:72%;color:var(--c-masjid)" viewBox="-18 -46 36 48" data-page-node-id="euQEWa8wUctPoNbs4NL7V7"><use href="#pin-masjid" data-page-node-id="eMuvBXiHejZQvKFE4kmR8w"/></svg>
+              <svg class="pin big" style="left:48%;top:48%;color:var(--c-musala)" viewBox="-18 -46 36 48" data-page-node-id="Y9AhhixjsrKt1iUfaE4FJ1"><use href="#pin-musala" data-page-node-id="voGrw6H7SyifnDc2Blc7YM"/></svg>
+            </div>
+            <div class="callout" style="left:43%;top:38%" data-page-node-id="ozPIDgl4XtzoxkBBKB0PZU">Musala Terminal Giwangan</div>
+
+            <div class="dsearch" data-page-node-id="3R5BiyzffAThHedIY2tKpm"><svg class="ic" data-page-node-id="r4thniRQTfZgwKg4rJaTLn"><use href="#i-search" data-page-node-id="XSSpUMs2elIClQ1A8GzmzD"/></svg><em data-page-node-id="BkUmPEqyfIVCqdvN3CekyD">Cari spot…</em>
+              <svg class="ic" style="color:var(--primary)" data-page-node-id="agcrcsHWwL6chDk7prYcs8"><use href="#i-sliders" data-page-node-id="laHVOTWe35jUQLp6nHOBBA"/></svg></div>
+            <div class="dchips" data-page-node-id="FXSEbgd0kBMFNkdwJsPGHj">
+              <span class="chip on" data-page-node-id="M53YeAAgEy2mDSG3wuD8Oq">Semua</span><span class="chip" data-page-node-id="gnvwkXOxWsiLfGF9KdQecm">Masjid Besar</span><span class="chip" data-page-node-id="W3oAJzgcznDHPoyLGfqlOj">Musala</span>
+              <span class="chip" data-page-node-id="jVvkY8sHDhAg5UEjdAyN1T">Terminal</span><span class="chip" data-page-node-id="dEMF0nNRy1ZvMRBBc6yEbN">SPBU</span><span class="chip" data-page-node-id="24jAZGyoH6WNBGrog4iRT9">Rest Area</span>
+            </div>
+
+            <div class="legend" data-page-node-id="iWgv2dVvTYBx4XEqNEkgMn">
+              <b data-page-node-id="X3dtAxqu551QePCuyvMSRr">Legenda</b>
+              <div class="legend-row t-masjid" data-page-node-id="dZXxQqSdFfbe88SPsseHZc"><i class="legend-dot" data-page-node-id="Za7lB2t0HMGod9Kbm1ivC3"></i>Masjid Besar</div>
+              <div class="legend-row t-musala" data-page-node-id="kv05RB25xgdyyADEfLYOi0"><i class="legend-dot" data-page-node-id="SGYG2d51OqnoGF28gomDyB"></i>Musala</div>
+              <div class="legend-row t-terminal" data-page-node-id="pg9Vugp8RA30WCqANzlnEw"><i class="legend-dot" data-page-node-id="7Q7aXciqTniQO7yD8eO72u"></i>Terminal</div>
+              <div class="legend-row t-spbu" data-page-node-id="wz2WSnDbtJQcj13ObEJdcn"><i class="legend-dot" data-page-node-id="BfU9RW1gPJlEbgmCk7I4fg"></i>SPBU</div>
+              <div class="legend-row t-rest" data-page-node-id="lasoQHer312QXKkNeAEGdy"><i class="legend-dot" data-page-node-id="mRNP0ixbggYcptFg1tuvMv"></i>Rest Area</div>
+            </div>
+            <div class="geo dgeo" data-page-node-id="IKSyfAE5aIngO7sKUTntxH"><svg class="ic" data-page-node-id="XE5kJigx37oIyWpdIemlmz"><use href="#i-crosshair" data-page-node-id="rKf5ik6L7XV8rayAQgrZ87"/></svg></div>
+            <div class="fab dfab" data-page-node-id="kEoUJVVHnoVA1KxGTY13SO">+ Tambah</div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- ===================== DESKTOP: SCREENS 2–6 ===================== -->
+  <section class="board-sec" data-page-node-id="jczCnGMj1CGfB0Z1HEFMGL">
+    <div class="sec" data-page-node-id="xckGFAjfrmaXtxHGTE0gBP"><span class="n" data-page-node-id="3fFUX2FVbiZ3pcwXQVQJrh">2–6</span><b data-page-node-id="zrdHv869viLEPBWknC0AUN">Lima layar lain di komputer</b><span data-page-node-id="iiDwuWxbx90g4zEnLWbSBD">1440 × 900 · komponen identik dengan bingkai ponsel</span></div>
+    <p class="board-note" data-page-node-id="1QsDr5l86FhseZO3Fk4BCo">Beranda komputer (layar 1) ada di bingkai di atas. Enam bingkai ponsel di bawah
+      tetap menjadi <b data-page-node-id="lupzCe2V4EEuwyf2eyqO55">rujukan</b>: kartu, badge, formulir, dan tombolnya sama persis — pada layar komputer
+      lembar bawah berubah menjadi panel kiri yang statis, peta tetap jadi latar utama.</p>
+    <div class="desktop-stack" data-page-node-id="6tgCqe8YTMhD8PrSbFNQQZ">
+      <figure class="frame" style="width:950px;margin:0" data-page-node-id="wuedpVZC7xLWq4OiuZyMvc">
+        <figcaption class="dcap" data-page-node-id="pvZeJa7Y7jBIDJa9OFi450"><b data-page-node-id="JtMY2cr3gQeBCFV7gccs7p">2 · Daftar spot  —  lembar bawah penuh menjadi panel kiri</b></figcaption>
+        <div class="desktop-scroll" data-page-node-id="hJxMZD4jFnLc0ubMpN7KjC"><div class="desktop-wrap" data-page-node-id="z3je5Q3H3AM7dLaUfG0ONH">
+          <div class="desktop-frame" role="img" aria-label="Daftar spot di komputer: pencarian, filter jenis, dan kartu-kartu spot di panel kiri, peta di kanan" data-page-node-id="71I0e5CbMIWvIC1GclDlHj">
+        <div class="browser" inert data-page-node-id="5JWY9PmM0DRi8qy3UDsyOE">
+          <span class="dots" data-page-node-id="hqC7dcwsG9ejcBfOaXXU0D"><i data-page-node-id="vBuCA38Tod2m8H3VgATISl"></i><i data-page-node-id="9N5yzeNNcICiKgLUoyGeEr"></i><i data-page-node-id="x8JYhOGSC7TarE4x3kYDMM"></i></span>
+          <span class="urlbar" data-page-node-id="OEAgUM5xZaaMiSoQJdxh3N">singgah.app</span>
+          <span style="width:52px" data-page-node-id="Jb2EBIkc4T3fW1EiJ1HoCC"></span>
+        </div>
+          <div class="app" inert data-page-node-id="ZKvXwjiBNMAKgTdpyzUxmN">
+            <aside class="side" style="padding:24px 22px" data-page-node-id="EdW3QdPwE9RcC4nljq4d5l">
+            <div class="brand" data-page-node-id="Woanb9aCIgUCWAaSsy911B">
+              <span class="brand-logo" data-page-node-id="SVyvaZFmpxvCKUfaqBAHzz"><svg class="ic" data-page-node-id="WNq7B4tu4EMcuD1vaEHEhx"><use href="#i-droplet" data-page-node-id="SA8BAiUcBkEZk907xy4roY"/></svg></span>
+              <span data-page-node-id="WSTUPSCiDkbtSQFblJVK4t"><b data-page-node-id="5UBqiLekeOfoLryhl1FBL6">Singgah</b><small data-page-node-id="DEGH3FL5oWRxnGIXp8STPn">Mandi &amp; istirahat gratis untuk musafir</small></span>
+            </div>
+              <div class="search static" data-page-node-id="12jSEJDEUHjtSCH1gs1Dhn"><svg class="ic" data-page-node-id="6tg95LECV9G32i5zxcdWDD"><use href="#i-search" data-page-node-id="NHsCT7MpNHsB8QqHfCQBZm"/></svg><em data-page-node-id="nLL8SSEjmYCEn16Uz6NKzy">Cari spot…</em>
+                <svg class="ic trail" data-page-node-id="m6qLR4Z7EfVfxAA9PhtLsR"><use href="#i-sliders" data-page-node-id="Ae3h29sCgalTmamRHtZa8i"/></svg></div>
+              <div class="chips static wrap" data-page-node-id="6PT1UI7HBXkNLZW0vzEkNK">              <span class="chip on" data-page-node-id="kAeyYj9T9TSeh0OEdVwOuW">Semua</span><span class="chip" data-page-node-id="pzFryfMQdIk2LGJIKopnoX">Masjid Besar</span><span class="chip" data-page-node-id="PbjFK9SNNTwSvSEI5b10Y5">Musala</span>
+              <span class="chip" data-page-node-id="wOpsoUpGKZcpo6Oo9m740K">Terminal</span><span class="chip" data-page-node-id="sDtPayex8IKHObzboSWB26">SPBU</span><span class="chip" data-page-node-id="KhcBeQvKO268IPtV4bUDv6">Rest Area</span></div>
+              <div class="sheet-head" data-page-node-id="uDTjdKYlUImBsSBq7KijZD"><b data-page-node-id="54PrU0WYnGjvQCot3FabP2">Terdekat dari saya</b><span data-page-node-id="vOQe5b7RTsznfLTBPs66IG">128 spot</span></div>
+              <div class="side-scroll" data-page-node-id="dEu5eeceMkTQCWjzdLxYiA">
+              <article class="card t-musala" data-page-node-id="6GQuMEriJotvVhV59Gtzhj">
+                <div class="card-top" data-page-node-id="KiAqHuKvJ6oLHm3FYBgBpD"><span class="tile" data-page-node-id="mmxeI3GJxF1t4LdjY24kkr"><svg class="ic" data-page-node-id="kSkg04vqqvQCMGpMoNYGEM"><use href="#i-landmark" data-page-node-id="ZqIUz3z8gG9LNZPsZWjuxS"/></svg></span>
+                  <div class="card-main" data-page-node-id="oOGUU4DoLlQSLB233ZcfBc"><div class="card-name" data-page-node-id="FMMCE1sb0RHh7o4Y19sFkB">Musala Terminal Giwangan (Blok C)</div>
+                    <div class="card-meta" data-page-node-id="txlP39SHdlAfZs3BeU2iNj"><span class="badge" data-page-node-id="EFBoDhi1zIm6YZHH4X2yYk">Musala</span><span data-page-node-id="fRetiAVT2pC8lCoOffeZvv">1,2 km</span></div></div></div>
+                <div class="card-bot" data-page-node-id="lapNU1e93gxYS1xUNbD14S"><div class="minis" data-page-node-id="DC6fvR88Dw2jhDvP1cbvu0"><span class="mini" data-page-node-id="7ReP9YxZ32INXMdHzVsiGb"><svg class="ic" data-page-node-id="iQFID5JRLPZGKVhyClpXI2"><use href="#i-droplet" data-page-node-id="PwGkVRRzBV6RpFz5eDpWnr"/></svg>Wudhu saja</span><span class="mini" data-page-node-id="CZDFnV2cPicvhvoHGgdYZc"><svg class="ic" data-page-node-id="g0tDi9WC93PIHIBWrAOVee"><use href="#i-clock" data-page-node-id="RnEE6GEbbr5YzwdzeYf3rj"/></svg>24 jam</span><span class="mini" data-page-node-id="Or7TfQT2BGItc1nCPdkqO7"><svg class="ic" data-page-node-id="m9f9dfEWc7z95b5XTc8Fd1"><use href="#i-bike" data-page-node-id="5yJRUkMTYqjSAi3tC1s0nv"/></svg>Parkir ✓</span></div><span class="verify" data-page-node-id="u7eFBqkFT2DwVaxmaObytg"><svg class="ic" data-page-node-id="afIGeUwguBBDpoaBV87rsD"><use href="#i-check" data-page-node-id="IXVHXU36xlLEIHsstlXlOD"/></svg>Diverifikasi 2 jam lalu</span></div>
+              </article>
+              <article class="card t-masjid" data-page-node-id="ZROXgs1XqbPU0B89CQRtPl">
+                <div class="card-top" data-page-node-id="nmXyqAlkpwh9SLSFgVfiCL"><span class="tile" data-page-node-id="WoC88z4LMfoX9qXO543DUS"><svg class="ic" data-page-node-id="o5N6M156J5gPBcAJ85C6HO"><use href="#i-moon" data-page-node-id="CcdS4kziMx5oC1Gf1Tmmlb"/></svg></span>
+                  <div class="card-main" data-page-node-id="G2iqDjEoUb9RsC6zocfyF3"><div class="card-name" data-page-node-id="RJwZHXdG4HFWSHkuDcKMqN">Masjid Jami Ni'matul Ittihad</div>
+                    <div class="card-meta" data-page-node-id="g8lJUD5O4DQsMrvCjVTbyE"><span class="badge" data-page-node-id="SZnZjNHv5mR6r62jY1cBWO">Masjid Besar</span><span data-page-node-id="JMpB7fGSL1DqMXiuWI9lBP">2,4 km</span></div></div></div>
+                <div class="card-bot" data-page-node-id="ZbNVfiU8KGLo4Rn4C07tWb"><div class="minis" data-page-node-id="X5rWlBkfB5yMJmlMSX9qKj"><span class="mini" data-page-node-id="xyoaqPBnmUnDqdptGhgUdZ"><svg class="ic" data-page-node-id="ztUH6gkdDaVI5EydKnX31U"><use href="#i-droplet" data-page-node-id="UFkh4R6ZicC72ID1Z0exKW"/></svg>Kran mandi</span><span class="mini" data-page-node-id="MUNCo4z2vc8q8Y9m0zHyt4"><svg class="ic" data-page-node-id="pTLqSFOPQubfG5kZ3USNy9"><use href="#i-clock" data-page-node-id="5bdSq4PclWWAkBVBcLgX5a"/></svg>24 jam</span><span class="mini" data-page-node-id="2HxEE0xCbgwQvPHfMkHlaU"><svg class="ic" data-page-node-id="Cezy6Ch1KlN0KrnWyjlUeQ"><use href="#i-bike" data-page-node-id="W4HI3n9woo1dxd0gjQc7sv"/></svg>Parkir ✓</span></div><span class="verify" data-page-node-id="tMokL2K91QlAXkdpaPJ9wG"><svg class="ic" data-page-node-id="8UZiX7xZbgbwE5sWrNDKMc"><use href="#i-check" data-page-node-id="eqzXEPpK8qGiOFT7lA4SaG"/></svg>Diverifikasi 3 hari lalu</span></div>
+              </article>
+              <article class="card t-spbu" data-page-node-id="LshCs7dKXK6jjWdPS0s6s9">
+                <div class="card-top" data-page-node-id="4TTI8sC9qGJnqfsSEkDs3M"><span class="tile" data-page-node-id="UKdlRJ4RS3oVNK5LVsi8sy"><svg class="ic" data-page-node-id="Xx5Z2ZIL5N96B9UB069d3X"><use href="#i-fuel" data-page-node-id="v2eHNZIgDbycttZBlMgIwf"/></svg></span>
+                  <div class="card-main" data-page-node-id="lSBc7tNVuYwK48B9acVHrJ"><div class="card-name" data-page-node-id="8Nde2kQih40ULbx1yZDez3">SPBU Rest Area Km 419</div>
+                    <div class="card-meta" data-page-node-id="XtESU949FxfS6wylvdlxSb"><span class="badge" data-page-node-id="45N2aKQ50Cg92IS1xmxcmw">SPBU</span><span data-page-node-id="1RzXBZbSm4210pBxYklSMx">4,6 km</span></div></div></div>
+                <div class="card-bot" data-page-node-id="4J3UkpsYE2wZajZDXnGJZR"><div class="minis" data-page-node-id="bD951WUagAnOvN896uRELL"><span class="mini" data-page-node-id="1rTBdUK0Z44eQFcfteUgfB"><svg class="ic" data-page-node-id="EBqJXn11LmE6CHj20T8jwF"><use href="#i-droplet" data-page-node-id="7oXeB1izcDM61QY3f2SK0Y"/></svg>Air isi</span><span class="mini" data-page-node-id="n9LBavMTURmTHyM7S1VADi"><svg class="ic" data-page-node-id="A1DUthpcSjkyIChQzTtLbc"><use href="#i-clock" data-page-node-id="F4cAc8GOYscvxFyk4UUMso"/></svg>24 jam</span><span class="mini unknown" data-page-node-id="2mpPPYUZSxi9leKP3TlMrR">Belum ada info</span></div><span class="verify off" data-page-node-id="Kj0BuC4kB6aIoVmlKwheE4">Belum diverifikasi</span></div>
+              </article>
+              <article class="card t-terminal" data-page-node-id="pzdcdl9MJIcmwbjgxaig8H">
+                <div class="card-top" data-page-node-id="6LztEvpmnJJff26VNyOIDe"><span class="tile" data-page-node-id="L3DPI9HzGdrSNKKL616qfk"><svg class="ic" data-page-node-id="p91356NE3LkdBXkPRn2NqU"><use href="#i-bus" data-page-node-id="7gwAskqpnAHlNaefW2VOai"/></svg></span>
+                  <div class="card-main" data-page-node-id="TQFh3fci2bzGYnCLhaoOYt"><div class="card-name" data-page-node-id="IsBj3Tcxc7LB5EZ3IKVdNp">Musala Terminal Arjosari (Blok D)</div>
+                    <div class="card-meta" data-page-node-id="RNMayS4QY52APQ6JA3fMPs"><span class="badge" data-page-node-id="pPsMUZQcf1pJRvLxTdDdHa">Terminal</span><span data-page-node-id="yb7myTtLUeYPB3AgA8aFiB">5,2 km</span></div></div></div>
+                <div class="card-bot" data-page-node-id="PLyTiUx65WE4jZuOKJcvxS"><div class="minis" data-page-node-id="F41NNTPgM4XvnGGHWNOeeW"><span class="mini" data-page-node-id="CSqXQ9uYErPNq6s5Z5O6Fg"><svg class="ic" data-page-node-id="33tEJF3vxUHnLWSsozMLPr"><use href="#i-droplet" data-page-node-id="ic1M4gIq9j7O2sRbgC4sYF"/></svg>Wudhu saja</span><span class="mini" data-page-node-id="Fv03i9wGwDmNaPnLmTfB0w"><svg class="ic" data-page-node-id="aWRzCtCVHM5ghGJHQm4Efm"><use href="#i-clock" data-page-node-id="7fcGda6xwYHqzs4greXNGr"/></svg>24 jam</span><span class="mini" data-page-node-id="rze4XieXJw98AbJgB3ph1q"><svg class="ic" data-page-node-id="vgPRIfa4HkxBYII6qdjeIr"><use href="#i-bike" data-page-node-id="vK5blTzXvVkmxJD1FAiGZw"/></svg>Parkir ✓</span></div><span class="verify" data-page-node-id="e7T1k1G51Ei4jK5JkRS8Hc"><svg class="ic" data-page-node-id="HeUfsC0DM9KtL9ohBuh4ss"><use href="#i-check" data-page-node-id="LtjcjRv8GCP9iBbFRYQQpK"/></svg>Diverifikasi 5 hari lalu</span></div>
+              </article>
+              <article class="card t-rest" data-page-node-id="s5aJ0IwPYe7TPOAValI89F">
+                <div class="card-top" data-page-node-id="GZzdsmZ5yNAJXV7MFHPUCl"><span class="tile" data-page-node-id="ZVRkXdc4BWXOIZvxVjQIVF"><svg class="ic" data-page-node-id="vX9A8ngfCNlC6XHgoKwplw"><use href="#i-tent" data-page-node-id="H2MgDfqYqgQLzKoDDovhWE"/></svg></span>
+                  <div class="card-main" data-page-node-id="oDRQKOz4nfOa6R0e0eeGHK"><div class="card-name" data-page-node-id="LSF96njZNePrYi2fkuApDi">Rest Area KM 207 Batang</div>
+                    <div class="card-meta" data-page-node-id="CYIhtD8X6Of3S19s5Zlx6v"><span class="badge" data-page-node-id="0BS9h9gXQaakSFcPF6vgpu">Rest Area</span><span data-page-node-id="omyH3qD579OzUA0KlkvzR8">6,8 km</span></div></div></div>
+                <div class="card-bot" data-page-node-id="wWTG0TTdGjD1cPfLMcF51h"><div class="minis" data-page-node-id="lotZVvDIuD3MByZhERaLCQ"><span class="mini" data-page-node-id="ehUgQdXFB3oMdqDxp57sMr"><svg class="ic" data-page-node-id="reZdLUNR8WJ8WGCbKTsrvK"><use href="#i-droplet" data-page-node-id="JsBCZJCIbvwfGDkGSE491u"/></svg>Kran mandi</span><span class="mini" data-page-node-id="xlUjEMlYTGJdlvIlsUWapo"><svg class="ic" data-page-node-id="qvgqo7E51kOfTpMNJzovbv"><use href="#i-clock" data-page-node-id="FFXUJGl8FZkpTSgva8RH7f"/></svg>24 jam</span><span class="mini" data-page-node-id="OHCYFZ20QomBTCoqpejMEi"><svg class="ic" data-page-node-id="r8C4CfLkNwjQWqYfYCiJa3"><use href="#i-bike" data-page-node-id="GExX8Iz5b8zxziYtvDqImO"/></svg>Parkir ✓</span></div><span class="verify off" data-page-node-id="We0GiGoxp5fkhcokGm24VI">Belum diverifikasi</span></div>
+              </article>
+              </div>
+            </aside>
+            <div class="canvas" data-page-node-id="DWAna9sYkC9agLH5nU4bYF">
+            <svg class="map" viewBox="0 0 1080 856" preserveAspectRatio="xMidYMid slice" data-page-node-id="7CANMY2RHSgnhID57wiVEB"><use href="#map-wide" data-page-node-id="z4wsVaA81VbwTJ4KQ1Imzz"/></svg>
+            <div class="pins" data-page-node-id="KyeM2ORHxNBYPYgsXiDMqG">
+              <svg class="pin" style="left:16%;top:27%;color:var(--c-masjid)" viewBox="-18 -46 36 48" data-page-node-id="6mL2RlQHw141dGFdwzuMi0"><use href="#pin-masjid" data-page-node-id="EjJoMg68u9Y6IzugvmgpHU"/></svg>
+              <svg class="pin" style="left:38%;top:20%;color:var(--c-spbu)" viewBox="-18 -46 36 48" data-page-node-id="P6zwv8EyUVHSfZDRtvEgXX"><use href="#pin-spbu" data-page-node-id="KVg6RCQpyEgs1AdTXF4feZ"/></svg>
+              <svg class="pin" style="left:62%;top:29%;color:var(--c-terminal)" viewBox="-18 -46 36 48" data-page-node-id="3zzfRdc6RfYXHfd9gFAcRG"><use href="#pin-terminal" data-page-node-id="pWGCwSIOuDGFJEHLONEM9w"/></svg>
+              <svg class="pin" style="left:78%;top:52%;color:var(--c-rest)" viewBox="-18 -46 36 48" data-page-node-id="S5Q76iV2YKeE1Zo8HosF1w"><use href="#pin-rest" data-page-node-id="5SNbV7WFdBlLJWhIIFt9ka"/></svg>
+              <svg class="pin" style="left:28%;top:62%;color:var(--c-musala)" viewBox="-18 -46 36 48" data-page-node-id="kUtvvd3MubPWzjpLFQxijC"><use href="#pin-musala" data-page-node-id="n5pVl7kH41zCnu2kroWjbb"/></svg>
+              <svg class="pin" style="left:55%;top:72%;color:var(--c-masjid)" viewBox="-18 -46 36 48" data-page-node-id="0B7HHIvIiFkzWdkDMAA3zg"><use href="#pin-masjid" data-page-node-id="ALaiGaMs9Tz9NxyE9xtlsM"/></svg>
+              <svg class="pin big" style="left:48%;top:48%;color:var(--c-musala)" viewBox="-18 -46 36 48" data-page-node-id="OUR1IWsc72jdH7cVpcNMqu"><use href="#pin-musala" data-page-node-id="aQ4Zj97AAkMK3ualfuNfQM"/></svg>
+            </div>
+            <div class="legend" data-page-node-id="9YkYmP6jQxQ9sH9IMppY8b">
+              <b data-page-node-id="5RGnubdvyYyaoQanUcmKCZ">Legenda</b>
+              <div class="legend-row t-masjid" data-page-node-id="26AuiiAcMM2aWregcx8uC7"><i class="legend-dot" data-page-node-id="kStkgk5yH1AOGAS5sdJBud"></i>Masjid Besar</div>
+              <div class="legend-row t-musala" data-page-node-id="yiYTYPCgAlTXql9z9IhPkA"><i class="legend-dot" data-page-node-id="GrS0r56WUhGIkpZ9t03lKY"></i>Musala</div>
+              <div class="legend-row t-terminal" data-page-node-id="4eoyhaFAmhMOF29DDgCUmR"><i class="legend-dot" data-page-node-id="xV9Uvraadqo1VHLbJEFIrK"></i>Terminal</div>
+              <div class="legend-row t-spbu" data-page-node-id="04MJCQNubF4f3PCiiwnWKM"><i class="legend-dot" data-page-node-id="rm5gFuZHPQSWDAd84OyJb6"></i>SPBU</div>
+              <div class="legend-row t-rest" data-page-node-id="tw8upHIgEQCYOZOEiokQPB"><i class="legend-dot" data-page-node-id="3vwAlL7McpLs0e7yEGTASI"></i>Rest Area</div>
+            </div>
+            <div class="geo dgeo" data-page-node-id="2hmnlFUIreGugfsIuTOidP"><svg class="ic" data-page-node-id="s8SqND31fCvLNiFfgR2q3P"><use href="#i-crosshair" data-page-node-id="MuDoM7OhAsocsXJ7COXaxz"/></svg></div>
+            <div class="fab dfab" data-page-node-id="MLDC4CV26O6DAnjR56YrbX">+ Tambah</div>
+            </div>
+          </div>
+          </div>
+        </div></div>
+      </figure>
+      <figure class="frame" style="width:950px;margin:0" data-page-node-id="fHzXH8G0SsnVniKNMyEXXo">
+        <figcaption class="dcap" data-page-node-id="gSs8nxvMezSE0fwmvISqb6"><b data-page-node-id="9AzPubroV5PHWmDbFsQVGA">3 · Rincian spot  —  atribut, catatan etiket, dan verifikasi</b></figcaption>
+        <div class="desktop-scroll" data-page-node-id="HwGEHLJZP8Yl1WsM0ENzHB"><div class="desktop-wrap" data-page-node-id="O6ZAaxTyNoPhbLUvZ1vASv">
+          <div class="desktop-frame" role="img" aria-label="Rincian spot di komputer: atribut air, jam, parkir, ramah perempuan, catatan, dan tombol Masih ada di panel kiri" data-page-node-id="Xbgx5JADy5DFgoZ7CTwB28">
+        <div class="browser" inert data-page-node-id="QsEOwA32sZFhb5pvKNmC9C">
+          <span class="dots" data-page-node-id="Bl9pmi79e4vg0aDavAKRez"><i data-page-node-id="ZROgOBBdfpTOiFMAqaYAaN"></i><i data-page-node-id="P1NgmEFgidiaI3BbhzpqJk"></i><i data-page-node-id="aYs1eOImlvo3A7wM8GHirH"></i></span>
+          <span class="urlbar" data-page-node-id="ROK9nH1QpJDUOrVv5LFpHw">singgah.app</span>
+          <span style="width:52px" data-page-node-id="7k7LUDtoXcpLIOuUD0XiMs"></span>
+        </div>
+          <div class="app" inert data-page-node-id="1sqbcx126VXypMlwUGewAt">
+            <aside class="side" style="padding:24px 22px" data-page-node-id="L8ds1HqxAH3u2ej2IUEC79">
+              <div class="detail-top" data-page-node-id="gWGe0imBCYgGTKqhhei9dJ">
+                <span class="rbtn" data-page-node-id="CQxLiUF1BpDBRqHpTfAaxa"><svg class="ic" data-page-node-id="8P78CZQu9R4LowQ94sxWXz"><use href="#i-arrow-left" data-page-node-id="0H2EMI5ehJmXia0TnCCrHh"/></svg></span>
+                <span class="spacer" data-page-node-id="BcLZHvkh6krB3QQHKNdi1t"></span>
+                <span class="rbtn" data-page-node-id="qwm9vmdtUluaTasaRDvGfs"><svg class="ic" data-page-node-id="cPXlIITAGtlTmH5nHb7BDk"><use href="#i-navigation" data-page-node-id="u2B0trDEvmq5uQaJik2vdd"/></svg></span>
+              </div>
+              <div class="detail-title" data-page-node-id="RKaNKh0eYyEho9pgnhCfbb">Musala Terminal Giwangan (Blok C)</div>
+              <div class="detail-sub" data-page-node-id="soIZgjdJ6A2qqsCAHxPD76">Terminal Giwangan · 1,2 km dari kamu</div>
+              <div class="badge-row" data-page-node-id="zWojs75hj2CBin7AXFTpe2">
+                <span class="big-badge t-musala" style="background:var(--ts);color:var(--ti)" data-page-node-id="XyRDhQTlBH7S8Weat4WKjB"><svg class="ic" data-page-node-id="elpw4otqbqpA59CJOV1u5f"><use href="#i-landmark" data-page-node-id="Th35yTXPDdqa4hRIqRF9BA"/></svg>Musala</span>
+                <span class="big-badge" style="background:var(--water-soft);color:var(--water-ink)" data-page-node-id="TDgRT4foLp8Dr3lLISkg33"><svg class="ic" data-page-node-id="EhKLfAXwnZWEoCOe3y2Sq0"><use href="#i-droplet" data-page-node-id="AImE7eZnhAbAsopC8rBxjJ"/></svg>Wudhu saja</span>
+                <span class="big-badge" style="background:var(--success-soft);color:var(--success-ink)" data-page-node-id="kNQ6htzwmgoUOLcGxcs7uJ"><svg class="ic" data-page-node-id="FPBmAfyXWAOeBGtMJ7kxNL"><use href="#i-bike" data-page-node-id="OHb7e8jMttm2SxeGkqkYLG"/></svg>Parkir sepeda</span>
+              </div>
+              <div class="attrs" data-page-node-id="MoPl25EHzYFxTM5aLetJiH">
+                <div class="attr" data-page-node-id="0yZe9gGnSY7IlHyv7J8qov"><svg class="ic" data-page-node-id="TCK7daJX7W3S7lmoSKkKti"><use href="#i-droplet" data-page-node-id="adGwqDAhyUmIiWehWSMd38"/></svg><div data-page-node-id="6rl5G2X1Jp5KFAAYFTwCO4"><b data-page-node-id="lQDpCp1DU8KbaeQ9ChosLA">Air</b><span data-page-node-id="JWA40ImaPXXW4Vf0vKmI0f">Wudhu saja</span></div></div>
+                <div class="attr" data-page-node-id="TT2DL8lIxHvdHryLCmG1Nf"><svg class="ic" data-page-node-id="ZIKpiDZRICWARanKeX3Q7N"><use href="#i-clock" data-page-node-id="YAgbq6YHucOjWnzwigqoKQ"/></svg><div data-page-node-id="lWs22Ip5KNbVq4VT7kTrCt"><b data-page-node-id="Q5VGC8mznTMOFVEJZ88dlL">Jam</b><span data-page-node-id="Q7MKk5xEbG8A1UXvGtzixR">24 jam</span></div></div>
+                <div class="attr" data-page-node-id="Fk2qbW1bCOmNxGK1WzIMRq"><svg class="ic" data-page-node-id="KqFzN3SDkkvXgeoPSkBNuY"><use href="#i-bike" data-page-node-id="3ZnaO5WDVoRsDMFFLKt6vw"/></svg><div data-page-node-id="DY1tHi00thjqTALt9PKIqi"><b data-page-node-id="Ap7Xi5yaolZubjGNgCwnpZ">Parkir sepeda</b><span data-page-node-id="B8DLDkorH4YiTmbNmIYT37">Ada ✓</span></div></div>
+                <div class="attr" data-page-node-id="xZpRMvgxWqZkwo8WZ6MSLg"><svg class="ic" data-page-node-id="4B0A25Q6FV7nxozBlsMsN8"><use href="#i-user" data-page-node-id="uUL0IhYKTcOAH8NOVdAtoa"/></svg><div data-page-node-id="gzHrUh4hrATNjLUsNAKaJS"><b data-page-node-id="gkDtBoel88TO7TtLufSeDD">Ramah perempuan</b><span class="unknown" data-page-node-id="D9kms9t19beRCdylhc0N5s">Belum ada info</span></div></div>
+                <div class="attr" data-page-node-id="nJjyivsEAAqAmir5AIuVm9"><svg class="ic" data-page-node-id="3odRAJv6LzGmUoFsuOSYNe"><use href="#i-info" data-page-node-id="UBkYGFqKMgTmPuAsKROgxS"/></svg><div data-page-node-id="dbHt2sWqdGISPAoKDkc95O"><b data-page-node-id="ta8CPgsowBkgSUvQxt9axS">Catatan</b><span data-page-node-id="F3ih9EwSacFWBmUDpanghH">Izin dulu ke marbot kalau mau tidur, bilang “saya musafir”.</span></div></div>
+              </div>
+              <div class="note" data-page-node-id="QLQFWyla1tJlBrNfhA2veM"><svg class="ic" data-page-node-id="NUlB2WLxiynUSksTMf7pI3"><use href="#i-info" data-page-node-id="QcaR4xs3AwpBEp3meKxjul"/></svg>
+                <p data-page-node-id="ukaAoRtfyiSRKov8n52F4U">Etiket musafir: jangan shampoo di keran wudhu. Kalau sempat, titip kotak amal atau bantu sapu halaman.</p></div>
+              <div class="verified-line" data-page-node-id="STu8BKDGtAd4JfXT5lfBsk"><svg class="ic" data-page-node-id="F7OJEgfAQbeOfvFzxpas21"><use href="#i-check-circle" data-page-node-id="NRAM8wrl2B0BwFEfo7HGRP"/></svg>Diverifikasi 2 jam lalu oleh musafir lain</div>
+              <div class="actions" data-page-node-id="x4DNJr4uTdLRlpBubwxMGw">
+                <span class="btn primary" data-page-node-id="xPg6xeQZbKbK3Sh7tktBrA"><svg class="ic" data-page-node-id="NMOG2ZoIl4bitxy06F9j9h"><use href="#i-shield" data-page-node-id="ltLEXv2g5u0uO3wTfkHB4q"/></svg>Masih ada ✓</span>
+                <span class="btn outline" data-page-node-id="d7somujpHmDHa0THDW43pY"><svg class="ic" data-page-node-id="30xQrMeqDUVFqXy2vOnuHM"><use href="#i-navigation" data-page-node-id="971pkUXFVGeqVdTYjvrv2k"/></svg>Rute</span>
+              </div>
+            </aside>
+            <div class="canvas" data-page-node-id="FPmnB9P6mXCLBGVcXooeKg">
+            <svg class="map" viewBox="0 0 1080 856" preserveAspectRatio="xMidYMid slice" data-page-node-id="lZGfDqdEuanUUUzH91MmzE"><use href="#map-wide" data-page-node-id="UQ0klRxavj8IVrFlH4zoY1"/></svg>
+            <div class="pins" data-page-node-id="JfW3MSmtBxbbhag2oQtLGL">
+              <svg class="pin" style="left:16%;top:27%;color:var(--c-masjid)" viewBox="-18 -46 36 48" data-page-node-id="RFTiDuVQMEhaTm3ujWR3IY"><use href="#pin-masjid" data-page-node-id="Z9LjjzN8a4zmq5qiBtdnzE"/></svg>
+              <svg class="pin" style="left:38%;top:20%;color:var(--c-spbu)" viewBox="-18 -46 36 48" data-page-node-id="fqfNbvBHhKvBY092Mz8C4R"><use href="#pin-spbu" data-page-node-id="1BIHAK6neKlSVGUm0pV8oQ"/></svg>
+              <svg class="pin" style="left:62%;top:29%;color:var(--c-terminal)" viewBox="-18 -46 36 48" data-page-node-id="IjS1HRyhKE6RJxbuOjsrOS"><use href="#pin-terminal" data-page-node-id="laLxWQSMeYLNo6nbJLkftd"/></svg>
+              <svg class="pin" style="left:78%;top:52%;color:var(--c-rest)" viewBox="-18 -46 36 48" data-page-node-id="2y17p1XlGx42EKCjLyXyne"><use href="#pin-rest" data-page-node-id="RsNHEVCPnOyu6njLYo8NEi"/></svg>
+              <svg class="pin" style="left:28%;top:62%;color:var(--c-musala)" viewBox="-18 -46 36 48" data-page-node-id="amMsTrpP5FneffbqH4X4jM"><use href="#pin-musala" data-page-node-id="6ICB1INgeL26JPWAZHe52E"/></svg>
+              <svg class="pin" style="left:55%;top:72%;color:var(--c-masjid)" viewBox="-18 -46 36 48" data-page-node-id="hrSnxH7F01B5WJoFXUPBID"><use href="#pin-masjid" data-page-node-id="toTGvsk4tgpRn5vbFndeFg"/></svg>
+              <svg class="pin big" style="left:48%;top:48%;color:var(--c-musala)" viewBox="-18 -46 36 48" data-page-node-id="VG2fU35nBQxFNgvQYkszA7"><use href="#pin-musala" data-page-node-id="L9pDq2WbfbFY91QgKppbKv"/></svg>
+            </div>
+              <div class="callout" style="left:43%;top:38%" data-page-node-id="RYNp8H3LU68jV5QPl5tEvT">Musala Terminal Giwangan</div>
+            <div class="legend" data-page-node-id="uXtysVI7rzaZEgiDU8cZVZ">
+              <b data-page-node-id="FCcb2lVPSwLUUQv9JDTZ27">Legenda</b>
+              <div class="legend-row t-masjid" data-page-node-id="8NSONj7x1jOdPkFIZ8sKNz"><i class="legend-dot" data-page-node-id="lxUGDxjAMzXTVYroPxtgRk"></i>Masjid Besar</div>
+              <div class="legend-row t-musala" data-page-node-id="edxQkGbmknWGNRGkMcgocc"><i class="legend-dot" data-page-node-id="fwq6QIWRXgGQiKBaq33PfE"></i>Musala</div>
+              <div class="legend-row t-terminal" data-page-node-id="W1kmYoNrLceIadIyN11P4R"><i class="legend-dot" data-page-node-id="KSnj98t2C4JeRcleeQNRBo"></i>Terminal</div>
+              <div class="legend-row t-spbu" data-page-node-id="w8M02Tog2kcOBHuSMVzBGr"><i class="legend-dot" data-page-node-id="Av7SqvhbAHjLofSdNhI7OH"></i>SPBU</div>
+              <div class="legend-row t-rest" data-page-node-id="kjHvwPg0HCoDGzlVQ8Gg7Z"><i class="legend-dot" data-page-node-id="FUTUMdmmPaHixfJETA2q7M"></i>Rest Area</div>
+            </div>
+            <div class="geo dgeo" data-page-node-id="pJ829Z68BdQxQs0rU7ecFd"><svg class="ic" data-page-node-id="d1ZAXRN60kFE1QuY6inD6i"><use href="#i-crosshair" data-page-node-id="d7GgIPKIgGrmTrXmtwkuYd"/></svg></div>
+            <div class="fab dfab" data-page-node-id="poV8Bo60drfkHZ9JexNTLz">+ Tambah</div>
+            </div>
+          </div>
+          </div>
+        </div></div>
+      </figure>
+      <figure class="frame" style="width:950px;margin:0" data-page-node-id="5gNcRHkGgxZge1nyXGVBlo">
+        <figcaption class="dcap" data-page-node-id="DH6F1AaKVyEv7XsZGBNz2K"><b data-page-node-id="rHK9KjwD8GsPsQ7o9JjIW0">4 · Tambah · pin  —  peta jadi area utama</b></figcaption>
+        <div class="desktop-scroll" data-page-node-id="FbJxk6G4qXUh0cZT1UFvvg"><div class="desktop-wrap" data-page-node-id="R2oEQuQYfasWAUmosFS99Z">
+          <div class="desktop-frame" role="img" aria-label="Tambah spot langkah satu di komputer: peta dengan pin di tengah, kartu konfirmasi titik di kiri" data-page-node-id="MnwU1BMOhyB2ioImT9gvyI">
+        <div class="browser" inert data-page-node-id="PrwX7j6i6hRlYHZmublkJy">
+          <span class="dots" data-page-node-id="ifGOUN0qQnLpFr9t5LHMLq"><i data-page-node-id="Wng3Q48Z54l43Ft6EvdnjC"></i><i data-page-node-id="tAe5SID1bqluQSr6DccWRc"></i><i data-page-node-id="l6HVfPCMIzQW8f7BLJFKWG"></i></span>
+          <span class="urlbar" data-page-node-id="nIh8HpIrnDUtg6P81NFOmp">singgah.app</span>
+          <span style="width:52px" data-page-node-id="xUhSTF5ITmMxPqNWhH4NPL"></span>
+        </div>
+          <div class="app" inert data-page-node-id="rVfBdFXVmSyCnZW7Ml9abY">
+            <aside class="side" style="padding:24px 22px" data-page-node-id="gmGxvcRbGIr0w24JePG0Rj">
+            <div class="brand" data-page-node-id="brEYUv2omO7L3DwKcQ0QWd">
+              <span class="brand-logo" data-page-node-id="GES0ywQ8M37SsfqLPD3Y4R"><svg class="ic" data-page-node-id="1fZ84PpuoJpH2zQ5768os8"><use href="#i-droplet" data-page-node-id="3LR9j8dK7jvhuZ8DnPQd2l"/></svg></span>
+              <span data-page-node-id="BLNUcgQHbh6ARUlhHuLZcr"><b data-page-node-id="3Jh7MI2DMW86ecjfkJBzUh">Singgah</b><small data-page-node-id="ZvGTGmkJ2Lixo1hpj4CpkE">Mandi &amp; istirahat gratis untuk musafir</small></span>
+            </div>
+              <span class="step-number" data-page-node-id="N9jHNtbGSAS7hsMGiUGLBR">1 dari 2</span>
+              <div class="stepcard" data-page-node-id="xDzIAS34AfjP2VMBFUsvhG">
+                <b data-page-node-id="GpuRLIHJix2lkrTyzHXQyT">Pin di titik ini?</b>
+                <p data-page-node-id="kbAR3tdsJGDBwXkjszffdF">Dekat Jl. Malioboro, Yogyakarta · akurat ± 10 m</p>
+                <div class="actions" data-page-node-id="j92nWm7CqKXCmN9fLk8WvW">
+                  <span class="btn ghost" data-page-node-id="h5kOsNyy3YaTOGwALhHC6D">Batal</span>
+                  <span class="btn primary" data-page-node-id="yOqDIZfz63uSoek5m2WqCw">Lanjut</span>
+                </div>
+              </div>
+              <p class="step-help" data-page-node-id="rCT3acm69wWKcGsJUktxFV">Ketuk peta untuk menaruh pin. Lokasi bisa digeser dulu sebelum lanjut mengisi info.</p>
+            </aside>
+            <div class="canvas" data-page-node-id="BVC8lxoR43XgrgGOXQCr7r">
+            <svg class="map" viewBox="0 0 1080 856" preserveAspectRatio="xMidYMid slice" data-page-node-id="9F61hiBD0RPh3fOksNLGlL"><use href="#map-wide" data-page-node-id="DL7LzytsZ6goGSmKqrmiK3"/></svg>
+              <svg class="crosshair big" viewBox="0 0 180 180" aria-hidden="true" data-page-node-id="AFo7Jd7DdZOPSyUwrfhmH0">
+                <circle cx="90" cy="90" r="56" fill="#0E7C66" opacity=".12" data-page-node-id="XEv5O7pyKIwARe2Nn1D5PH"/>
+                <circle cx="90" cy="90" r="56" fill="none" stroke="#0E7C66" stroke-width="1.5" opacity=".5" data-page-node-id="SEKLoMtNprQFqtTGzFzqAt"/>
+                <g stroke="#0E7C66" stroke-width="2" stroke-linecap="round" data-page-node-id="14IR5fPx6DNBWCGnikDau6">
+                  <path d="M90 6v30M90 144v30M6 90h30M144 90h30" data-page-node-id="HwmH0XIHoPdgoEd6Nxpkuu"/>
+                </g>
+                <g transform="translate(90,118) scale(1.3)" style="color:#0E7C66" data-page-node-id="cdAnVInwE5bwdUgNt0RJmU"><use href="#pin-plain" data-page-node-id="wZ23oZGD49zVVo8mf2kC5v"/></g>
+              </svg>
+              <div class="banner wide" data-page-node-id="NDtEBjYHYFqlABWYbgcCO6"><svg class="ic" data-page-node-id="j0jTmDt3PydQzZNJFbDJgH"><use href="#i-crosshair" data-page-node-id="NTQ0NkVYEuXF3MwDp8Jj7s"/></svg>Ketuk peta untuk menaruh pin</div>
+              <span class="rbtn" style="position:absolute;top:112px;left:24px;z-index:24" data-page-node-id="tvwBTRHndciiFzoEQuzGpL"><svg class="ic" data-page-node-id="UaOb52mxz0l7UxOFumneoo"><use href="#i-x" data-page-node-id="V8Lorsd121x1oGVGgeCO7B"/></svg></span>
+            </div>
+          </div>
+          </div>
+        </div></div>
+      </figure>
+      <figure class="frame" style="width:950px;margin:0" data-page-node-id="W6QD3nGXL2hzug5Cic8L6A">
+        <figcaption class="dcap" data-page-node-id="zJQ9PtYwsPvdXrDopmce8F"><b data-page-node-id="UWfnjPdEqiaaqeCAQsVl52">5 · Tambah · isi info  —  formulir sama, ruang lebih lega</b></figcaption>
+        <div class="desktop-scroll" data-page-node-id="N3eD1LOSIiIW03WvlJs7iQ"><div class="desktop-wrap" data-page-node-id="7GmuMX761fASKvOUpyMhkT">
+          <div class="desktop-frame" role="img" aria-label="Formulir tambah spot di komputer: nama, jenis, air, jam, parkir sepeda, ramah perempuan, catatan, dan tombol kirim untuk ditinjau" data-page-node-id="ESZR3bsdHCH8fRfpIAUvvd">
+        <div class="browser" inert data-page-node-id="WG6FRFE7r0FaCfLjbLC8Ik">
+          <span class="dots" data-page-node-id="BPn9RrbZCjanqJFQkIHnn5"><i data-page-node-id="qPa3CCRytCETMvufQXLgD3"></i><i data-page-node-id="kh1NlwS72PC6uGJCCHGGzq"></i><i data-page-node-id="68blGVJcZMoZjyG3YIH4xC"></i></span>
+          <span class="urlbar" data-page-node-id="x1O3xcJqfkJ8CWxvYrKaKb">singgah.app</span>
+          <span style="width:52px" data-page-node-id="Sza76QlZqCpyzvpdEjoXIQ"></span>
+        </div>
+          <div class="app" inert data-page-node-id="VxFI7KGFl4jkDinuVqVN0G">
+            <aside class="side" style="padding:24px 22px" data-page-node-id="YyryHY3HIdY4l7hQr2Q9DY">
+              <div class="form-static" data-page-node-id="ivNB6jnRJO83ERAT0itjQm">
+                <div class="form-head" data-page-node-id="KP847Tf7TXqpk8tq0QNAOq"><span class="rbtn" data-page-node-id="XDF1DDgzg3xySq8peecnnV"><svg class="ic" data-page-node-id="iJoq8l43FUb4wb0Nmztw9Q"><use href="#i-arrow-left" data-page-node-id="DycvNVGsds3ga4sGWIDm03"/></svg></span>
+                  <b data-page-node-id="yh3czYhNRlC6sa4dy31JaU">Info spot</b><span class="rbtn" data-page-node-id="01lA2AKfvyahIi6g15vHAv"><svg class="ic" data-page-node-id="QsG8qgcKE952mhn2McQzlY"><use href="#i-x" data-page-node-id="922rCWpUxdz6C4u39H1ErL"/></svg></span></div>
+                <div class="form-body" data-page-node-id="BEa1CreBuHa8cn1zrWSl4j">
+                <div class="field" data-page-node-id="w8kvsZQckeDMMxFtU2eARX"><label for="d-nama" data-page-node-id="BCbQs2OCUgrWXl0QqAd1lB">Nama spot · wajib</label>
+                  <input class="input" id="d-nama" type="text" placeholder="cth: Musala Jami Al-Ikhlas" required data-page-node-id="JPzzjRWUkBBhPDU1JvLXbv"></div>
+                <div class="field" data-page-node-id="JX9GqqzGpE2wI0m0nxeC7d"><label data-page-node-id="rBFtdPGBEzjGBO92LoAreH">Jenis</label>
+                  <div class="seg" role="radiogroup" aria-label="Jenis" data-page-node-id="86vIJ33YXjBxxBl4vftCpr">
+                    <span class="seg-btn" role="radio" aria-checked="false" data-page-node-id="mBVH6XrC1ceIHpKusw0War"><svg class="ic" data-page-node-id="oGCFxQRteTl2JAod8IlN6J"><use href="#i-moon" data-page-node-id="iHh9WSbrLh15ktutiMr6FG"/></svg>Masjid Besar</span>
+                    <span class="seg-btn on" role="radio" aria-checked="true" data-page-node-id="rFDgupk7YSkgTOdO4Z4amz"><svg class="ic" data-page-node-id="sFIkFTbqsVAVN66iE8NLPG"><use href="#i-landmark" data-page-node-id="usiXWtfMr8Dm9GVizcQHUT"/></svg>Musala</span>
+                    <span class="seg-btn" role="radio" aria-checked="false" data-page-node-id="ZrwoHwpzIFTBDKMUaOysxc"><svg class="ic" data-page-node-id="Q7PVVk4wSUUQxD5nquEgzS"><use href="#i-bus" data-page-node-id="NeHuwPj1oYrJsuxuMPoy6V"/></svg>Terminal</span>
+                    <span class="seg-btn" role="radio" aria-checked="false" data-page-node-id="5VUuDFsuHJ2lhAOWSmuI9u"><svg class="ic" data-page-node-id="XUx2offz6sBC3K8uSLY1gy"><use href="#i-fuel" data-page-node-id="KgBcG18pXaqvQzs3sdsp79"/></svg>SPBU</span>
+                    <span class="seg-btn" role="radio" aria-checked="false" data-page-node-id="9UakOUm8idurndBmdUxcrD"><svg class="ic" data-page-node-id="HzoRYOU2wPK75NJsDFFMyD"><use href="#i-tent" data-page-node-id="MCVGoCSNnYWmeYuAFQGh9R"/></svg>Rest Area</span>
+                  </div></div>
+                <div class="field" data-page-node-id="C4aDNJjlpGm4vYBrOkP2V3"><label for="d-air" data-page-node-id="lYQMrxXBzYKxIBasx2vRu9">Air</label>
+                  <select class="input" id="d-air" data-page-node-id="jsRuMOjw3th4x9YzVWPgx2">
+                    <option data-page-node-id="Wh2SLlUOfmHNpjIlIbk5DA">Kran mandi</option><option selected data-page-node-id="U69GMyHa55mku3spJMme04">Wudhu saja</option><option data-page-node-id="zxVV0TtKEr7hBayOrzSQ05">Air isi</option>
+                    <option data-page-node-id="JAxZjXJoSZe4a5PeJ8xNHA">Tidak ada</option><option data-page-node-id="4NLH4uGVzdDOs2kUIpu0fu">Belum ada info</option>
+                  </select></div>
+                <div class="field" data-page-node-id="6wC2eogJ5PxNUIbFtIUJkb"><label for="d-jam" data-page-node-id="6qRBBHfcyyUN9Bf999H1U1">Jam buka</label>
+                  <input class="input" id="d-jam" type="text" placeholder="24 jam" data-page-node-id="l1pRNtQ8ZPTsn0clwViOhk"></div>
+                <div class="swrow" data-page-node-id="C7OC7UPnbsXci8uhEwCe7o"><b data-page-node-id="5GCgXHUF2HBJozpWPC4aKE">Parkir sepeda</b>
+                  <label class="sw" data-page-node-id="QCZgjHbf4kSjoyByvmcP6F"><input type="checkbox" checked aria-label="Parkir sepeda" data-page-node-id="PHXTKoFXpV9bZEuWGXyukU"><i data-page-node-id="ag32cJDpKveRDXl71Aus22"></i></label></div>
+                <div class="field" data-page-node-id="0sNYpSzcIDL6zhRF2i1U1C"><label data-page-node-id="bk4dL1BvAKI2GYNa9dEje2">Ramah perempuan</label>
+                  <div class="tristate" role="radiogroup" aria-label="Ramah perempuan" data-page-node-id="Pqz8neYkQ3us0jtYfIVIAe"><span role="radio" aria-checked="false" data-page-node-id="TOYGmQTOqolK8O9FY9a2eE">Ya</span><span role="radio" aria-checked="false" data-page-node-id="vvtK8Ao85YSbW1E4YIne6k">Tidak</span><span class="on" role="radio" aria-checked="true" data-page-node-id="CW8qArtWb6NcrNfCxZEHCa">Belum ada info</span></div></div>
+                <div class="field" data-page-node-id="y9dwDuB8AkV5VJDKLAG2Z2"><label for="d-catatan" data-page-node-id="LIBvKERwIubwDe64LESb2s">Catatan</label>
+                  <textarea class="input" id="d-catatan" placeholder="Izin dulu ke marbot kalau mau tidur, bilang saya musafir"></textarea></div>
+                <div class="reassure" id="d-reassure" data-page-node-id="JHvA0MvgjODpWGywMMJTE0"><svg class="ic" data-page-node-id="kQiPsAyT4yOQTA6rmiSdiY"><use href="#i-shield" data-page-node-id="jeHANlpQGvHWhkcTebu1VO"/></svg>
+                  Spot baru diperiksa dulu sebelum tampil di peta.</div>
+                <span class="btn primary submit" aria-describedby="d-reassure" data-page-node-id="vkGAbujN8mGOxKb9DUVhjo">Kirim untuk ditinjau</span>
+                </div>
+              </div>
+            </aside>
+            <div class="canvas" data-page-node-id="w0HjnpPQZ5ds7NEGAmuiHk">
+            <svg class="map" viewBox="0 0 1080 856" preserveAspectRatio="xMidYMid slice" data-page-node-id="2L2yOmn1T9SWDnlokKWRFy"><use href="#map-wide" data-page-node-id="xilgaWPHjUb1W9Vm9chuFQ"/></svg>
+              <div class="pins" data-page-node-id="fLAg8tqKLVL08wAcMKx0BL">
+                <svg class="pin big" style="left:50%;top:48%;color:var(--primary)" viewBox="-18 -46 36 48" data-page-node-id="HGKbeXQxT2bD9wFgENIRYr"><use href="#pin-plain" data-page-node-id="mjebnVtDbYDYprGbVX9H3f"/></svg>
+              </div>
+              <div class="callout" style="left:53%;top:40%" data-page-node-id="mxkkz2u72H1XgeR3pAVTMo">Pin spot baru</div>
+              <div class="dim" data-page-node-id="wyzv6eEGCruMqsGjtmeNKF"></div>
+            </div>
+          </div>
+          </div>
+        </div></div>
+      </figure>
+      <figure class="frame" style="width:950px;margin:0" data-page-node-id="rxMBsInBZOmqd9sA167Le1">
+        <figcaption class="dcap" data-page-node-id="JUhbslcN6foGLrtuI0rQvA"><b data-page-node-id="dbS7m2Q17Toe5Ke1L0lkij">6 · Sukses  —  konfirmasi tetap sederhana</b></figcaption>
+        <div class="desktop-scroll" data-page-node-id="IhZNeN8BNe7HvktBTjwWU3"><div class="desktop-wrap" data-page-node-id="hr4ECqyLBBU14DPCEUaIDn">
+          <div class="desktop-frame" role="img" aria-label="Layar sukses di komputer: Terima kasih, spot kamu menunggu persetujuan" data-page-node-id="z15YdvXUEaUulojRPOMrFZ">
+        <div class="browser" inert data-page-node-id="UZWJtlGIXeMEwCqCeTCKEi">
+          <span class="dots" data-page-node-id="qC7OjDfjSARGNXcvX1GweI"><i data-page-node-id="rC16AjLuvwqK8nl5D3ZD71"></i><i data-page-node-id="F04WNU7d4MUQ0DsyRKlGRz"></i><i data-page-node-id="HBkji7c0jSyZlhnnWYAqq1"></i></span>
+          <span class="urlbar" data-page-node-id="ElLpkqNCxG93jXpSBwpPhT">singgah.app</span>
+          <span style="width:52px" data-page-node-id="FxUz2lagxtgoXTyCfoy7zw"></span>
+        </div>
+          <div class="app" inert data-page-node-id="aAEKZ3yHWwDCPHoRwtBkWf">
+            <div class="ok-wrap ok-static" data-page-node-id="OgCzZiOCgS47FdlYramAA8">
+              <div class="ok-ic" data-page-node-id="iX3Vn2EXQfCNMiwu5LIdwm"><svg class="ic" data-page-node-id="W7j5YbTzMOraOKoCOECtD7"><use href="#i-check-circle" data-page-node-id="r9oEgyBZFwKFbBmE0g2dnI"/></svg></div>
+              <h2 data-page-node-id="JaQNAlUUdzaveFQDmb1ZFT">Terima kasih! 🙏</h2>
+              <p data-page-node-id="bfGJ7zFSFTb4q9q0cDynHb">Spot kamu menunggu persetujuan.</p>
+            </div>
+          </div>
+          </div>
+        </div></div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===================== 1–6 · PHONE (REFERENCE) ===================== -->
+  <section class="board-sec" data-page-node-id="lqAVp4KnEaAoQbAswUfrTh">
+    <div class="sec" data-page-node-id="5wZa1tCpYcMsdYTKac8XsK"><span class="n" data-page-node-id="RVXlrZAGtD4xAO2jIGiJth">1–6</span><b data-page-node-id="tqEHG4wN3cUqFTDOugMvOG">Layar ponsel · rujukan</b><span data-page-node-id="AWZYj4WqcDO7WnhpVE7W4V">390 × 844 · lembar bawah, bukan jendela pop-up · sumber komponen untuk semua bingkai komputer</span></div>
+    <div class="phone-grid" data-page-node-id="HoRv8B7MATAgDzXUIULHzk">
+
+      <!-- 1 · BERANDA -->
+      <figure class="frame" data-page-node-id="pseKeY58lWvHpbQdL69deb">
+        <figcaption data-page-node-id="RpD6ZHvDUUD7oIGTmhvN1a"><b data-page-node-id="Fo33Wfxch2irplw3ZAC5YJ">1 · Beranda</b><span data-page-node-id="gAT0tIxjUlAovpwuWyJccj">Peta + lembar bawah mengintip</span></figcaption>
+        <div class="phone" role="img" aria-label="Beranda: peta Yogyakarta dengan penanda, pencarian, dan dua kartu spot terdekat" data-page-node-id="B94IF7xH6W2DPOL8K8kVDi">
+          <div class="notch" inert data-page-node-id="ETEC63rGdBchYJvnLq5v8y"></div>
+          <div class="statusbar" inert data-page-node-id="JCFGdQc9yB3gyWA14hHa5z"><span data-page-node-id="9WCcTx7DJF1tibGkLSYhOg">09:41</span><span class="ics" data-page-node-id="CpbfHFdR6h4RNLnsoDgzEZ">
+            <svg class="ic" data-page-node-id="hXKVfymdN5IXLGdoHBF4hG"><use href="#i-signal" data-page-node-id="ohxsb7tlLTeceGwV06WLEi"/></svg><svg class="ic" data-page-node-id="K7R2BJsBzX2bmXNct6LCkV"><use href="#i-wifi" data-page-node-id="4UHkaof7PZJl5Ne3w9MpfB"/></svg><svg class="ic" data-page-node-id="R5z7U8ZTk68rPU1XSsBOoY"><use href="#i-battery" data-page-node-id="VrXsKDQRSNLNVLtvnBsTZc"/></svg>
+          </span></div>
+          <div class="screen" inert data-page-node-id="LCCWrUc9CEuQlHkCDzQsMb">
+            <svg class="map" viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" data-page-node-id="ZV4deoWQASM7ksUZAiGG3Y"><use href="#map-phone" data-page-node-id="erPosml7ryfAZ15LKg4zAE"/></svg>
+            <div class="pins" data-page-node-id="peahDfGScEQHVVNT6kRL45">
+              <svg class="pin" style="left:31%;top:36%;color:var(--c-musala)" viewBox="-18 -46 36 48" data-page-node-id="qAtDvQj0tceYt2jknmSsmR"><use href="#pin-musala" data-page-node-id="hReI5ltmeSGMUJKGDkFmBj"/></svg>
+              <svg class="pin" style="left:73%;top:31%;color:var(--c-spbu)" viewBox="-18 -46 36 48" data-page-node-id="I7QmyCXF822Ezs0mbq7IQj"><use href="#pin-spbu" data-page-node-id="CE5Vk5ByG0DGh9calr3Uez"/></svg>
+              <svg class="pin" style="left:24%;top:58%;color:var(--c-terminal)" viewBox="-18 -46 36 48" data-page-node-id="vYvG7nXCVhu6C45SgWYkpR"><use href="#pin-terminal" data-page-node-id="q5rYEdRlOZJ6O0KJ7kVi5A"/></svg>
+              <svg class="pin" style="left:84%;top:46%;color:var(--c-rest)" viewBox="-18 -46 36 48" data-page-node-id="Og5UUh1wIKTmsRpxyL1ySc"><use href="#pin-rest" data-page-node-id="O1edDjFGx4XYpdclJ9PGtJ"/></svg>
+              <svg class="pin" style="left:57%;top:48%;color:var(--c-masjid)" viewBox="-18 -46 36 48" data-page-node-id="1pm5LFr9qCR5l7ocOGMd9m"><use href="#pin-masjid" data-page-node-id="uDPbrvvdVs6I2ftkJpOWun"/></svg>
+              <svg class="pin big" style="left:51%;top:38%;color:var(--c-musala)" viewBox="-18 -46 36 48" data-page-node-id="KHK0YRB0LivV9sqVdTsmau"><use href="#pin-musala" data-page-node-id="9l3o0fzcb3VZdWOvDk3YGB"/></svg>
+            </div>
+            <div class="search" data-page-node-id="vou1EYFTckH13S2saHHF1h"><svg class="ic" data-page-node-id="oKGzLrldsm4PKGqEbIObca"><use href="#i-search" data-page-node-id="2eA5BiTPStSqnaiagoDnt1"/></svg><em data-page-node-id="EhqWcDbofaAxbun2Ed0Bf2">Cari spot…</em>
+              <svg class="ic trail" data-page-node-id="ynWlfeI4bl6mZwv525oJF2"><use href="#i-sliders" data-page-node-id="ztdnArua8QYjotqKuZLLSw"/></svg></div>
+            <div class="chips" data-page-node-id="IBHzFyecEN7KB8s46L5JOs">
+              <span class="chip on" data-page-node-id="PNABVmjHvzaFKei1bKEcD1">Semua</span><span class="chip" data-page-node-id="HkmQYbZCjb39WGFrHbdvPk">Masjid Besar</span><span class="chip" data-page-node-id="69jadmlZjS2qIiaeEnNAnl">Musala</span>
+              <span class="chip" data-page-node-id="2mKgfFVEVAJSCFhknpj6Ho">Terminal</span><span class="chip" data-page-node-id="dKcMHUhb1FCDunaeUH2L6c">SPBU</span><span class="chip" data-page-node-id="Xap4frJwZJNIgytFF7jlB8">Rest Area</span>
+            </div>
+            <div class="geo" style="bottom:324px" data-page-node-id="2eA4p6JV3IozxTKZ7RpgjA"><svg class="ic" data-page-node-id="QyXmAkwLmBPolNtMRPBpMa"><use href="#i-crosshair" data-page-node-id="EGWh4hAWCNCmfKgzGVpAMa"/></svg></div>
+            <div class="fab" style="bottom:324px" data-page-node-id="EuCClCA7OHADxJ21XOnICm">+ Tambah</div>
+
+            <div class="sheet peek" data-page-node-id="6A66VOnG44lm936NVLJyIR">
+              <span class="handle" data-page-node-id="ji3rDxyQrfXxVZlYzokUMu"></span>
+              <div class="sheet-head" data-page-node-id="8DpFvBBYr9PaCGWRLYBWSd"><b data-page-node-id="U7L8dWEsEAB9G4juytbaFD">Terdekat dari saya</b><span class="head-right" data-page-node-id="2eLgzpSFJ6u4mhB0gOYTIx">128 spot · Yogya <span class="sheet-expand" aria-label="Buka daftar" data-page-node-id="lYRDF3sCA2DQ0X63jujAnI"><svg class="ic" data-page-node-id="9FguPPUAhLdtvpCNYbirBn"><use href="#i-chevron-up" data-page-node-id="nZUoRT2MOMsIesfkuObE3r"/></svg></span></span></div>
+              <article class="card t-musala" data-page-node-id="6fXBubHhlgzCjydUpCF2AF">
+                <div class="card-top" data-page-node-id="jXNTCDrCuQHfEQLdHmNqzG"><span class="tile" data-page-node-id="xWz4aOJBXigRnPq1WhxUQw"><svg class="ic" data-page-node-id="vNhzpYPHpWpIAuCHJWGXU9"><use href="#i-landmark" data-page-node-id="118pwyUGWKsZtgi1BOdjlO"/></svg></span>
+                  <div class="card-main" data-page-node-id="PRWbnoMF9TVMpZYCSu8Ltm"><div class="card-name" data-page-node-id="LMwnvmCCqROHThanXhDDWR">Musala Terminal Giwangan (Blok C)</div>
+                    <div class="card-meta" data-page-node-id="bMpgWFP5oc0EAUBwkVQYeQ"><span class="badge" data-page-node-id="ka8dWL77r3cZEIRILWGlZN">Musala</span><span data-page-node-id="l7w1bYhC5MLpHBZvaeRCVm">1,2 km</span></div></div></div>
+                <div class="card-bot" data-page-node-id="VENvjw4GQvnFpj2IQYrAbG"><div class="minis" data-page-node-id="LV6nQ2ueiqp8EUX4KXlVmh">
+                  <span class="mini" data-page-node-id="t7GGLlbWXE7AvQHcBEhDKF"><svg class="ic" data-page-node-id="Wpuimk3YgVsXAGhV0lyhNU"><use href="#i-droplet" data-page-node-id="k1GsvXhrzPAxIRPjuM1cmf"/></svg>Wudhu saja</span>
+                  <span class="mini" data-page-node-id="1Jhh7XPq9soRYF5Ks7mrzf"><svg class="ic" data-page-node-id="8CAQXMLVQ3Qp8wefBfDLy8"><use href="#i-clock" data-page-node-id="S5DGbxPKH3hHBN4EGpq0AI"/></svg>24 jam</span>
+                  <span class="mini" data-page-node-id="WqVnAzaZdw4ahA30EHLY9U"><svg class="ic" data-page-node-id="js57yoFvyyXOcQHIr8mTTT"><use href="#i-bike" data-page-node-id="RVYToGrIVTq2wDqQUTa91y"/></svg>Parkir ✓</span></div>
+                  <span class="verify" data-page-node-id="EFfFYbPaLILs8BRocJA33X"><svg class="ic" data-page-node-id="4pLVPuTWjrSuSwsOsrBt4T"><use href="#i-check" data-page-node-id="L1anLapQatqYKJyema6qDX"/></svg>Diverifikasi 2 jam lalu</span></div>
+              </article>
+              <article class="card t-masjid" data-page-node-id="ivp404CD77WPzXEKguyonH">
+                <div class="card-top" data-page-node-id="2E9hW5XocNLBikmKhTsWb3"><span class="tile" data-page-node-id="Lxut2vNfekiHzqe6KunNhO"><svg class="ic" data-page-node-id="h2zpjBn95ko2tuXXzDQI3I"><use href="#i-moon" data-page-node-id="WhNif4AIKztfl3LVyvk6tH"/></svg></span>
+                  <div class="card-main" data-page-node-id="wBGSf5e0VcG4ZQznIlu7TC"><div class="card-name" data-page-node-id="VIoqCtLptJl1W1ByhXvyW0">Masjid Jami Ni'matul Ittihad</div>
+                    <div class="card-meta" data-page-node-id="Wz4plM03L5PrzoCWxObOmr"><span class="badge" data-page-node-id="ECWx7lHFi8o6NAhPGJagEx">Masjid Besar</span><span data-page-node-id="3g9P4y4r2X6WugDONQP28P">2,4 km</span></div></div></div>
+                <div class="card-bot" data-page-node-id="vt8KNkWHANbSBBMl6mFqNM"><div class="minis" data-page-node-id="78M49yWdkMOdijG5FHUFNY">
+                  <span class="mini" data-page-node-id="wLxT8Dnfot32okoXmZrENh"><svg class="ic" data-page-node-id="8YdE4MbbyplFXqCHe653J4"><use href="#i-droplet" data-page-node-id="Wsv60Z5vFL4lp42Kvu3YDm"/></svg>Kran mandi</span>
+                  <span class="mini" data-page-node-id="6D8jV0ZAGmOULNg3T3D7Pn"><svg class="ic" data-page-node-id="6LfqAzUDE2tvk4x5Y3hrb6"><use href="#i-clock" data-page-node-id="5tbatEMwSPxlVz8JxZ9vHk"/></svg>24 jam</span>
+                  <span class="mini" data-page-node-id="tG5TZsdLmugQhIslJCTkdz"><svg class="ic" data-page-node-id="xDCwuh5fRF8tsXSfLyREBA"><use href="#i-bike" data-page-node-id="MEMAERDhA6YHwwJsFVP2ub"/></svg>Parkir ✓</span></div>
+                  <span class="verify" data-page-node-id="dsDd4U2Nskn59jTGWJGANB"><svg class="ic" data-page-node-id="l3FAj2PmjJBOhiGCtuZauP"><use href="#i-check" data-page-node-id="vX6oI6gZ5bPiMEcK8ADEg8"/></svg>Diverifikasi 3 hari lalu</span></div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </figure>
+
+      <!-- 2 · DAFTAR -->
+      <figure class="frame" data-page-node-id="9Nwz1CEnogWJgzGq3WlmX8">
+        <figcaption data-page-node-id="s576xCW5FZ1jSm6d9u9tmp"><b data-page-node-id="qZ9pUBUJ6rINc6JdBm5O8x">2 · Daftar spot</b><span data-page-node-id="KWPLHqSecobh1RJQ69B33A">Lembar bawah dibuka penuh</span></figcaption>
+        <div class="phone" role="img" aria-label="Daftar spot: pencarian, filter jenis, dan kartu-kartu spot yang bisa digulir" data-page-node-id="BJHYxDiO9GDdP3tlmbUsfy">
+          <div class="notch" inert data-page-node-id="2EpoK8rmtiwYzK7ue8rmuN"></div>
+          <div class="statusbar" inert data-page-node-id="tEYNfHer27BmEU1iTJBAD2"><span data-page-node-id="mIdRN17mjXcddJW22u9bjM">09:41</span><span class="ics" data-page-node-id="xrEY8clCe95BrLNWiys3yw">
+            <svg class="ic" data-page-node-id="i4Je3DIhJgqTSebfXorXmE"><use href="#i-signal" data-page-node-id="Ur1xTfGEEbDvLiwudgyljA"/></svg><svg class="ic" data-page-node-id="TtMHxroxOUtgud3QERWp1n"><use href="#i-wifi" data-page-node-id="lnWQpDkoxzRVmOFpTh5lwy"/></svg><svg class="ic" data-page-node-id="on9dBYCm8raVTFkQ9dFtma"><use href="#i-battery" data-page-node-id="pHniYek07LUI2BeyvQ15ZF"/></svg>
+          </span></div>
+          <div class="screen" inert data-page-node-id="ZNEProKlF8GTMcTfUvYJFG">
+            <svg class="map" viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" data-page-node-id="FRaNcxTzcvzojMeqCk2m8U"><use href="#map-phone" data-page-node-id="38gIBlV8SMTmJkA7UKRo7N"/></svg>
+            <div class="sheet full" data-page-node-id="0tNc2JXljWtu3HQZcOHqvX">
+              <span class="handle" data-page-node-id="i0CIFh7yES30d176N0qVDT"></span>
+              <div class="search static" data-page-node-id="Z8XEES09JownahFzfQEsoC"><svg class="ic" data-page-node-id="lE3f2SlM3Eks3CHcXPLiSl"><use href="#i-search" data-page-node-id="S19zK56zFF5Zm63bM16U3e"/></svg><em data-page-node-id="IUQFfvpMxFQIs8CIL8nD5T">Cari spot…</em>
+                <svg class="ic trail" data-page-node-id="hfHw5wIRO5YsoXLrgIMBQ6"><use href="#i-sliders" data-page-node-id="AtTlj5hN0k16YnpFCIErcm"/></svg></div>
+              <div class="chips static" data-page-node-id="7WwqyqStP6JbflLSq8pR37">
+                <span class="chip on" data-page-node-id="9JxYFKjTFz0CCZaSfhKzW9">Semua</span><span class="chip" data-page-node-id="lBNFeoBzVzxR67QrR1fpSg">Masjid Besar</span><span class="chip" data-page-node-id="xVvU4Wo7l8VoB6KMQxyMl1">Musala</span>
+                <span class="chip" data-page-node-id="0FickRm6fNc1gCJYWXjaHH">Terminal</span><span class="chip" data-page-node-id="13ueIrQh5qPIXDvZLx8Fn2">SPBU</span><span class="chip" data-page-node-id="abZBtotkrBFU0e4i4hb8BR">Rest Area</span>
+              </div>
+              <div class="sheet-head" data-page-node-id="Cp3kB8WED0IHhmGLETIUI8"><b data-page-node-id="Fs8LszBbTrfgOMbWCytBpX">Terdekat dari saya</b><span data-page-node-id="zmHgkoZSXHKqJ5JbvmIyw3">128 spot</span></div>
+              <div class="list-scroll" data-page-node-id="QqQq1GW56Gxh7zZRBB9F3o">
+                <article class="card t-musala" data-page-node-id="yYveT5DSyQsYSE42aky5Et">
+                  <div class="card-top" data-page-node-id="QiEOgFHHMg03pJkUi5rZWo"><span class="tile" data-page-node-id="Dd0SH3Q8Ok5bfIsaFJoKMn"><svg class="ic" data-page-node-id="bo6TemryKmcLiBiw6idc2y"><use href="#i-landmark" data-page-node-id="5YdWbT5om0gzHHgxGuEcg6"/></svg></span>
+                    <div class="card-main" data-page-node-id="x10pLLVEWcytvnpRqsYVTd"><div class="card-name" data-page-node-id="9wUcyJp1NitjMTZpCR07d3">Musala Terminal Giwangan (Blok C)</div>
+                      <div class="card-meta" data-page-node-id="f5ktE68LCPzPEygn1CCW1H"><span class="badge" data-page-node-id="grLAmHbPMN61s5Fpb3654p">Musala</span><span data-page-node-id="UJvSPcDVIFp2ZkccY6CLXH">1,2 km</span></div></div></div>
+                  <div class="card-bot" data-page-node-id="ppKaMOG1XRFOSVBB2Yoaci"><div class="minis" data-page-node-id="RIS3PaicDHojH1kJ4FfSxT">
+                    <span class="mini" data-page-node-id="lIQH1RrX0ZfX0B29bG5mSp"><svg class="ic" data-page-node-id="2A1shscQeYuJiLU55KLaII"><use href="#i-droplet" data-page-node-id="f6WHnKJlKMY5Z7VBlDAKRD"/></svg>Wudhu saja</span>
+                    <span class="mini" data-page-node-id="rDHcv28nAcHkP7mqRBhzP5"><svg class="ic" data-page-node-id="XZsmxDN49a7HgnBkrfnxR2"><use href="#i-clock" data-page-node-id="RMU1EVvmp7cQXHHQyRGMzP"/></svg>24 jam</span>
+                    <span class="mini" data-page-node-id="K8DluTEEmg5l8MYvlmgaxr"><svg class="ic" data-page-node-id="Jc8RVoqoZDmsFb8iZeyb8i"><use href="#i-bike" data-page-node-id="wny0Np3z2UK4iUZHZYZOID"/></svg>Parkir ✓</span></div>
+                    <span class="verify" data-page-node-id="hBYdfQnOgAmoFVlSrcFTfB"><svg class="ic" data-page-node-id="T0xsUEG9X5WjRFIt24Djx6"><use href="#i-check" data-page-node-id="7rSAWDsDLpottAy4ZcnEYF"/></svg>Diverifikasi 2 jam lalu</span></div>
+                </article>
+                <article class="card t-masjid" data-page-node-id="CxItocUnXl1uDOf97IaU7n">
+                  <div class="card-top" data-page-node-id="ED58hklMAfkP6NAxnXsfBQ"><span class="tile" data-page-node-id="ikppnWc7mSp0eG9pShZeCD"><svg class="ic" data-page-node-id="FTWFGaeoToGZvbKwacVroM"><use href="#i-moon" data-page-node-id="9AjjXHkHS9EF0PpnGobyjn"/></svg></span>
+                    <div class="card-main" data-page-node-id="MY5EyKslm2GiIBwYqR5EW7"><div class="card-name" data-page-node-id="YA9TRl4lXXKZ3gT4gMe1YZ">Masjid Jami Ni'matul Ittihad</div>
+                      <div class="card-meta" data-page-node-id="pe4Te3EvAuE1j2gj1JXl6Z"><span class="badge" data-page-node-id="kYos2YJU5pkHM0OfDbQXIX">Masjid Besar</span><span data-page-node-id="RgRC2eIe7eAtrmRcypN8BJ">2,4 km</span></div></div></div>
+                  <div class="card-bot" data-page-node-id="0lpmCCovv6vvrREw9FsVHe"><div class="minis" data-page-node-id="fE83sfCdtOY1AjPffkg1Cy">
+                    <span class="mini" data-page-node-id="DgxMtjI8BEHRi4BX8BLggV"><svg class="ic" data-page-node-id="QJNTwZPM6MpbaZTUGTpRMy"><use href="#i-droplet" data-page-node-id="EWLkjLeQrVvADMtLVQ81Hj"/></svg>Kran mandi</span>
+                    <span class="mini" data-page-node-id="ulPM9nKCo1Axg1F3ay7m1i"><svg class="ic" data-page-node-id="HKsjBwiLsGtj49ABh60YJZ"><use href="#i-clock" data-page-node-id="2hBlMFaN0qAApiLhhFJsi4"/></svg>24 jam</span>
+                    <span class="mini" data-page-node-id="ewlJSNvecKkAr7iPSAzFEv"><svg class="ic" data-page-node-id="mdyVT5cpvGsHDn9aMnDZ2n"><use href="#i-bike" data-page-node-id="TiecQaqTVqWgDJEI31Wyw6"/></svg>Parkir ✓</span></div>
+                    <span class="verify" data-page-node-id="ARJ5kBFn4UkEliWkWtMs7Z"><svg class="ic" data-page-node-id="exFqfNcSYzEklo2w2RjwHm"><use href="#i-check" data-page-node-id="1SQJQxkwSFWLWurLjr01tp"/></svg>Diverifikasi 3 hari lalu</span></div>
+                </article>
+                <article class="card t-spbu" data-page-node-id="Ip4sTUGKG1eVNP4iOe4v9p">
+                  <div class="card-top" data-page-node-id="cWHPI5cMx4bSrev9i3CAu8"><span class="tile" data-page-node-id="Iqbf0U3Wtm16fCSRTVTmqH"><svg class="ic" data-page-node-id="QYdIWF2F3CAFfnddUZU6En"><use href="#i-fuel" data-page-node-id="5SILBTFdKPVpn8HDdIYqkt"/></svg></span>
+                    <div class="card-main" data-page-node-id="84BEOTxwfsAGOk7HHXssIR"><div class="card-name" data-page-node-id="Y52CQ3yqHY1pMCu4tgHO2N">SPBU Rest Area Km 419</div>
+                      <div class="card-meta" data-page-node-id="nvpDyMru9FUFzLqUkqWLAH"><span class="badge" data-page-node-id="zVmB2ACD15vULokqg74pc3">SPBU</span><span data-page-node-id="uIF9zNRLyhKL8MQ1QK2uNp">4,6 km</span></div></div></div>
+                  <div class="card-bot" data-page-node-id="S5QmsS02mko95YilW7sI7s"><div class="minis" data-page-node-id="BhVa0yZxFEA3YvBuOAtoSB">
+                    <span class="mini" data-page-node-id="Ir0V0dnrA0WtccyaDD9Vmo"><svg class="ic" data-page-node-id="TpIuJjnSIKfE4TlSwnnSdk"><use href="#i-droplet" data-page-node-id="TVtsCYfmH7aQdxyireglsa"/></svg>Air isi</span>
+                    <span class="mini" data-page-node-id="ISTDAp28HT7zMn6FlRLSDE"><svg class="ic" data-page-node-id="pi2eokpu8d0fcpqJoE3cFc"><use href="#i-clock" data-page-node-id="znr7SPyYDmfjg9FnennOoh"/></svg>24 jam</span>
+                    <span class="mini unknown" data-page-node-id="CKBuv765ulOBzKlfXKjVl0">Belum ada info</span></div>
+                    <span class="verify off" data-page-node-id="2fmlwflPrPYIGW1kqA8tCc">Belum diverifikasi</span></div>
+                </article>
+                <article class="card t-terminal" data-page-node-id="SR6Aw1SlfjdGhfUNhKHk4E">
+                  <div class="card-top" data-page-node-id="bVxYskfbkZlNJnBw3Eiy6P"><span class="tile" data-page-node-id="v4lAiHkXtQM6zDcsYaoVKW"><svg class="ic" data-page-node-id="ilIM69ffuEoJZNpWDFWZxv"><use href="#i-bus" data-page-node-id="dTwlOYK8qqNAjgXGJLRC5O"/></svg></span>
+                    <div class="card-main" data-page-node-id="KgwlYk6SNqEyjknXx4sarV"><div class="card-name" data-page-node-id="tgCpnTEgacs04rMM8MB3Dh">Musala Terminal Arjosari (Blok D)</div>
+                      <div class="card-meta" data-page-node-id="GNrB3bHX0S4ObZclnNSX5A"><span class="badge" data-page-node-id="2Ak6it6euimdw2JNmvmEOt">Terminal</span><span data-page-node-id="cZ6EgQ2L0Ht1Ef19aic5cv">5,2 km</span></div></div></div>
+                  <div class="card-bot" data-page-node-id="5lsXLqwlqVrXBeZlXEpoqt"><div class="minis" data-page-node-id="L2xCrVqhYucHcQmpC3iUjV">
+                    <span class="mini" data-page-node-id="534qFFRqx0amnsOqyRtyPf"><svg class="ic" data-page-node-id="Hb4lAI2XaHrKRjeG4eohbB"><use href="#i-droplet" data-page-node-id="aKqKvAvWnKeTCcJ3qa5DjQ"/></svg>Wudhu saja</span>
+                    <span class="mini" data-page-node-id="zE1CV8EGuFuP1pBoqEEB1g"><svg class="ic" data-page-node-id="tWxTJ3xbBaU1RHxIFu1prS"><use href="#i-clock" data-page-node-id="knBPjZSqXtYhRlR868EKJG"/></svg>24 jam</span>
+                    <span class="mini" data-page-node-id="QVQGzUGGVXBTR2rTLtWDy2"><svg class="ic" data-page-node-id="qJrDC1NXb7ZCrWTGP1cQRI"><use href="#i-bike" data-page-node-id="cfpnMpLfPzZGYkt3QQtr6Y"/></svg>Parkir ✓</span></div>
+                    <span class="verify" data-page-node-id="ViF6bCZXCNrkihDFTnwcPt"><svg class="ic" data-page-node-id="MjIdJpWXZyrbIXsP0Q2glV"><use href="#i-check" data-page-node-id="8lH8cGlibhlfPQzOHfmkPz"/></svg>Diverifikasi 5 hari lalu</span></div>
+                </article>
+                <article class="card t-rest" data-page-node-id="SCVJVxuSM8MCPysLLeav2l">
+                  <div class="card-top" data-page-node-id="wqG22t9XfQFG4igQkRED5Z"><span class="tile" data-page-node-id="dYuADGUGPYolB9yxXskWQI"><svg class="ic" data-page-node-id="VIoDqlLxsxUrSvymGk6mMV"><use href="#i-tent" data-page-node-id="GDEIgDv7rBqt9elJ6shDXB"/></svg></span>
+                    <div class="card-main" data-page-node-id="xRo1oKHF4Bws385zqBzniC"><div class="card-name" data-page-node-id="EFzOFw3KftdpVhTAP8ecId">Rest Area KM 207 Batang</div>
+                      <div class="card-meta" data-page-node-id="9HYKzLiGF3iBDh68AuOscW"><span class="badge" data-page-node-id="5iGGBy9BloTlw7t0KckZJy">Rest Area</span><span data-page-node-id="ANizjLI2ySTWugLot8C777">6,8 km</span></div></div></div>
+                  <div class="card-bot" data-page-node-id="PR3yRcl1OlLQEsuvHei5wj"><div class="minis" data-page-node-id="9PcQjiEz8WEKBOjRGsdkwT">
+                    <span class="mini" data-page-node-id="ku7q7EzkAE02nPx1RP5xv9"><svg class="ic" data-page-node-id="rCfRisctHEPsWGRmRbw2yx"><use href="#i-droplet" data-page-node-id="WJvYCj3Hv77o4nmyLiEX6T"/></svg>Kran mandi</span>
+                    <span class="mini" data-page-node-id="3PKTjcX9OPyJRUEDfil0PA"><svg class="ic" data-page-node-id="bzCdeTdl2HKhWU2bEgQUuj"><use href="#i-clock" data-page-node-id="oQAhDGM5ln4HuAIvBBa8n5"/></svg>24 jam</span>
+                    <span class="mini" data-page-node-id="xCgeEaN1nVO8TQP8ZTwewE"><svg class="ic" data-page-node-id="mGaPNpQEXaWlVu3Ub82wz8"><use href="#i-bike" data-page-node-id="YMIVGrG6ntkkBJMsrxAWYF"/></svg>Parkir ✓</span></div>
+                    <span class="verify off" data-page-node-id="tALFQORxu6hPnuihLRC0j4">Belum diverifikasi</span></div>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+
+      <!-- 3 · DETAIL -->
+      <figure class="frame" data-page-node-id="fuN2kT4BfBCDkA3Gb61J5y">
+        <figcaption data-page-node-id="vRdMafGnZgjHXnSBWufsFb"><b data-page-node-id="5qAoQiner8jDp8qo4urYcV">3 · Rincian spot</b><span data-page-node-id="ef3X0ewddUj4OgHrV9hFoz">Data yang tidak diketahui ditulis apa adanya</span></figcaption>
+        <div class="phone" role="img" aria-label="Detail spot Musala Terminal Giwangan dengan atribut, catatan etiket, dan tombol Masih ada" data-page-node-id="j5EN9WOtf03RdgtrZGSS9b">
+          <div class="notch" inert data-page-node-id="GGIvFel98U9KI4icGJ6mCz"></div>
+          <div class="statusbar" inert data-page-node-id="VE6qFd9A43Xo55egdCfCHz"><span data-page-node-id="9nxgixPb07U290E4MrV9wj">09:41</span><span class="ics" data-page-node-id="NCusoOlTHp5D3bqhM7dxFs">
+            <svg class="ic" data-page-node-id="Rjs7K2SHkVUfUGY1hOTdqg"><use href="#i-signal" data-page-node-id="QG2XlF38b94xndcX9zqp7G"/></svg><svg class="ic" data-page-node-id="kGBxaGj61wxcSKwpyC2Zrk"><use href="#i-wifi" data-page-node-id="jQwEAIEnNaiIdVlT7wvfCD"/></svg><svg class="ic" data-page-node-id="S2swcwk7ES1vTtsQCTcsv5"><use href="#i-battery" data-page-node-id="0mo6sTyFm1l9TVWll4SUEm"/></svg>
+          </span></div>
+          <div class="screen" inert data-page-node-id="XQBKUbibTxwJ9c6PeGecxW">
+            <svg class="map" viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" data-page-node-id="EcrvRe4urwsPYuGFmZ2RED"><use href="#map-phone" data-page-node-id="LstFt2DkyRcflLLkUdU79q"/></svg>
+            <div style="position:absolute;inset:0;background:rgba(10,28,23,.42)" data-page-node-id="lEuf1cb7gQWyAHRgLSI9CY"></div>
+            <div class="sheet detail" data-page-node-id="G9QhMpNfA7mpY7n8zzkDrY">
+              <div class="detail-top" data-page-node-id="Fo4HNa9ViWt1vk2KW8K5Fb">
+                <span class="rbtn" data-page-node-id="7Z9pGmP3uu1pFWirEwTGmh"><svg class="ic" data-page-node-id="2S8zEVFxHfkhX2pKcn8KVp"><use href="#i-arrow-left" data-page-node-id="RhdJ1aMch07FeqZEFeNZES"/></svg></span>
+                <span class="spacer" data-page-node-id="wEgPuZUeRDBM8eEa5GUG2H"></span>
+                <span class="rbtn" data-page-node-id="MD2wOLe587kHAmsV5PWxoB"><svg class="ic" data-page-node-id="QNJfBab3iJGUoAL7odL4tz"><use href="#i-navigation" data-page-node-id="NuWFmafTn60Ri3IJcMuwsT"/></svg></span>
+              </div>
+              <div class="detail-title" data-page-node-id="1oRIf0Y6EbyW9hg3Pd14il">Musala Terminal Giwangan (Blok C)</div>
+              <div class="detail-sub" data-page-node-id="5KHX60ulrpLAYnCnxytnQJ">Terminal Giwangan · 1,2 km dari kamu</div>
+              <div class="badge-row" data-page-node-id="ZRnhGc2QA9FN3YUkoncrQp">
+                <span class="big-badge t-musala" style="background:var(--ts);color:var(--ti)" data-page-node-id="PFY2AkR95ojBUbyVq0G9sx"><svg class="ic" data-page-node-id="Ho2oZP9j2YXyZOEVryb1yw"><use href="#i-landmark" data-page-node-id="akGpGQaNL5X84oGrMgnYWJ"/></svg>Musala</span>
+                <span class="big-badge" style="background:var(--water-soft);color:var(--water-ink)" data-page-node-id="JLfrFz1zndAyZa5zAR7wEa"><svg class="ic" data-page-node-id="5vOWHANFjORvzwEcTaTjLC"><use href="#i-droplet" data-page-node-id="zn1NdwRUhrhqb8kkYUSYG4"/></svg>Wudhu saja</span>
+                <span class="big-badge" style="background:var(--success-soft);color:var(--success-ink)" data-page-node-id="OO1rs5w2WL7ahHH9yUo9mK"><svg class="ic" data-page-node-id="0GmRDCe8aHiD6Ei7Cbwwe8"><use href="#i-bike" data-page-node-id="q8XULkwVq8AXArYFcbNDfZ"/></svg>Parkir sepeda</span>
+              </div>
+              <div class="attrs" data-page-node-id="uL0a3gtyaACpqSWLbEUiGG">
+                <div class="attr" data-page-node-id="YIsyToGsbMAEBWTS15RUT3"><svg class="ic" data-page-node-id="PxMfOnz1EXKU96zUYgJnbJ"><use href="#i-droplet" data-page-node-id="U9Wv1HKR8x9VyJYswUSSzo"/></svg><div data-page-node-id="5ccYQQjZ1ysX2FrkuRvrMV"><b data-page-node-id="Av4vJlwutS1y1DQTlM3cm2">Air</b><span data-page-node-id="ikRLWJgJcMqkb0FsbF58Op">Wudhu saja</span></div></div>
+                <div class="attr" data-page-node-id="E1S2l7znliF53h1WzLDIS1"><svg class="ic" data-page-node-id="PtoTBtSSXFuSOVyZdnMS6L"><use href="#i-clock" data-page-node-id="wVT40WeS6RvXbN4v2PVriW"/></svg><div data-page-node-id="3NEPeZvxTu4MBA0bxeiA6B"><b data-page-node-id="cTuTu8JiA58A3fE5ngaiTx">Jam</b><span data-page-node-id="spbct5dWmCC4dYJsBElflO">24 jam</span></div></div>
+                <div class="attr" data-page-node-id="AaQVUneqZJvaf50ieyyQUS"><svg class="ic" data-page-node-id="Utex2Qb46Ym6Y4XLptVWae"><use href="#i-bike" data-page-node-id="IDZdUFYL0QXKyv4TKBWots"/></svg><div data-page-node-id="3JkLqWhgCDxgWjDBp0Jf3Z"><b data-page-node-id="zBJuqsy2BTjVaI7ghtWJzy">Parkir sepeda</b><span data-page-node-id="DHVEzymqUh1eLX8xvMWbgp">Ada ✓</span></div></div>
+                <div class="attr" data-page-node-id="T6fCIc7Efy3xsIwGwC1PDw"><svg class="ic" data-page-node-id="fRgk1xKGPo7oaY33ZHUBhK"><use href="#i-user" data-page-node-id="MpOA1kLRfaGXlGepuK63FC"/></svg><div data-page-node-id="GVTbDsGDIlnfiA2BVeBtkJ"><b data-page-node-id="08xEag0UVJyTrq0ao1tg6G">Ramah perempuan</b><span class="unknown" data-page-node-id="6QGxRCL4WDBSrOdit1HXsy">Belum ada info</span></div></div>
+                <div class="attr" data-page-node-id="dwxbq60vLc6JTjiwLPgJAY"><svg class="ic" data-page-node-id="cQAdS8tUZXFSfCthmqMq2j"><use href="#i-info" data-page-node-id="B0xz3rIzdlpJ1nL60Mvh9G"/></svg><div data-page-node-id="5GqIQAzg19TyzNZEaH03bB"><b data-page-node-id="CfD2XouI9D2kqKbdd5exCN">Catatan</b><span data-page-node-id="cgFX4VxNbTfGYC1R3VjUHr">Izin dulu ke marbot kalau mau tidur, bilang “saya musafir”.</span></div></div>
+              </div>
+              <div class="note" data-page-node-id="e7igynBcUqgIpeITBMzAYf"><svg class="ic" data-page-node-id="RQBXD7Jza8OH52a7GjXQyB"><use href="#i-info" data-page-node-id="y4IkbCnyDMGLagVWtdGlnz"/></svg>
+                <p data-page-node-id="JcDEb8tLhnlZzcGMMofRIO">Etiket musafir: jangan shampoo di keran wudhu. Kalau sempat, titip kotak amal atau bantu sapu halaman.</p></div>
+              <div class="verified-line" data-page-node-id="2Z2QqnC260NvqaX0N1HqNk"><svg class="ic" data-page-node-id="9slfa6ScBKkhGrmjSSBEFJ"><use href="#i-check-circle" data-page-node-id="3bQ1qRLGpa8BeuDpx3cUXX"/></svg>Diverifikasi 2 jam lalu oleh musafir lain</div>
+              <div class="actions" data-page-node-id="nEvrFCheACvNgH74jOh9cX">
+                <span class="btn primary" data-page-node-id="aP2Tq12ieLUAuSBAszsC2p"><svg class="ic" data-page-node-id="jzRC3qCCJt823Q8OY8hdeJ"><use href="#i-shield" data-page-node-id="W4ebikj2Y1zLHsTAyT1BFO"/></svg>Masih ada ✓</span>
+                <span class="btn outline" data-page-node-id="hINFEIM7ourSYYOGHGDIEc"><svg class="ic" data-page-node-id="txYS43YFFVvGNBuyzbJsI6"><use href="#i-navigation" data-page-node-id="0WhFe8piHYVuNPSRrWIewb"/></svg>Rute</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+
+      <!-- 4 · TAMBAH PIN -->
+      <figure class="frame" data-page-node-id="2Zfx6J7fDglWIrxnx8CGAW">
+        <figcaption data-page-node-id="7SjbL2RiTYn921y445Cf5Q"><b data-page-node-id="Y9YYBE8QkcrQUr8RwWyVuJ">4 · Tambah · pin</b><span data-page-node-id="MZOUSMEyAkJiBAPcWg7itM">Tombol Lanjut nonaktif sebelum pin ditempatkan</span></figcaption>
+        <div class="phone" role="img" aria-label="Tambah spot langkah satu: peta dengan pin di tengah dan tombol Lanjut" data-page-node-id="nBptuxhHFseNyFJl7VviZB">
+          <div class="notch" inert data-page-node-id="yLIYn3TYXTv16pzqJO4ZRV"></div>
+          <div class="statusbar" inert data-page-node-id="BfIbjiEfVzEktEeFAebU7R"><span data-page-node-id="KmcJJkCp2pfxQhuuzRU0fo">09:41</span><span class="ics" data-page-node-id="8pfpvmGfgGSTg5sWVz9hHk">
+            <svg class="ic" data-page-node-id="aSUFb5tnZgBEiqncTywDn3"><use href="#i-signal" data-page-node-id="0iloX20bKbZ6wzd8OoKBkz"/></svg><svg class="ic" data-page-node-id="aJs3AapC8mIRMPfqmZxnHO"><use href="#i-wifi" data-page-node-id="niWoavGIe7n9LkLqP08D9E"/></svg><svg class="ic" data-page-node-id="RS5rJgKkPmy6V4DYPsw73Y"><use href="#i-battery" data-page-node-id="rdrkBSg1apvfA8KHcVPOa2"/></svg>
+          </span></div>
+          <div class="screen" inert data-page-node-id="ywYsUnk2aBOhFL1ShvwyQV">
+            <svg class="map" viewBox="0 0 390 844" preserveAspectRatio="xMidYMid slice" data-page-node-id="J2lmEENCVUjjZcoAoHvHsz"><use href="#map-phone" data-page-node-id="Zi275qKDwCzwKsB0FQJbFk"/></svg>
+            <svg class="crosshair" viewBox="0 0 180 180" aria-hidden="true" data-page-node-id="vTjhxChnHKs6dLiR6I32Ju">
+              <circle cx="90" cy="90" r="56" fill="#0E7C66" opacity=".12" data-page-node-id="sRIDU7CEuRitA8iZ0w3qi5"/>
+              <circle cx="90" cy="90" r="56" fill="none" stroke="#0E7C66" stroke-width="1.5" opacity=".5" data-page-node-id="WjmA80Hw17AqGfGxkPJreY"/>
+              <g stroke="#0E7C66" stroke-width="2" stroke-linecap="round" data-page-node-id="JXV6NjxEt1UIYlTw9Ex8Zh">
+                <path d="M90 6v30M90 144v30M6 90h30M144 90h30" data-page-node-id="hlBvZkDfasSKvXdtPFqGb7"/>
+              </g>
+              <g transform="translate(90,118) scale(1.3)" style="color:#0E7C66" data-page-node-id="MHyspV9tpWpfpjSIqW4J6w"><use href="#pin-plain" data-page-node-id="jqNAwHlbF8ii7O6Dv8Kkqv"/></g>
+            </svg>
+            <div class="banner" data-page-node-id="GOKTsimXZJoHdoldizhwoz"><svg class="ic" data-page-node-id="KWhS98HAIwY1Vxp7dnB586"><use href="#i-crosshair" data-page-node-id="CXuiAigxWs8y4YXrY0nPqf"/></svg>Ketuk peta untuk menaruh pin</div>
+            <span class="rbtn" style="position:absolute;top:112px;left:16px;z-index:24" data-page-node-id="KmalHrDgzHEq60kSZhpxnk"><svg class="ic" data-page-node-id="zijOt2RrnaADwme3RpECqj"><use href="#i-x" data-page-node-id="CUXMcFeR847sJu08YNHuDD"/></svg></span>
+            <div class="pinbox" data-page-node-id="4sv2gaVQmB4BN2vgWffjun">
+              <b data-page-node-id="N2WbBU1LhGZIpTF5rRjcB7">Pin di titik ini?</b>
+              <p data-page-node-id="VCjQiZ4ynPiaJO2rhxU3jN">Dekat Jl. Malioboro, Yogyakarta · akurat ± 10 m</p>
+              <div class="actions" data-page-node-id="pTNBihppJFRVzbGbH5Iwuq">
+                <span class="btn ghost" data-page-node-id="nxEqGh0LxdkJoyL24DR4AQ">Batal</span>
+                <span class="btn primary" data-page-node-id="MRdgztKXuPmgEzYSAC6lti">Lanjut</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+
+      <!-- 5 · FORMULIR -->
+      <figure class="frame" data-page-node-id="29QIIdL95sRSgqRqqRF1Xl">
+        <figcaption data-page-node-id="SK5oHWoCLVGjXuRODtURON"><b data-page-node-id="Zv2NueYwGxYAfzbkrtN7WX">5 · Tambah · isi info</b><span data-page-node-id="kMwA6raFsPdRdjSHZH9y40">Ramah perempuan punya tiga pilihan, bukan tebakan</span></figcaption>
+        <div class="phone" role="img" aria-label="Formulir tambah spot dengan nama, jenis, air, jam, parkir sepeda, ramah perempuan, dan catatan" data-page-node-id="bidp8g4bW3Vu8rnpwsD8Xh">
+          <div class="notch" inert data-page-node-id="DPn2pGTEpMN1to1HQ0AMlv"></div>
+          <div class="statusbar" inert data-page-node-id="1FyubO8DFjiqyyqisvPWYq"><span data-page-node-id="bhXs6hRukKOwlkIMRK0snU">09:41</span><span class="ics" data-page-node-id="npuiHOgi5qOyDzBvlPsmod">
+            <svg class="ic" data-page-node-id="VSOeQ9MLpoVGzK48ZKQ9Hw"><use href="#i-signal" data-page-node-id="L551vC4BM2xfFLVJSRzrVV"/></svg><svg class="ic" data-page-node-id="KwnYk8s7WRdBU1p8PbeJZ9"><use href="#i-wifi" data-page-node-id="SuW8KnQavjpTZEMVBBhvID"/></svg><svg class="ic" data-page-node-id="2zoOLbNlZVepNfEI26a7OZ"><use href="#i-battery" data-page-node-id="ftthrgQi5NnQ51oFwjwzDA"/></svg>
+          </span></div>
+          <div class="form-screen" inert data-page-node-id="8RFUTaW3Wu0itu1Sq1GMwp">
+            <div class="form-head" data-page-node-id="S7oYegMNW7DNE7F7IYtw6W"><span class="rbtn" data-page-node-id="9o3B9eDqYVfmyP6arjc65H"><svg class="ic" data-page-node-id="0Gvp5sFsCxEozNej22pJoI"><use href="#i-arrow-left" data-page-node-id="bkhzKAGRz1DTmuwA2LtNzy"/></svg></span>
+              <b data-page-node-id="Pz2p36nKPaTjNdB34E3CSe">Info spot</b><span class="rbtn" data-page-node-id="j2T5iWNt1QuAnJnxzU0ocp"><svg class="ic" data-page-node-id="eVt9QB9wrF4BqXv6bXTmXS"><use href="#i-x" data-page-node-id="k9uTGjdKTZgpjFNRvhbp2t"/></svg></span></div>
+            <div class="form-body" data-page-node-id="DmmSvMBAtvClCQGc6VzPCl">
+              <div class="field" data-page-node-id="zEZiekIqQceXx08OyhFMfF"><label for="f-nama" data-page-node-id="wp7BJWDXLDoGuTbCHz8YUJ">Nama spot · wajib</label>
+                <input class="input" id="f-nama" type="text" placeholder="cth: Musala Jami Al-Ikhlas" required data-page-node-id="V2xQtL0adX4Ge9k5n53uYJ"></div>
+              <div class="field" data-page-node-id="sDnRacl9NteRuEvWaAfxCO"><label data-page-node-id="uxrvlsfDPSProSmqzJFhuX">Jenis</label>
+                <div class="seg" role="radiogroup" aria-label="Jenis" data-page-node-id="xFo2HP6dDtWfBFbHh9BNAO">
+                  <span class="seg-btn" role="radio" aria-checked="false" data-page-node-id="VqEbW0JvZgl3VPFKvsJtEC"><svg class="ic" data-page-node-id="qZwNPWvadWYNeJXgThnQBo"><use href="#i-moon" data-page-node-id="bUekn1N6i13aNtV0iGc0TZ"/></svg>Masjid Besar</span>
+                  <span class="seg-btn on" role="radio" aria-checked="true" data-page-node-id="Ddh5ZzqC9sIQ3RXpZLUijb"><svg class="ic" data-page-node-id="NTWWB7mtzyUkr4zFOcIdtY"><use href="#i-landmark" data-page-node-id="PDaVMFd1qaCcgIyG0dHtM2"/></svg>Musala</span>
+                  <span class="seg-btn" role="radio" aria-checked="false" data-page-node-id="GR9II0nHJpfV7SXliZ9CBq"><svg class="ic" data-page-node-id="8Dwsa692qS3X4L3L98Xzjw"><use href="#i-bus" data-page-node-id="OaFdYhC7lILUzc87ydmh8o"/></svg>Terminal</span>
+                  <span class="seg-btn" role="radio" aria-checked="false" data-page-node-id="L6ayRMblY21AuqdZ4KYPre"><svg class="ic" data-page-node-id="EeDzKELrdkcwTPY0O8leGi"><use href="#i-fuel" data-page-node-id="9dtITmZSu6rBiWNyHSmumu"/></svg>SPBU</span>
+                  <span class="seg-btn" role="radio" aria-checked="false" data-page-node-id="ySiRhD0D2jhFCaDAtEtx2J"><svg class="ic" data-page-node-id="y8ckDhFUQwokSGTJvcVvyo"><use href="#i-tent" data-page-node-id="QTOATIfyDN4soerSPoae9n"/></svg>Rest Area</span>
+                </div>
+              </div>
+              <div class="field" data-page-node-id="DEj6j0uDgopZQdbXctfUP5"><label for="f-air" data-page-node-id="F54QtpWBdPVi5IfHa6bEAx">Air</label>
+                <select class="input" id="f-air" data-page-node-id="lSoBJZGunJqAh0XXtQy0Dp">
+                  <option data-page-node-id="Xkf22FUQnoLB3xa0UAHHoL">Kran mandi</option><option selected data-page-node-id="ql49USZbXsSeAiINm4xuA0">Wudhu saja</option><option data-page-node-id="n5yIEkHWtCvzeAlir5fem0">Air isi</option>
+                  <option data-page-node-id="Biv8DtO2KYKDnVJabZQpfh">Tidak ada</option><option data-page-node-id="DejjlQ8LsNVKZQneDLCDj1">Belum ada info</option>
+                </select></div>
+              <div class="field" data-page-node-id="o3ZT9CtwVKC4fig2JjBkJS"><label for="f-jam" data-page-node-id="G5RB7t3yTPJTBMvnh3w51F">Jam buka</label>
+                <input class="input" id="f-jam" type="text" placeholder="24 jam" data-page-node-id="gwODHtJ7fuR7w1ATArkJUR"></div>
+              <div class="swrow" data-page-node-id="7Ylo6tcDE6JZsfaTDuPoPK"><b data-page-node-id="EKKkX5jHWeqg5z40BPPYQI">Parkir sepeda</b>
+                <label class="sw" data-page-node-id="BVhdYPG2EnEmLrhbkY3GaI"><input type="checkbox" checked aria-label="Parkir sepeda" data-page-node-id="EfDWoqye9zz2siM7v6O8Jk"><i data-page-node-id="cgJyEZlnTTSU4shpE9ZSc7"></i></label></div>
+              <div class="field" data-page-node-id="DXHpW36LwUZD2L7tn8geXq"><label data-page-node-id="rYbVzUKeCxOp6deJS9AIt3">Ramah perempuan</label>
+                <div class="tristate" role="radiogroup" aria-label="Ramah perempuan" data-page-node-id="RAUTvitDF4GDFBfARHXq2H"><span role="radio" aria-checked="false" data-page-node-id="9qiJny33s7h26OqhLs9U5a">Ya</span><span role="radio" aria-checked="false" data-page-node-id="nPEcjG1jQCXpWWNTWSyBjR">Tidak</span><span class="on" role="radio" aria-checked="true" data-page-node-id="BbPjT3ivdBj9HsJQa3JYD7">Belum ada info</span></div></div>
+              <div class="field" data-page-node-id="AXd7Fy85qXrfhLosTWU7n1"><label for="f-catatan" data-page-node-id="D7edLS7ePZSQbSIh1ZRTiH">Catatan</label>
+                <textarea class="input" id="f-catatan" placeholder="Izin dulu ke marbot kalau mau tidur, bilang saya musafir"></textarea></div>
+              <div class="reassure" id="f-reassure" data-page-node-id="NemUi273oCDy4K0AYCKzh6"><svg class="ic" data-page-node-id="6yYABP53e4qy4nJG1Dsilm"><use href="#i-shield" data-page-node-id="HD0SSIGLDQpyqrjhdrGvcp"/></svg>
+                Spot baru diperiksa dulu sebelum tampil di peta.</div>
+              <span class="btn primary submit" aria-describedby="f-reassure" data-page-node-id="RGAKQexTunAxGTzzM7TzMB">Kirim untuk ditinjau</span>
+            </div>
+          </div>
+        </div>
+      </figure>
+
+      <!-- 6 · SUKSES -->
+      <figure class="frame" data-page-node-id="pBuBJsoFyiGGxA5mrNOwi1">
+        <figcaption data-page-node-id="HlFEP0ApOUxYj5BVM5Pi7m"><b data-page-node-id="Vb9zFojeS6QHAXimN5zKy9">6 · Sukses</b><span data-page-node-id="bZnexP5HHwbNvjHZZIwIBe">Tanpa akun, tanpa surel, tanpa janji palsu</span></figcaption>
+        <div class="phone" role="img" aria-label="Layar sukses: Terima kasih, spot kamu menunggu persetujuan" data-page-node-id="hHRLbh8CgkKjBFa4IesDVo">
+          <div class="notch" inert data-page-node-id="whx6qwXvaKLlsMVSKBVoBB"></div>
+          <div class="statusbar" inert data-page-node-id="WWCsE8Exv5GzQZih6hyag9"><span data-page-node-id="kObNG3aI1BhqeTixOr7a2Y">09:41</span><span class="ics" data-page-node-id="XqCbzBPCKlD2Co797uL6FW">
+            <svg class="ic" data-page-node-id="21hbsspkPwxMedJzwngwAA"><use href="#i-signal" data-page-node-id="qauwtw5tGeLpjc1qEoXVon"/></svg><svg class="ic" data-page-node-id="HkhWsDlhtJToSICHRcAdeR"><use href="#i-wifi" data-page-node-id="g1dNKuzC7riH20H73QcITv"/></svg><svg class="ic" data-page-node-id="Ix63Pb9IAl6iwAwYNTxnuk"><use href="#i-battery" data-page-node-id="c82wVq6U1Mts7G3jyrMVNX"/></svg>
+          </span></div>
+          <div class="ok-wrap" inert data-page-node-id="swPpgWIlck0IHRWYRDUhjQ">
+            <div class="ok-ic" data-page-node-id="ajBgABHVEjKOa45mNwV1eU"><svg class="ic" data-page-node-id="ojNBnJWiQpdIUnJTkvReDz"><use href="#i-check-circle" data-page-node-id="9wXRJifmJDWWltgZbxmasp"/></svg></div>
+            <h2 data-page-node-id="ECybRduj6bkzSEkqyvPEGE">Terima kasih! 🙏</h2>
+            <p data-page-node-id="Ni39HMPcuKdZQ4izBAcv3K">Spot kamu menunggu persetujuan.</p>
+          </div>
+        </div>
+      </figure>
+
+    </div>
+  </section>
+
+  <footer class="board-foot" data-page-node-id="Bs6Re5jjA0LGVwDk5SdNbl">
+    <b data-page-node-id="UZ5lB6neVQWFgBh6WYdnST">Catatan rancangan.</b> Data yang belum diketahui selalu ditulis <b data-page-node-id="CBEJIDCCiNhRsOYP6wbGqj">Belum ada info</b>, tidak pernah ditebak.
+    Spot baru berstatus menunggu tinjauan dan tidak langsung tampil di peta. Tidak ada akun, foto, ulasan,
+    maupun iklan. Warna, tipografi, dan komponen mengikuti token tampilan yang sudah disetujui;
+    peta dibuat vektor, bukan foto. Penanda memakai warna <b data-page-node-id="3dOP8FvXOMOwowuKYchJkv">dan</b> ikon jenis sekaligus, jadi
+    jenis spot tetap terbaca tanpa warna. Lembar bawah bisa diketuk lewat panah, bukan hanya ditarik.
+    Keenam layar kini punya versi komputer; bingkai ponsel tetap menjadi rujukan komponennya.
+  </footer>
+</main>
+</body>
+</html>

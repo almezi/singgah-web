@@ -26,12 +26,14 @@ one still exists. The owner uses it on their next ride — that is the real acce
    (most users are cyclists on the road, so the layout is mobile-first and desktop gets a widened
    two-pane version of the same screens). "Mobile" in the mockup means "viewed in a phone
    browser", not a native app. App-store packaging (PWA/TWA) is out of scope for MVP.
+6. **UI framework:** Bootstrap 5 (CSS + Icons) via CDN replaces hand-rolled CSS (locked with
+   owner, 2026-11-09). The approved look and design tokens live in `design/singgah-mockup.html`.
 
 ## Tech Stack
 
 | Piece | Choice | Why |
 |---|---|---|
-| Frontend | Plain HTML/CSS/JS, no framework, no build step | Owner is a beginner; every file readable |
+| Frontend | Plain HTML/JS + Bootstrap 5.3 CSS + Bootstrap Icons via CDN — no JS framework, no build step | Beginner-friendly components; every file readable |
 | Map | Leaflet 1.9 (CDN) + OpenStreetMap tiles | Free, no API key |
 | Database | Supabase (free tier), accessed with `supabase-js` v2 via CDN | Free, has dashboard for approving spots |
 | Hosting | Vercel free tier (Netlify/Cloudflare Pages are acceptable substitutes) | Free, deploys a static site in one command |
@@ -83,8 +85,8 @@ No build, no lint, no test runner in MVP (see Testing Strategy).
 ```
 singgah-web/
 ├── index.html               # single page: map + list + detail + add form
-├── css/
-│   └── style.css            # mobile-first styles
+├── prototype/
+│   └── index.html           # clickable mock-data prototype (Bootstrap, pre-Supabase)
 ├── js/
 │   ├── config.js            # Supabase URL + anon key (anon key is public by design)
 │   ├── api.js               # small fetch wrapper around Supabase REST
@@ -121,6 +123,9 @@ async function loadApprovedSpots() {
 - Every file starts with a one-line comment saying what it does.
 - No cleverness: explicit code over compact code. If it needs a comment to understand, simplify first.
 - Unknown values are shown honestly: "belum ada info" — never invented defaults.
+- Bootstrap first: use built-in components and utilities (offcanvas, toast, badge, btn) before
+  writing any custom CSS; custom CSS is limited to the token override block, map pins, and
+  sheet mechanics.
 
 ## Testing Strategy
 
@@ -183,6 +188,13 @@ Plus the dogfood criterion: the owner uses the app on one real trip.
    the only manual step the owner owns; everything else is code.
 3. **Exact tile style:** default OSM tiles for MVP; a friendlier style (e.g. Carto) is a
    one-line swap later if desired.
+4. **Supabase free tier auto-pause:** free projects pause after 7 days of inactivity — before
+   launch, set up a weekly heartbeat (e.g. GitHub Actions cron hitting a real query).
+   Researched 2026-11-09.
+5. **OSM tile policy + mobile path:** OSM tile usage policy bans bulk/pre-emptive caching —
+   keep tiles network-only in v0.1 with the tile URL in one config constant. Mobile path
+   decided from research 2026-11-09: PWA-first, TWA to Play Store later (manifest + icons
+   prepared at real build).
 
 ## Out of Scope (parked on purpose — revisit after dogfooding)
 

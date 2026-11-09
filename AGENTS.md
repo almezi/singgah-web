@@ -4,14 +4,24 @@
 
 Singgah: a mobile-first web app where cyclists/backpackers in Indonesia find free wash & rest
 spots (masjid besar, musala, terminal, SPBU, rest areas). **Currently pre-code**: the repo holds
-only the spec and handoff docs. Do not start writing code unless the plan/task phase has been
-approved by the owner.
+the spec, handoff, approved design frames, plan/task drafts and the full documentation set — but
+no application code. Do not start writing code unless the plan/task phase has been approved by
+the owner.
 
 ## Read these first
 
 - `SPEC-singgah.md` — the source of truth. Scope, data model, boundaries, success criteria.
   Update the spec FIRST when a decision changes, then change code.
 - `HANDOFF-musafir-project.md` — project backstory and locked product decisions.
+- `README.md` and `docs/README.md` — documentation index; `docs/guided-tour.md` explains every
+  file in reading order.
+- `docs/api-contract.md` — the frozen DOM IDs, config constants and function signatures. Parallel
+  agents call these by name and never edit the owner lane's files.
+- `docs/decision-log.md` — locked decisions, open questions, and known contradictions between
+  the spec, the prompts and the approved design board. Do not resolve those silently.
+- `docs/branching-strategy.md` — proposed git workflow (proposal, OQ-13): one protected `main`,
+  one short-lived `build/mvp` for all waves, a tag per deploy. **Branch by phase, not by agent** —
+  parallel agents share this working directory, so they commit to the same branch, different files.
 
 ## Workflow rules (spec-driven development)
 
@@ -23,8 +33,8 @@ approved by the owner.
 
 ## Locked decisions (from the spec — do not relitigate silently)
 
-- Plain HTML/CSS/JS, **no framework, no build step, no npm project**. Leaflet 1.9 and
-  supabase-js v2 via CDN only.
+- Plain HTML/JS with **Bootstrap 5 + Bootstrap Icons via CDN — no JS framework, no build step,
+  no npm project**. Leaflet 1.9 and supabase-js v2 via CDN only.
 - Launch area: Yogya city + Jakarta→Yogya corridor only.
 - Open add-spot flow, no login. User submissions land `status='pending'`; only the owner
   approves, via the Supabase dashboard. Only `approved` rows are publicly readable.
@@ -51,8 +61,13 @@ js/                 config.js · api.js · map.js · spots.js · contribute.js �
 scripts/            seed-spots.mjs
 data/               playbook-spots.json (real researched spots — research data, do not rewrite casually)
 design/             singgah-mockup.html (UI mockup reference — approved look, tokens, palettes)
-docs/               manual-test-checklist.md
+prototype/          index.html (clickable mock-data prototype — Bootstrap, pre-Supabase)
+docs/               manual-test-checklist.md + architecture.md, api-contract.md,
+                    data-model.md, design-system.md, ui-copy.md, setup.md,
+                    deployment.md, owner-guide.md, decision-log.md, guided-tour.md,
+                    README.md, research-*.md
 tasks/              plan.md, todo.md (created in planning phase)
+README.md           project entry point + documentation index
 ```
 
 ## Hard boundaries
