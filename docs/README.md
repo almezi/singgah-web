@@ -33,9 +33,10 @@ one-paragraph description of every file lives in `docs/guided-tour.md`.*
 
 ## Status
 
-**Pre-code / planning.** Every doc here describes the planned system; no application code exists
-yet. Docs marked as drafts (`tasks/plan.md`, `tasks/todo.md`) await owner approval in a later turn.
-The work is gated: Specify → Plan → Tasks → Implement.
+**Planning approved / Wave P in progress.** `tasks/plan.md` and `tasks/todo.md` were **approved
+2026-11-09 (gate G1)**; OQ-2 (plain fetch) and OQ-13 (branching) were decided the same day. The
+prototype is being built on `build/mvp`; Wave 0+ is gated on G2 (accounts), and D1 also needs the
+playbook file (OQ-6). The work is gated: Specify → Plan → Tasks → Implement.
 
 When a decision changes: **`SPEC-singgah.md` first**, then the affected docs, then code.
 

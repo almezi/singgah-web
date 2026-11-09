@@ -15,13 +15,15 @@ design, and the documentation. Work is gated:
 
 **Specify → Plan → Tasks → Implement**, with owner review between phases.
 
-`tasks/plan.md` and `tasks/todo.md` are **drafts awaiting your approval in a later turn**. No agent
-should write code until they are approved. See `AGENTS.md`.
+`tasks/plan.md` and `tasks/todo.md` were **approved 2026-11-09 (gate G1)**; branching (OQ-13) and
+the API style (OQ-2) were decided the same day. The prototype (Wave P) is being built on
+`build/mvp`; Wave 0+ still needs G2 (Supabase + Vercel accounts). See `AGENTS.md`.
 
 ## The short version of the technology
 
-A **static single-page site with no build step**. Plain HTML/JS + Bootstrap 5 + Bootstrap Icons,
-Leaflet 1.9, and supabase-js v2 — all via CDN. The browser reads approved spots directly from
+A **static single-page site with no build step**. Plain HTML/JS + Bootstrap 5 + Bootstrap Icons
+and Leaflet 1.9 — all via CDN; Supabase is reached with a plain `fetch` wrapper (OQ-2). The
+browser reads approved spots directly from
 Supabase through Row Level Security. Vercel serves the files. A Node seed script (offline, never
 shipped) fills the database from OSM/Overpass plus researched playbook data.
 
@@ -34,7 +36,8 @@ Browser (phone / laptop)
 ```
 
 Three flows: **read** approved spots (RLS-enforced), **write** anonymous `pending` submissions,
-**verify** `Masih ada ✓` through a rate-limited write path (still undecided). Full detail:
+**verify** `Masih ada ✓` through the rate-limited `bump_verified` Postgres function (decided at
+G3). Full detail:
 [`docs/architecture.md`](docs/architecture.md).
 
 ## Commands

@@ -3,9 +3,11 @@
 *What this doc does: the Plan-phase deliverable that `AGENTS.md` and `tasks/todo.md` (gate G1)
 ask for. It explains the approach, the phase gates, and the decisions still owned by you.*
 
-**Status: DRAFT — awaiting owner approval in a later turn.** No agent should write code until this
-plan and `tasks/todo.md` are approved. `AGENTS.md` gates the work:
-**Specify → Plan → Tasks → Implement**, with owner review between phases.
+**Status: APPROVED by the owner 2026-11-09 (gate G1), with the review fixes applied.** Gates
+G3/G4/G5, OQ-2 (plain fetch) and OQ-13 (branching) were answered the same day. **Wave P
+(prototype) is unblocked**; Wave 0+ waits on G2 (accounts) only. OQ-6 (playbook file) blocks
+step D1 only. `AGENTS.md` gates the work: **Specify → Plan → Tasks → Implement**, with owner
+review between phases.
 
 ---
 
@@ -14,9 +16,9 @@ plan and `tasks/todo.md` are approved. `AGENTS.md` gates the work:
 | Phase | Deliverable | Status |
 |---|---|---|
 | Specify | `SPEC-singgah.md`, `HANDOFF-musafir-project.md`, research notes | done |
-| Plan | **this file** + `docs/architecture.md` + `docs/decision-log.md` | draft, needs approval |
-| Tasks | `tasks/todo.md` (63 steps, 8 agent prompts) | draft, needs approval |
-| Implement | `index.html`, `js/`, `css/`, `data/`, `scripts/`, `supabase/` | **not started, gated** |
+| Plan | **this file** + `docs/architecture.md` + `docs/decision-log.md` | approved 2026-11-09 (G1) |
+| Tasks | `tasks/todo.md` (63 steps + Wave P prototype, 9 agent prompts) | approved 2026-11-09 (G1) |
+| Implement | `prototype/`, `index.html`, `js/`, `css/`, `data/`, `scripts/`, `supabase/` | **Wave P in progress on `build/mvp`; Wave 0+ waiting on G2** |
 
 Also done but not code: `design/singgah-mockup.html` (approved tokens),
 `design/singgah-mockup-board.html` (12 frames: 6 desktop + 6 phone; the phone frames are the
@@ -34,13 +36,15 @@ on purpose, not forgotten.
 
 ## 3. Approach (the technology structure)
 
-A **static single-page site** with no build step: plain HTML/JS + Bootstrap 5 + Bootstrap Icons,
-Leaflet 1.9, supabase-js v2, all via CDN. The browser reads approved spots directly from Supabase
+A **static single-page site** with no build step: plain HTML/JS + Bootstrap 5 + Bootstrap Icons
++ Leaflet 1.9 via CDN; Supabase is reached with a plain `fetch` wrapper (OQ-2, decided
+2026-11-09 — supabase-js stays allowed but is not loaded). The browser reads approved spots
+directly from Supabase
 through Row Level Security. Vercel serves the files. A Node seed script (offline, never shipped)
 fills the database from OSM/Overpass plus the researched playbook JSON.
 
 Three data flows: **read** (approved only, RLS-enforced), **write** (anonymous insert forced to
-`pending`), **verify** (rate-limited write path, still undecided — OQ-1). Full detail:
+`pending`), **verify** (rate-limited Postgres function `bump_verified`, decided at G3). Full detail:
 `docs/architecture.md`. Frozen interface: `docs/api-contract.md`. Columns: `docs/data-model.md`.
 
 **Why this shape:** the owner is learning while building, so every file must be readable top to
@@ -54,7 +58,8 @@ Everything runs on free tiers. See `docs/research-mobile-strategy.md` for the co
 the `index.html` DOM IDs form a frozen contract; all other lanes call those by name.
 
 ```
-Gates G1–G5 (owner)  →  Wave 0 contract (1 agent, serial)
+Gates G1–G5 (owner)  →  Wave P prototype (mock data, G5 = yes)
+   → Wave 0 contract (1 agent, serial)
    → Wave 1 map | list        (2 agents, parallel)
    → Wave 2 contribute | data (2 agents, parallel)
    → Wave 3 backend | docs    (2 agents, parallel)
@@ -62,18 +67,23 @@ Gates G1–G5 (owner)  →  Wave 0 contract (1 agent, serial)
    → Wave 5 deploy + owner dogfood
 ```
 
+**Sequencing note (from the approval review):** waves are dependency-ordered, not strictly
+sequential. D6 (seed upsert) needs E1 (the `spots` table), and E1 only needs gate G2 — so the
+backend table can be created early, alongside Wave 2. The `Needs` column in `tasks/todo.md` is
+authoritative; the diagram shows the usual order.
+
 Concurrency cap is **2 agents** (from `HANDOFF-musafir-project.md`). Waves 1–3 are three waves of
 two. Data research (D1/D4) can overlap Wave 0 because it only needs owner approval.
 
 ## 5. Phase gates the owner owns
 
-| Gate | Decision needed | Blocks |
+| Gate | Decision | Status |
 |---|---|---|
-| G1 | Approve this plan + `tasks/todo.md` in a later turn | all agent work |
-| G2 | Create Supabase project + Vercel account | F3, E1, deploy |
-| G3 | Verification write path: Edge Function vs Postgres function | E5, B7 |
-| G4 | Desktop layout: always-on map (current board) or three modes | I3 |
-| G5 | Build `prototype/index.html` first, or go straight to Supabase | wave order |
+| G1 | Approve this plan + `tasks/todo.md` | ✅ approved 2026-11-09, with the review fixes |
+| G2 | Create Supabase project + Vercel account | **open** — blocks F3, E1, deploy |
+| G3 | Verification write path | ✅ decided 2026-11-09: Postgres function `bump_verified`, 1 bump/spot/hour |
+| G4 | Desktop layout | ✅ decided 2026-11-09: keep the always-on two-pane map |
+| G5 | Prototype first? | ✅ decided 2026-11-09: yes — `prototype/index.html` before Wave 0 |
 
 G4 note: `SPEC-singgah.md` decision 5 locks "a widened two-pane version of the same screens".
 If the desktop mode changes, **update the spec first**, then the board, then the code.
@@ -100,11 +110,11 @@ Strategy plus add-flow, dark mode, desktop ≥992px, zero-English-string, contra
 
 ## 8. Open decisions (do not resolve silently)
 
-Recorded in `docs/decision-log.md`. The important ones: OQ-1 verification write path, OQ-2
-supabase-js client vs plain REST `fetch`, OQ-3 tile style (OSM vs Carto Voyager), OQ-4 heartbeat
-owner, OQ-5 dark mode scope, OQ-6 missing playbook source markdown, OQ-7 where custom CSS lives,
-OQ-8 UI copy conflicts, OQ-9 PWA manifest wording, OQ-10 desktop map mode, OQ-13 branching
-strategy (`docs/branching-strategy.md`).
+Recorded in `docs/decision-log.md`. Decided 2026-11-09: OQ-1 (Postgres function), OQ-2 (plain
+fetch), OQ-5 (dark mode yes), OQ-10 (keep two-pane), OQ-11 (prototype first), OQ-13 (branching
+adopted). Still open, the important ones: OQ-3 tile style (safe default: OSM per spec), OQ-4
+heartbeat owner, OQ-6 missing playbook source markdown (blocks D1), OQ-7 where custom CSS lives,
+OQ-8 UI copy conflicts, OQ-9 PWA manifest wording, OQ-12 tile guardrails.
 
 ## 9. Definition of done (from SPEC success criteria)
 

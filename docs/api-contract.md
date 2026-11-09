@@ -58,12 +58,15 @@ environment variable read by `scripts/seed-spots.mjs` and are never committed.
 
 ## 4. `js/api.js` function signatures (F4, F5)
 
+Access style decided at OQ-2 (2026-11-09): **plain `fetch` wrapper** to the Supabase REST API.
+supabase-js v2 remains an allowed CDN dependency but is not loaded in v0.1.
+
 | Function | Shape | Does |
 |---|---|---|
 | `supabaseHeaders()` | `() => object` | Returns `apikey` + `Authorization: Bearer <anon>` + `Content-Type` |
 | `loadApprovedSpots()` | `async () => SPOT[]` | `GET /rest/v1/spots?status=eq.approved&select=*` |
 | `insertPendingSpot(payload)` | `async (object) => void` | `POST` with `status:'pending'`, `source:'user'`, `last_verified_at:null` |
-| `bumpVerified(spotId)` | `async (uuid) => void` | Calls the rate-limited verify write path (OQ-1 / G3) |
+| `bumpVerified(spotId)` | `async (uuid) => void` | `POST /rest/v1/rpc/bump_verified` — `security definer` Postgres function, 1 bump/spot/hour (G3, decided 2026-11-09) |
 | `isUnknown(value)` | `(any) => string` | Returns `'Belum ada info'` for `null` / `undefined` / `''` |
 
 Reference style from the spec (simple, explicit, one job):

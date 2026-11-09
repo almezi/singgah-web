@@ -1,8 +1,9 @@
 # TODO — Singgah web app (small steps, parallel agents)
 
-**Status: planning only.** `AGENTS.md` gates the work: Specify → Plan → Tasks → Implement, with
-owner review between phases. No agent should write code until the owner approves this list
-**in a later turn**. This file is the Tasks-phase deliverable, not permission to start.
+**Status: APPROVED 2026-11-09 (gate G1).** The owner approved this list and `tasks/plan.md` with
+the review fixes applied, and answered G3 (Postgres function), G4 (keep two-pane), G5 (prototype
+first), OQ-2 (plain fetch) and OQ-13 (branching adopted) the same day. **Wave P is unblocked.**
+Wave 0+ still waits on G2 (accounts), and D1 needs the playbook file (OQ-6).
 
 **Sources of truth:** `SPEC-singgah.md` · `AGENTS.md` · `PROTOTYPE-PROMPT-singgah.md` ·
 `MOCKUP-PROMPT-singgah.md` · `design/singgah-mockup-board.html` (12 frames; the six phone frames
@@ -20,21 +21,24 @@ This list is built so **two agents can work at the same time with zero file conf
 lane owns different files, and the shared contract (`index.html`, `js/config.js`, `js/api.js`) is
 frozen after Wave 0. You launch agents in waves of 2 using the copy-paste prompts at the bottom.
 
-1. **Gates first (you, not an agent).** Finish G1–G5: create the Supabase + Vercel accounts, pick
-   the verification write path (G3), and confirm the desktop layout decision (G4). These are
-   external/decision steps an agent can't do for you.
-2. **Wave 0 — contract (1 agent, serial).** Run F1–F6. Everything waits on this; it defines the
+1. **Gates first (you, not an agent).** G1, G3, G4, G5, OQ-2 and OQ-13 are done (2026-11-09).
+   Remaining: **G2** — create the Supabase + Vercel accounts — before Wave 0. Wave P needs no
+   accounts and can run now.
+2. **Wave P — prototype (1 agent).** G5 = yes: build `prototype/index.html` from
+   `PROTOTYPE-PROMPT-singgah.md` (mock data, no backend). It owns only `prototype/`.
+3. **Wave 0 — contract (1 agent, serial).** Run F1–F6. Everything waits on this; it defines the
    frozen DOM IDs and API the other lanes call by name.
-3. **Wave 1 — map + list (2 agents, parallel).** Agent 1 = A1–A7 (`js/map.js`); Agent 2 = B1–B9
+4. **Wave 1 — map + list (2 agents, parallel).** Agent 1 = A1–A7 (`js/map.js`); Agent 2 = B1–B9
    (`js/spots.js`, `js/verify.js`). They only share function names, never files.
-4. **Wave 2 — contribute + data (2 agents, parallel).** Agent 1 = C1–C8 (`js/contribute.js`);
+5. **Wave 2 — contribute + data (2 agents, parallel).** Agent 1 = C1–C8 (`js/contribute.js`);
    Agent 2 = D1–D7 (`data/`, `scripts/`). D1/D4 (research) can even start right after G1,
-   overlapping Wave 0, since they only need owner approval.
-5. **Wave 3 — backend + docs (2 agents, parallel).** Agent 1 = E1–E6 (`supabase/`); Agent 2 =
+   overlapping Wave 0, since they only need owner approval. D6 (upsert) needs E1 — the table only
+   needs G2, so it can be created early.
+6. **Wave 3 — backend + docs (2 agents, parallel).** Agent 1 = E1–E6 (`supabase/`); Agent 2 =
    T1–T4 (`docs/`, `README.md`). Docs touch no code.
-6. **Wave 4 — integration (1 agent, serial).** Run I1–I6; this agent alone edits `index.html` to
+7. **Wave 4 — integration (1 agent, serial).** Run I1–I6; this agent alone edits `index.html` to
    wire the lanes and run the checklist.
-7. **Deploy + dogfood (P1–P4 + your P5).** `npx vercel --prod`, approve a spot, verify on a real trip.
+8. **Deploy + dogfood (P1–P4 + your P5).** `npx vercel --prod`, approve a spot, verify on a real trip.
 
 **Concurrency cap:** 2 agents at once (from `HANDOFF-musafir-project.md`). If you raise the cap,
 waves can overlap — the one-file/one-owner rule still prevents merge conflicts.
@@ -51,7 +55,9 @@ waves can overlap — the one-file/one-owner rule still prevents merge conflicts
 ### Dependency shape
 
 ```
-G1–G5  owner gates (manual, no agent)
+G1–G5  owner gates (manual; only G2 still open)
+   |
+Wave P  prototype (mock data, G5 = yes, 1 agent)
    |
 F1–F6  contract  (1 agent, SERIAL — blocks everything)
    |
@@ -70,11 +76,11 @@ P1–P5  deploy + owner dogfood
 
 | ID | Step | Done when |
 |---|---|---|
-| G1 | Approve this todo (and a separate `tasks/plan.md`) in a later turn | Owner says "approved" |
-| G2 | Create the Supabase project and the Vercel account | Project URL + anon key available. Anon key only; **never** `service_role` in the frontend |
-| G3 | Decide the verification write path: Supabase Edge Function vs Postgres function | Choice written into `SPEC-singgah.md` → Open Questions, with the 1 bump/spot/hour rate limit |
-| G4 | Decide desktop layout: keep the always-on map (current board) or the three recommended modes | If changed, update **SPEC decision 5 first**, then the board |
-| G5 | Decide whether `prototype/index.html` (mock data, no backend) is built before the real app | Yes/no written down |
+| G1 | Approve this todo + `tasks/plan.md` | ✅ done 2026-11-09 — owner approved with the review fixes |
+| G2 | Create the Supabase project and the Vercel account | **open** — Project URL + anon key available. Anon key only; **never** `service_role` in the frontend |
+| G3 | Decide the verification write path | ✅ done 2026-11-09 — Postgres function `bump_verified(spot_id)` (`security definer`), 1 bump/spot/hour; recorded in `SPEC-singgah.md` → Open Questions |
+| G4 | Decide the desktop layout | ✅ done 2026-11-09 — keep the always-on two-pane map; SPEC decision 5 unchanged |
+| G5 | Decide whether `prototype/index.html` is built before the real app | ✅ done 2026-11-09 — yes; Wave P runs before Wave 0 |
 
 ## F — Foundation / contract (1 agent, serial)
 
@@ -83,7 +89,7 @@ never edits it. **Freeze it before any parallel lane starts.**
 
 | ID | Step | File | Needs | Done when |
 |---|---|---|---|---|
-| F1 | Add CDN tags: Bootstrap 5.3.3 CSS+JS, Bootstrap Icons 1.11.3, Leaflet 1.9.4, supabase-js v2, Plus Jakarta Sans | `index.html` | G1 | Page opens with zero console errors, no build step |
+| F1 | Add CDN tags: Bootstrap 5.3.3 CSS+JS, Bootstrap Icons 1.11.3, Leaflet 1.9.4, Plus Jakarta Sans (no supabase-js tag — OQ-2: plain fetch) | `index.html` | G1 | Page opens with zero console errors, no build step |
 | F2 | Define and freeze the DOM mount IDs: `#map`, `#spot-list`, `#detail`, `#add-form`, `#search`, `#chips`, `#fab-add`, `#geo`, `#toast`, `#sheet` | `index.html` | F1 | Every lane can point to an ID without editing `index.html` |
 | F3 | Add `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and **one** `TILE_URL` constant for OSM tiles | `js/config.js` | F1 | No tile URL appears in any other file |
 | F4 | Add `supabaseHeaders()`, `loadApprovedSpots()`, `insertPendingSpot()`, `bumpVerified(spotId)` | `js/api.js` | F3 | Functions match the SPEC `spots` columns exactly |
@@ -159,7 +165,7 @@ Owns **only** `supabase/`.
 | E2 | Enable RLS; anon SELECT only where `status='approved'` | E1 | Pending rows are unreadable anonymously |
 | E3 | anon INSERT forced to `status='pending'`, `source='user'` | E1 | Anon cannot publish directly |
 | E4 | No anon UPDATE / DELETE policies | E1 | `grep` confirms none |
-| E5 | Verification write path chosen in G3, rate-limited 1 bump per spot per hour | G3, E1 | `Masih ada ✓` can write, nothing else can |
+| E5 | Write `bump_verified(spot_id uuid)` as a `security definer` Postgres function: updates only `last_verified_at` on approved rows, rejects a bump if the last one is under 1 hour old (G3 decided) | E1 | `Masih ada ✓` can write via `/rpc/bump_verified`, nothing else can |
 | E6 | Short guide: approve pending spots in the dashboard + weekly heartbeat for free-tier auto-pause | E2 | Owner can approve without an admin UI |
 
 ## T — Docs lane (agent 2, batch 3)
@@ -181,7 +187,7 @@ Owns **only** `index.html` from here on.
 |---|---|---|---|
 | I1 | Load all `js/*.js` in dependency order | A7, B7, C7, F4 | Zero console errors |
 | I2 | Wire the state machine: map → list → detail → add pin → form → success; back works everywhere | I1 | Full flow reachable with a thumb |
-| I3 | Mobile <992px bottom sheet; desktop ≥992px static left sidebar. Same DOM. Or three modes if G4 changed it | I2 | Both layouts pass the checklist |
+| I3 | Mobile <992px bottom sheet; desktop ≥992px static left sidebar. Same DOM (G4 confirmed: always-on two-pane) | I2 | Both layouts pass the checklist |
 | I4 | Dark mode contrast verified in both themes | F6, I3 | Text ≥4.5:1 |
 | I5 | `grep` for `service_role`, photos, login, reviews; confirm none | I1 | Clean |
 | I6 | Run the full manual checklist on a real phone over mobile data | T1, I5 | Owner signs off |
@@ -216,10 +222,11 @@ Owns **only** `index.html` from here on.
 
 | Wave | Agent 1 | Agent 2 | Starts after | Files touched |
 |---|---|---|---|---|
-| 0 | F1–F6 contract | — | G1–G5 | `index.html`, `js/config.js`, `js/api.js` |
+| P | prototype (from `PROTOTYPE-PROMPT-singgah.md`) | — | G1 ✅ (G5 = yes) | `prototype/` only |
+| 0 | F1–F6 contract | — | wave P, G2 | `index.html`, `js/config.js`, `js/api.js` |
 | 1 | A1–A7 map | B1–B9 list/detail/verify | wave 0 | `js/map.js` / `js/spots.js`, `js/verify.js` |
-| 2 | C1–C8 contribute | D1–D7 data + seed | wave 0 | `js/contribute.js` / `data/`, `scripts/` |
-| 3 | E1–E6 backend | T1–T4 docs | wave 0 | `supabase/` / `docs/`, `README.md` |
+| 2 | C1–C8 contribute | D1–D7 data + seed | wave 0 (D6 also needs E1) | `js/contribute.js` / `data/`, `scripts/` |
+| 3 | E1–E6 backend | T1–T4 docs | wave 0 (E1 can run early: only needs G2) | `supabase/` / `docs/`, `README.md` |
 | 4 | I1–I6 integration | — | waves 1–3 | `index.html` only |
 | 5 | P1–P4 deploy | owner P5 | wave 4 | hosting + Supabase dashboard |
 
@@ -227,11 +234,21 @@ Owns **only** `index.html` from here on.
 
 Each prompt is self-contained. Paste one per agent, in the wave shown above.
 
+**Wave P · Prototype (run first — gate G5 = yes)**
+```
+Read PROTOTYPE-PROMPT-singgah.md and follow it exactly. You own only files under prototype/.
+Mock data only — no Supabase, no backend, no new dependencies beyond the locked CDN stack
+(Bootstrap 5 + Icons, Leaflet 1.9, Plus Jakarta Sans). All UI text Indonesian; unknown data shows
+"Belum ada info". Report when the clickable flow works end to end: list → detail → add pin →
+form → success, on a phone viewport and on desktop.
+```
+
 **Wave 0 · Foundation / contract (the only serial agent — run this first)**
 ```
 Read SPEC-singgah.md, AGENTS.md and tasks/todo.md. Implement ONLY steps F1–F6.
 You own exactly three files: index.html, js/config.js, js/api.js. Do not create any other lane's file.
-Load Bootstrap 5.3.3 + Bootstrap Icons 1.11.3 + Leaflet 1.9.4 + supabase-js v2 + Plus Jakarta Sans from CDN.
+Load Bootstrap 5.3.3 + Bootstrap Icons 1.11.3 + Leaflet 1.9.4 + Plus Jakarta Sans from CDN.
+Do NOT load supabase-js (OQ-2 decided: plain fetch wrapper to the REST API).
 No build step, no npm project, no new dependency. Page must open with zero console errors.
 Freeze and publish the contract at the end of your report: the DOM mount ID list, the config
 constants, and the api.js function signatures (loadApprovedSpots, insertPendingSpot, bumpVerified).
@@ -276,7 +293,8 @@ Report the dry-run spot count and each D-step's done-when.
 Read SPEC-singgah.md, AGENTS.md and tasks/todo.md. Implement ONLY E1–E6 under supabase/.
 RLS: anon selects approved rows only, inserts forced pending, no anon update/delete.
 Never put a service_role key in any frontend file (it belongs nowhere in this repo's frontend).
-Verification writes follow the decision in gate G3 and are rate-limited to 1 per spot per hour.
+Verification writes use the `bump_verified(spot_id)` Postgres function (security definer),
+rate-limited to 1 per spot per hour (gate G3, decided 2026-11-09).
 Report each E-step's done-when.
 ```
 
@@ -299,14 +317,18 @@ report the problem back to that lane instead.
 
 ## Open questions before any agent starts
 
-1. G3 — Edge Function or Postgres function for `Masih ada ✓`? (SPEC Open Question 1)
-2. G4 — keep the always-on desktop map or use three layout modes? If changed, **SPEC first**.
-3. G5 — build `prototype/index.html` first, or go straight to Supabase?
-4. Free-tier auto-pause: who sets up the weekly heartbeat? (SPEC Open Question 4)
-5. Exact tile style: default OSM now, Carto Voyager later (one-line swap). (SPEC Open Question 3)
-6. Adopt the git branching strategy in `docs/branching-strategy.md` (OQ-13): `main` +
-   short-lived `build/mvp` + a tag per deploy. Decide this **before** wave 0, and commit the
-   current uncommitted spec/plan/docs baseline first.
+1. ✅ G3 — decided 2026-11-09: Postgres function `bump_verified`, 1 bump/spot/hour (SPEC Open
+   Question 1, resolved).
+2. ✅ G4 — decided 2026-11-09: keep the always-on desktop map (SPEC decision 5 unchanged).
+3. ✅ G5 — decided 2026-11-09: prototype first (Wave P).
+4. ✅ OQ-13 — adopted 2026-11-09: `main` for spec/docs, `build/mvp` for code, one tag per deploy
+   (`docs/branching-strategy.md`). Baseline + approval edits committed on `main`.
+5. ✅ OQ-2 — decided 2026-11-09: plain `fetch` wrapper; supabase-js allowed but not loaded.
+   F4 freezes the contract in `docs/api-contract.md` §4.
+6. **OQ-6** — copy the trip playbook source markdown into the repo. Blocks D1 only.
+7. OQ-4 — who sets up the weekly heartbeat? Needed before deploy, not before Wave 0.
+8. OQ-3 — tile style. Safe default: OSM per SPEC Open Question 3; Carto Voyager is a one-line
+   swap later.
 
 ## Definition of done (from SPEC success criteria)
 

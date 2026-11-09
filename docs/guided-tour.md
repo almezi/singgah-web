@@ -25,19 +25,19 @@ marked ✅; planned files are marked ⏳.
 ## The plan (what we will build, and in what order)
 
 4. ✅ **`tasks/plan.md`** — the Plan-phase deliverable: goal, non-goals, phase gates, risks, and
-   the definition of done. Draft, awaiting your approval.
+   the definition of done. Approved 2026-11-09 (gate G1).
 
 5. ✅ **`tasks/todo.md`** — the Tasks-phase deliverable: 63 small steps split into 8 lanes so two
-   agents can work at once without touching the same file. Each step names one file and one
-   checkable outcome. It ends with copy-paste prompts for each agent. Draft, awaiting approval.
+   agents can work at once without touching the same file, plus the Wave P prototype prompt.
+   Each step names one file and one checkable outcome. Approved 2026-11-09 (gate G1).
 
 6. ✅ **`docs/decision-log.md`** — locked decisions, open questions, and an honest list of places
    where the spec, prompts and design board disagree. Go here when something looks contradictory.
 
-6b. ✅ **`docs/branching-strategy.md`** — the proposed git workflow: one protected `main`, one
+6b. ✅ **`docs/branching-strategy.md`** — the git workflow: one protected `main`, one
     short-lived `build/mvp` integration branch, and a tag for every deploy. Explains why branches
     follow *phases*, not *agents* — two agents share this one working directory, so a single
-    `git switch` moves both of them. Still awaiting your approval (OQ-13).
+    `git switch` moves both of them. Adopted 2026-11-09 (OQ-13 closed).
 
 ## How the technology fits together
 
@@ -115,8 +115,8 @@ Read these in this order once they exist:
 25. ⏳ **`js/spots.js`** — builds the list cards and the detail card. Shows how unknown data becomes
     `Belum ada info`.
 
-26. ⏳ **`js/verify.js`** — the `Masih ada ✓` button. Small, but it is the one hard technical spot
-    (rate-limited write path).
+26. ⏳ **`js/verify.js`** — the `Masih ada ✓` button. Small: it calls the rate-limited
+    `bump_verified` Postgres function (decided at G3, 2026-11-09).
 
 27. ⏳ **`js/contribute.js`** — the add-spot flow: pin → form → success. Where `pending` is born.
 
@@ -132,8 +132,9 @@ Read these in this order once they exist:
 31. ⏳ **`supabase/`** — table SQL, RLS policies, and the verification write path. The database is
     the security boundary, not the browser.
 
-32. ⏳ **`prototype/index.html`** — optional clickable prototype with mock data and no backend
-    (gate G5). A safe place to learn before the real thing.
+32. ⏳ **`prototype/index.html`** — clickable mock-data prototype with no backend
+    (gate G5 = yes, decided 2026-11-09 — built first, in Wave P). A safe place to learn before
+    the real thing.
 
 ---
 

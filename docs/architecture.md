@@ -30,7 +30,7 @@ top to bottom, and "it just works" matters more than cleverness.
    │      │                    js/contribute.js  js/verify.js             │
    │      │                                                             │
    │      ├── CDN: Bootstrap 5.3.3 + Bootstrap Icons 1.11.3             │
-   │      ├── CDN: Leaflet 1.9.4 + supabase-js v2                       │
+   │      ├── CDN: Leaflet 1.9.4 (supabase-js allowed, not loaded)      │
    │      ├── CDN: Plus Jakarta Sans (Google Fonts)                      │
    │      └── static DOM: #map  #spot-list  #detail  #add-form  ...      │
    └───────┬───────────────────────────────┬─────────────────────────────┘
@@ -80,11 +80,12 @@ by the database, not by JavaScript. This is a hard boundary: the frontend never 
 `status: 'pending'`, `source: 'user'`, `last_verified_at: null` → RLS forces pending → the row is
 invisible to everyone until the owner approves it in the Supabase dashboard. No login, no accounts.
 
-**Verify (the one hard technical spot)**
-`Masih ada ✓` → `bumpVerified(spotId)` → a **rate-limited write path** updates only
-`last_verified_at` (1 bump per spot per hour). An anon key cannot `UPDATE` under our RLS, so this
-needs either a Supabase Edge Function or a Postgres function. **Undecided — see
-`docs/decision-log.md` (OQ-1) and gate G3.** The choice belongs to the owner.
+**Verify (decided at G3, 2026-11-09: Postgres function)**
+`Masih ada ✓` → `bumpVerified(spotId)` → `POST /rest/v1/rpc/bump_verified` → a Postgres function
+(`security definer`) updates only `last_verified_at` on an approved row, enforcing **1 bump per
+spot per hour inside the database**. Anon still has no `UPDATE`/`DELETE` policies — the function
+is the only write path it can reach. The Edge Function alternative was rejected for MVP (extra
+runtime + deploy step). See `docs/decision-log.md` (OQ-1, resolved).
 
 **Seed (one-off, offline, not a runtime flow)**
 Node script reads `data/playbook-spots.json`, queries Overpass for mosques/musala in the Yogya
@@ -123,7 +124,8 @@ pin-drop mode ──pin placed──> Lanjut ──> add form (offcanvas)
 
 The same DOM serves both sizes. Under 992px the list/detail live in a draggable bottom sheet over
 a full-screen map. At 992px and up, the sheet becomes a static left sidebar and the map fills the
-rest. No separate desktop code path. (Gate G4 may change the desktop mode — see decision log.)
+rest. No separate desktop code path. (Confirmed at gate G4, 2026-11-09: the always-on two-pane
+desktop stays.)
 
 ## 6. What is deliberately absent
 

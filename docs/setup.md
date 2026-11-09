@@ -3,8 +3,8 @@
 *What this doc does: the steps to run Singgah on your own computer, from zero to a working map.
 Written for a beginner. No install step exists for the app itself — that is the point.*
 
-**Status: planned.** The app code does not exist yet. Steps 1–3 below are things the owner must do
-before any agent writes code (gates G1–G5 in `tasks/todo.md`).
+**Status: planned.** The app code does not exist yet. In §1, steps 1–2 and 6 are still open owner
+tasks; the decisions in steps 3–5 were made 2026-11-09 (gates G3–G5, after G1 approval).
 
 ---
 
@@ -27,9 +27,10 @@ design). `.gitignore` already ignores `.env` and `*.local` for the seed script's
 1. Create the Supabase project. Copy its **project URL** and **anon key**.
    Never copy the `service_role` key into any file under `index.html`, `css/`, `js/`, or `data/`.
 2. Create the Vercel account (or an approved free alternative).
-3. Decide the verification write path (Edge Function vs Postgres function) — gate G3.
-4. Decide the desktop layout — gate G4. If it changes, `SPEC-singgah.md` is updated first.
-5. Decide whether `prototype/index.html` is built before the real app — gate G5.
+3. ✅ Done 2026-11-09 — gate G3: verification writes use the `bump_verified` Postgres function
+   (`security definer`, 1 bump/spot/hour).
+4. ✅ Done 2026-11-09 — gate G4: desktop keeps the always-on two-pane map.
+5. ✅ Done 2026-11-09 — gate G5: build `prototype/index.html` first (Wave P).
 6. Copy the trip playbook source markdown into this repo (it is currently missing) so the seed
    data can be transcribed accurately.
 

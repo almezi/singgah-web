@@ -64,10 +64,9 @@ Build / commit: ____________________________   Tester: ______________________
       No login/signup screen, no photos, no reviews/ratings/comments, no ads.
 
 - [ ] **14. Desktop ≥992px.** The bottom sheet becomes a static left sidebar, map fills the rest.
-      Same DOM, no separate desktop code path. If gate G4 changed the mode, test the approved
-      three-mode layout instead.
+      Same DOM, no separate desktop code path (G4 confirmed 2026-11-09: always-on two-pane).
 
-- [ ] **15. Dark mode (only if OQ-5 says yes).** Toggle survives reload; text contrast ≥4.5:1 in
+- [ ] **15. Dark mode (OQ-5 = yes, decided 2026-11-09).** Toggle survives reload; text contrast ≥4.5:1 in
       both themes; focus outline visible.
 
 - [ ] **16. Contrast ≥4.5:1 for all text** in light mode. Check the semantic `--*-ink` tokens on

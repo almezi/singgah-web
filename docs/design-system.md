@@ -5,8 +5,8 @@ Visual source of truth: `design/singgah-mockup.html` (approved v0.1 tokens) and
 `design/singgah-mockup-board.html` (12 frames — 6 desktop 1440×900, 6 phone 390×844; the phone
 frames are the component reference).*
 
-**Status:** the board is light-only on purpose. Dark mode is a prototype concern, not a board
-concern — see OQ-5 in `docs/decision-log.md`.
+**Status:** the board is light-only on purpose and stays the light-theme reference. Dark mode
+ships in v0.1 (OQ-5 decided at G1, 2026-11-09) — dark tokens in §6.
 
 ---
 
@@ -72,7 +72,7 @@ exact same components as the 6 phone frames — mobile is the source, desktop is
 
 Six screens, one flow: `Beranda / daftar` → `Rincian` → `Tambah · pin` → `Tambah · isi info` →
 `Sukses` (plus desktop `Beranda komputer`). Map is the hero on the board because `SPEC-singgah.md`
-decision 5 locks the two-pane version — see OQ-10.
+decision 5 locks the two-pane version — confirmed at G4, 2026-11-09 (OQ-10 closed).
 
 ## 4. Bootstrap-first rule
 
@@ -88,7 +88,7 @@ CDN versions (locked):
 | Bootstrap CSS + JS bundle | 5.3.3 |
 | Bootstrap Icons | 1.11.3 |
 | Leaflet | 1.9.4 |
-| supabase-js | v2 |
+| supabase-js | v2 — allowed, not loaded (OQ-2: plain fetch) |
 | Plus Jakarta Sans | 400–800 |
 
 ## 5. Accessibility rules (from the UI/UX audit already applied to the board)
@@ -109,7 +109,7 @@ CDN versions (locked):
 - Static board frames use `role="img"` + `aria-label`, with inner content `inert` so there are no
   focusable dead controls. (The real app uses real, focusable controls.)
 
-## 6. Dark mode (if OQ-5 says yes)
+## 6. Dark mode (OQ-5 decided: yes, 2026-11-09)
 
 Bootstrap 5.3 native `data-bs-theme="dark"`, toggled by a labelled switch, persisted in
 `localStorage`: background `#101B17`, surface `#16241F`, primary `#3DBFA3` with dark text

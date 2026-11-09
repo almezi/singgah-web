@@ -59,7 +59,7 @@ update `SPEC-singgah.md` first, then the code.
 | No spots at all | is the Supabase project paused? (7-day auto-pause) |
 | A new spot never appears | is its `status` still `pending`? |
 | Map is blank | tile URL / network; tiles are network-only |
-| Verification does nothing | the rate-limited verify write path (gate G3) |
+| Verification does nothing | the `bump_verified` Postgres function (G3); the rate limit is 1 bump/spot/hour — a second tap inside the hour is rejected on purpose |
 | App suddenly shows English | a UI string regressed — run the checklist |
 
 ## 7. Related docs

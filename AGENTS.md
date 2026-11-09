@@ -4,9 +4,10 @@
 
 Singgah: a mobile-first web app where cyclists/backpackers in Indonesia find free wash & rest
 spots (masjid besar, musala, terminal, SPBU, rest areas). **Currently pre-code**: the repo holds
-the spec, handoff, approved design frames, plan/task drafts and the full documentation set — but
-no application code. Do not start writing code unless the plan/task phase has been approved by
-the owner.
+the spec, handoff, approved design frames, the plan/task list (approved at gate G1, 2026-11-09)
+and the full documentation set — but no application code. Plan/tasks are approved; Wave P
+(prototype, mock data) is unblocked and runs on `build/mvp`. Wave 0+ waits on G2 (accounts);
+OQ-6 (playbook file) blocks D1 only.
 
 ## Read these first
 
@@ -19,7 +20,7 @@ the owner.
   agents call these by name and never edit the owner lane's files.
 - `docs/decision-log.md` — locked decisions, open questions, and known contradictions between
   the spec, the prompts and the approved design board. Do not resolve those silently.
-- `docs/branching-strategy.md` — proposed git workflow (proposal, OQ-13): one protected `main`,
+- `docs/branching-strategy.md` — adopted git workflow (OQ-13, 2026-11-09): one protected `main`,
   one short-lived `build/mvp` for all waves, a tag per deploy. **Branch by phase, not by agent** —
   parallel agents share this working directory, so they commit to the same branch, different files.
 
@@ -78,5 +79,6 @@ README.md           project entry point + documentation index
 - **Never** deploy with pending spots publicly visible.
 - Ask the owner before: schema changes, any dependency beyond Leaflet + supabase-js, auth,
   photos, hosting switch, instant-publish.
-- Known open technical spot: the "Masih ada ✓" verify button needs a rate-limited write path
-  (Edge Function vs Postgres function) — see Open Questions in the spec; decide in plan phase.
+- Verify write path (decided at G3, 2026-11-09): "Masih ada ✓" calls the `bump_verified(spot_id)`
+  Postgres function (`security definer`) — updates only `last_verified_at`, rate-limited to one
+  bump per spot per hour. No anon UPDATE/DELETE policies. See SPEC Open Question 1 (resolved).

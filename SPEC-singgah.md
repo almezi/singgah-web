@@ -25,9 +25,13 @@ one still exists. The owner uses it on their next ride — that is the real acce
 5. **Platform:** web-first — the MVP runs in the browser at a URL, opened on a laptop OR a phone
    (most users are cyclists on the road, so the layout is mobile-first and desktop gets a widened
    two-pane version of the same screens). "Mobile" in the mockup means "viewed in a phone
-   browser", not a native app. App-store packaging (PWA/TWA) is out of scope for MVP.
+   browser", not a native app. App-store packaging (PWA/TWA) is out of scope for MVP. Desktop
+   layout confirmed at gate G4, 2026-11-09: keep the always-on map (two-pane), as the board shows.
 6. **UI framework:** Bootstrap 5 (CSS + Icons) via CDN replaces hand-rolled CSS (locked with
    owner, 2026-11-09). The approved look and design tokens live in `design/singgah-mockup.html`.
+7. **Dark mode:** v0.1 ships a light/dark toggle (`data-bs-theme`, persisted in `localStorage`).
+   The approved board stays the light-theme reference; dark tokens live in
+   `docs/design-system.md` §6. Confirmed with the owner at gate G1, 2026-11-09.
 
 ## Tech Stack
 
@@ -35,7 +39,7 @@ one still exists. The owner uses it on their next ride — that is the real acce
 |---|---|---|
 | Frontend | Plain HTML/JS + Bootstrap 5.3 CSS + Bootstrap Icons via CDN — no JS framework, no build step | Beginner-friendly components; every file readable |
 | Map | Leaflet 1.9 (CDN) + OpenStreetMap tiles | Free, no API key |
-| Database | Supabase (free tier), accessed with `supabase-js` v2 via CDN | Free, has dashboard for approving spots |
+| Database | Supabase (free tier), reached over its REST API with a plain `fetch` wrapper (OQ-2, decided 2026-11-09). supabase-js v2 stays an *allowed* CDN dependency but is not loaded in v0.1 | Free, has dashboard for approving spots |
 | Hosting | Vercel free tier (Netlify/Cloudflare Pages are acceptable substitutes) | Free, deploys a static site in one command |
 | Seed tooling | Node ≥ 18 script hitting the Overpass API + a JSON file of playbook spots | OSM already has mosques mapped; the trip playbook is real data |
 
@@ -67,8 +71,10 @@ create table spots (
 **Row Level Security (must be on):**
 - Everyone (anon): `select` only where `status = 'approved'`.
 - Everyone (anon): `insert` — but inserts are forced to `status = 'pending'` and `source = 'user'`.
-- Nobody: `update`/`delete` via anon key. Verification bump happens with the owner's key only…
-  see Open Questions (this is the one hard technical spot in the MVP).
+- Nobody: `update`/`delete` via anon key. The one exception: `Masih ada ✓` calls the
+  `bump_verified(spot_id)` Postgres function (`security definer`), which updates only
+  `last_verified_at` on an approved row, rate-limited to one bump per spot per hour. Decided at
+  gate G3, 2026-11-09 — see Open Question 1 (resolved).
 
 ## Commands
 
@@ -179,11 +185,13 @@ Plus the dogfood criterion: the owner uses the app on one real trip.
 
 ## Open Questions
 
-1. **Verification writes (the one hard spot):** the "Masih ada ✓" button must update a row, but
-   anon keys can't `update` under the RLS above. Cheapest honest fix: a free Supabase **Edge
-   Function** (or equivalent) that accepts `{spot_id}` and bumps the timestamp, rate-limited to
-   one bump per spot per hour. Alternative: allow anon update of *only* `last_verified_at` via a
-   Postgres function. Decided in the plan phase — flagged now so it doesn't surprise us later.
+1. **Verification writes — DECIDED 2026-11-09 (gate G3): Postgres function.** A
+   `bump_verified(spot_id uuid)` function (`security definer`) is the only write path anon can
+   reach: it updates only `last_verified_at` on an approved row and enforces the rate limit of
+   one bump per spot per hour inside the database. Called from `js/api.js` via
+   `POST /rest/v1/rpc/bump_verified`. The Edge Function alternative was rejected for MVP — it adds
+   a separate runtime and deploy step for no benefit at this scale. No anon `UPDATE`/`DELETE`
+   policies are added.
 2. **Hosting account:** owner must create the Supabase account (and Vercel or similar). This is
    the only manual step the owner owns; everything else is code.
 3. **Exact tile style:** default OSM tiles for MVP; a friendlier style (e.g. Carto) is a

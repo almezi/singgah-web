@@ -1,7 +1,7 @@
-# Branching strategy — recommendation
+# Branching strategy — adopted
 
-*What this doc does: recommends how to use git for Singgah. **This is a proposal, not an approved
-decision** — see `docs/decision-log.md` OQ-13. Sources: `AGENTS.md` (gated phases),
+*What this doc does: defines how to use git for Singgah. **Adopted by the owner 2026-11-09**
+(OQ-13 closed in `docs/decision-log.md`). Sources: `AGENTS.md` (gated phases),
 `tasks/todo.md` (waves + one-file-one-owner), `docs/deployment.md` (CLI deploy), and the actual
 git state of this repo.*
 
@@ -24,13 +24,13 @@ owner, no CI, no build step, and a manual checklist do not need GitFlow.
 | Current branch | `main` |
 | Other local branches | none |
 | Remote | `origin` → `https://github.com/almezi/singgah-web.git`, tracks `origin/main` |
-| Commits | **2** (`075c793` initial, `96190b3` mockup + AGENTS) |
-| Tags | **none** |
-| Uncommitted | `AGENTS.md`, `SPEC-singgah.md`, `MOCKUP-PROMPT-singgah.md` modified; `README.md`, `docs/`, `tasks/`, `design/`, `PROTOTYPE-PROMPT-singgah.md` untracked |
+| Commits | `main` holds the full spec/plan/docs baseline (`075c793`, `96190b3`, `35471a6`) plus the 2026-11-09 approval-edits commit |
+| Tags | **none** yet — one per deploy, starting with the first deploy |
+| Working tree | clean after the approval commit; code lives on `build/mvp` (created 2026-11-09 for Wave P) |
 | `.gitignore` | `.DS_Store`, `.env`, `*.local` |
 
-**Immediate consequence:** the entire spec/plan/docs/design baseline is uncommitted. That is the
-first thing to fix — a branching strategy is useless if the baseline isn't saved.
+**Immediate consequence:** the baseline is saved and the convention is adopted — spec/docs
+changes commit to `main`, code commits to `build/mvp`, and every deploy gets a tag.
 
 ---
 
@@ -208,19 +208,18 @@ main ── v0.1.0 ── fix/verification-toast ── merge ── v0.1.1
 
 ---
 
-## 9. Owner decision needed
+## 9. Adoption status (2026-11-09)
 
-This strategy is **OQ-13 in `docs/decision-log.md`**. To approve it, the owner needs to confirm:
+**Adopted by the owner** — OQ-13 is closed in `docs/decision-log.md`.
 
-- [ ] Adopt `main` + `build/mvp` + tags (rather than committing everything straight to `main`)
-- [ ] Keep `npx vercel --prod` as the only deploy path for MVP (no Git auto-deploy yet)
+- [x] Adopt `main` + `build/mvp` + tags (rather than committing everything straight to `main`)
+- [x] Keep `npx vercel --prod` as the only deploy path for MVP (already the locked command)
 - [ ] Protect `main` on GitHub (require a PR for merges; no direct push) — optional, recommended
       once the owner is comfortable
 - [ ] Decide whether `.workbuddy-ai/` is committed as project history or left local — **do not
       delete it**
 
-On approval, record the answer in `docs/decision-log.md` and add the branch rules to
-`tasks/todo.md` (wave 0 setup) and `docs/deployment.md` (deploy gate).
+Branch rules are reflected in `tasks/todo.md` (waves) and `docs/deployment.md` (deploy gate).
 
 ---
 
