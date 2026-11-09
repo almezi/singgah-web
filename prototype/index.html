@@ -1,0 +1,815 @@
+<!doctype html>
+<!-- prototype/index.html — clickable Singgah prototype: mock data only, no backend. -->
+<html lang="id" data-bs-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Singgah — tempat mandi &amp; istirahat gratis</title>
+
+  <!-- Locked CDN stack: Bootstrap 5.3.3, Bootstrap Icons 1.11.3, Leaflet 1.9.4, Plus Jakarta Sans -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    // Apply the saved theme before first paint so there is no flash.
+    try {
+      document.documentElement.dataset.bsTheme = localStorage.getItem('singgah_theme') || 'light';
+    } catch (e) { /* storage unavailable: stay on light */ }
+  </script>
+
+  <style>
+    /* Tokens + map pins + sheet mechanics only; everything else is Bootstrap. */
+    :root{
+      --bg:#F6F4EE; --surface:#FFFFFF; --surface-2:#F1EFE6; --line:#E4DFD2;
+      --ink:#12332C; --ink2:#5A6E67;
+      --primary:#0E7C66; --primary-deep:#0B5D4E; --primary-soft:#DDEEE8; --on-primary:#FFFFFF;
+      --success:#15803D; --success-soft:#DCF3E2; --success-ink:#166534;
+      --amber:#B45309; --amber-soft:#FBEEDA; --amber-ink:#92400E;
+      --water:#0E7490; --water-soft:#DCF0F5; --water-ink:#0E7490;
+      --violet:#9333EA; --violet-soft:#F1E6FB; --violet-ink:#7E22CE;
+      --teal-ink:#0B5D4E;
+      --shadow:0 10px 30px rgba(18,51,44,.14);
+      --sheet-peek:264px; --sheet-h:264px;
+      /* point Bootstrap at our tokens */
+      --bs-primary:#0E7C66; --bs-body-bg:var(--bg); --bs-body-color:var(--ink);
+      --bs-secondary-color:var(--ink2); --bs-border-color:var(--line);
+      --bs-border-radius:14px; --bs-border-radius-lg:16px;
+      --bs-font-sans-serif:'Plus Jakarta Sans',system-ui,sans-serif;
+    }
+    [data-bs-theme="dark"]{
+      --bg:#101B17; --surface:#16241F; --surface-2:#1C2E27; --line:#2A3F36;
+      --ink:#E8F2ED; --ink2:#9DB5AB;
+      --primary:#3DBFA3; --primary-deep:#2FA98D; --primary-soft:#17332B; --on-primary:#06231C;
+      --success-soft:#152E1E; --success-ink:#7CC79B;
+      --amber-soft:#2E2410; --amber-ink:#E3B566;
+      --water-soft:#12303A; --water-ink:#6FC3D8;
+      --violet-soft:#2A1A3E; --violet-ink:#C9A0F0;
+      --teal-ink:#5FD4BC;
+      --shadow:0 10px 30px rgba(0,0,0,.4);
+    }
+    body.sheet-expanded{ --sheet-h:75vh; }
+
+    html,body{ height:100%; }
+    body{ background:var(--bg); color:var(--ink); font-family:'Plus Jakarta Sans',system-ui,sans-serif; overflow:hidden; }
+    :focus-visible{ outline:2px solid var(--primary); outline-offset:2px; }
+    @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+
+    /* Buttons: Bootstrap variants re-pointed at the tokens */
+    .btn{ min-height:44px; font-weight:600; }
+    .btn-primary{
+      --bs-btn-bg:var(--primary); --bs-btn-border-color:var(--primary); --bs-btn-color:var(--on-primary);
+      --bs-btn-hover-bg:var(--primary-deep); --bs-btn-hover-border-color:var(--primary-deep); --bs-btn-hover-color:var(--on-primary);
+      --bs-btn-active-bg:var(--primary-deep); --bs-btn-active-border-color:var(--primary-deep); --bs-btn-active-color:var(--on-primary);
+      --bs-btn-disabled-bg:var(--primary); --bs-btn-disabled-border-color:var(--primary); --bs-btn-disabled-color:var(--on-primary);
+    }
+    .btn-outline-success{
+      --bs-btn-color:var(--success-ink); --bs-btn-border-color:var(--success);
+      --bs-btn-hover-bg:var(--success-soft); --bs-btn-hover-border-color:var(--success); --bs-btn-hover-color:var(--success-ink);
+      --bs-btn-active-bg:var(--success-soft); --bs-btn-active-border-color:var(--success); --bs-btn-active-color:var(--success-ink);
+    }
+    .btn-surface{ background:var(--surface); border:1px solid var(--line); color:var(--ink); }
+    .btn-surface:hover{ background:var(--surface-2); color:var(--ink); }
+
+    /* Layout: one DOM. Mobile = fixed map + bottom sheet; desktop = sidebar + map. */
+    #map{ position:fixed; inset:0; z-index:0; height:100vh; }
+    #sheet{
+      position:fixed; left:0; right:0; bottom:0; z-index:20; height:var(--sheet-h);
+      background:var(--surface); border-radius:18px 18px 0 0; box-shadow:var(--shadow);
+      display:flex; flex-direction:column; transition:height .25s ease;
+    }
+    #sheet-handle{
+      flex:0 0 auto; width:100%; min-height:44px; border:0; background:transparent;
+      display:flex; align-items:center; justify-content:center; cursor:grab; touch-action:none;
+    }
+    #sheet-handle .bar{ width:44px; height:5px; border-radius:99px; background:var(--line); display:block; }
+    #sheet-scroll{ overflow-y:auto; flex:1 1 auto; padding:0 16px 16px; }
+    .sheet-header{ display:flex; align-items:center; gap:10px; padding:2px 16px 10px; }
+    .brand{ font-weight:800; font-size:1.15rem; color:var(--primary); letter-spacing:-.01em; }
+    .tagline{ font-size:.78rem; color:var(--ink2); }
+    #theme-toggle{ min-width:44px; }
+
+    #fab-add{
+      position:fixed; right:16px; bottom:calc(var(--sheet-h) + 12px); z-index:30;
+      border-radius:999px; padding:0 20px; min-height:48px; box-shadow:var(--shadow);
+      transition:bottom .25s ease, opacity .2s ease;
+    }
+    #geo{
+      position:fixed; left:16px; bottom:calc(var(--sheet-h) + 12px); z-index:30;
+      width:48px; height:48px; border-radius:50%; box-shadow:var(--shadow);
+      display:flex; align-items:center; justify-content:center; font-size:1.15rem;
+      transition:bottom .25s ease, opacity .2s ease;
+    }
+    body.sheet-expanded #fab-add, body.sheet-expanded #geo,
+    body.add-mode #fab-add, body.add-mode #geo{ opacity:0; pointer-events:none; }
+    #legend{ display:none; }
+
+    @media (min-width:992px){
+      #app{ height:100vh; }
+      #sheet{
+        position:static; height:100vh; border-radius:0; box-shadow:none;
+        border-right:1px solid var(--line); z-index:auto;
+      }
+      #sheet-handle{ display:none; }
+      #sheet-scroll{ padding:0 20px 20px; }
+      /* z-index:0 keeps Leaflet's internal panes below the fixed buttons and legend */
+      #map{ position:relative; height:100vh; z-index:0; }
+      #fab-add{ bottom:24px; right:24px; }
+      #geo{ bottom:24px; left:calc(33.3333% + 16px); }
+      body.sheet-expanded #fab-add, body.sheet-expanded #geo{ opacity:1; pointer-events:auto; }
+      #legend{
+        display:block; position:fixed; top:16px; right:16px; z-index:15;
+        background:var(--surface); border:1px solid var(--line); border-radius:14px;
+        padding:10px 14px; font-size:.8rem; box-shadow:var(--shadow);
+      }
+      #legend .dot{ width:12px; height:12px; border-radius:50%; display:inline-block; margin-right:8px; }
+      /* offcanvas: bottom on mobile becomes end (right) on desktop */
+      #add-form.offcanvas-bottom{
+        top:0; right:0; bottom:auto; left:auto; width:430px; height:100vh; max-height:none;
+        border-left:1px solid var(--line); border-top:0; transform:translateX(100%);
+      }
+      #add-form.offcanvas-bottom.show{ transform:none; }
+    }
+
+    /* Search + filter chips */
+    .search-wrap{ position:relative; margin-bottom:10px; }
+    .search-wrap .bi-search{ position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--ink2); }
+    #search{ padding-left:40px; min-height:46px; border-radius:999px; background:var(--surface-2); border-color:var(--line); color:var(--ink); }
+    #search::placeholder{ color:var(--ink2); }
+    .chip{
+      border:1px solid var(--line); background:var(--surface); color:var(--ink2);
+      border-radius:999px; min-height:44px; padding:0 16px; font-size:.85rem; font-weight:600;
+    }
+    .chip:hover{ background:var(--surface-2); color:var(--ink); }
+    .chip.active{ background:var(--primary); border-color:var(--primary); color:var(--on-primary); }
+
+    /* Spot cards */
+    .spot-card{
+      width:100%; text-align:start; background:var(--surface); border:1px solid var(--line);
+      border-radius:16px; padding:12px; display:flex; gap:12px; align-items:flex-start; cursor:pointer;
+    }
+    .spot-card:hover{ background:var(--surface-2); }
+    .type-tile{
+      flex:0 0 auto; width:42px; height:42px; border-radius:12px; background:var(--ts);
+      color:var(--ti); display:flex; align-items:center; justify-content:center;
+    }
+    .type-tile svg{ width:22px; height:22px; fill:currentColor; }
+    .t-masjid{ --t:#0E7C66; --ti:#0B5D4E; --ts:#DDEEE8; }
+    .t-musala{ --t:#9333EA; --ti:#7E22CE; --ts:#F1E6FB; }
+    .t-terminal{ --t:#B45309; --ti:#92400E; --ts:#FBEEDA; }
+    .t-spbu{ --t:#0E7490; --ti:#0E7490; --ts:#DCF0F5; }
+    .t-rest{ --t:#15803D; --ti:#166534; --ts:#DCF3E2; }
+    [data-bs-theme="dark"] .t-masjid{ --ti:#5FD4BC; --ts:#17332B; }
+    [data-bs-theme="dark"] .t-musala{ --ti:#C9A0F0; --ts:#2A1A3E; }
+    [data-bs-theme="dark"] .t-terminal{ --ti:#E3B566; --ts:#2E2410; }
+    [data-bs-theme="dark"] .t-spbu{ --ti:#6FC3D8; --ts:#12303A; }
+    [data-bs-theme="dark"] .t-rest{ --ti:#7CC79B; --ts:#152E1E; }
+    .spot-name{ font-weight:600; font-size:.95rem; margin:0; }
+    .spot-meta{ font-size:.78rem; color:var(--ink2); margin:2px 0 6px; }
+    .mini-chip{
+      display:inline-flex; align-items:center; gap:4px; font-size:.72rem; font-weight:600;
+      background:var(--surface-2); color:var(--ink2); border-radius:99px; padding:3px 8px; margin-right:4px;
+    }
+    .v-pill{ flex:0 0 auto; font-size:.72rem; font-weight:700; border-radius:99px; padding:4px 10px; background:var(--success-soft); color:var(--success-ink); white-space:nowrap; }
+    .v-pill.unknown{ background:var(--surface-2); color:var(--ink2); }
+
+    /* Tinjauan saya: pending spots, visually separate, never mixed into the public list */
+    #my-reviews{ margin-top:18px; }
+    #my-reviews h2{ font-size:.85rem; font-weight:700; color:var(--ink2); }
+    .pending-card{ border:1.5px dashed var(--line); border-radius:16px; padding:12px; background:var(--surface); opacity:.85; }
+    .pending-badge{ font-size:.72rem; font-weight:700; border-radius:99px; padding:4px 10px; background:var(--amber-soft); color:var(--amber-ink); }
+
+    /* Detail */
+    .attr-badge{ display:inline-flex; align-items:center; gap:5px; background:var(--ts); color:var(--ti); border-radius:99px; padding:6px 12px; font-size:.78rem; font-weight:700; }
+    .attr-row{ display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); font-size:.9rem; }
+    .attr-row .bi{ color:var(--ink2); margin-top:2px; }
+    .attr-row .label{ flex:0 0 132px; color:var(--ink2); }
+    .unknown{ color:var(--ink2); }
+    .note-box{ background:var(--amber-soft); color:var(--amber-ink); border-radius:12px; padding:12px; display:flex; gap:8px; font-size:.88rem; margin-top:12px; }
+    .verify-line{ font-size:.82rem; color:var(--ink2); margin:12px 0; }
+
+    /* Map pins: teardrop divIcon, one colour + one white glyph per type.
+       .pin-hit is a 44px tap target; the visible teardrop stays 30px. */
+    .pin-hit{ width:44px; height:44px; display:flex; justify-content:center; padding-top:5px; }
+    .pin{
+      width:30px; height:30px; background:var(--pin); border:2px solid #fff;
+      border-radius:50% 50% 50% 0; transform:rotate(-45deg);
+      display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(0,0,0,.35);
+    }
+    .pin svg{ width:15px; height:15px; fill:#fff; transform:rotate(45deg); }
+    .pin-temp{ --pin:#0E7C66; }
+
+    /* Add mode: dim the sheet, keep the map tappable */
+    body.add-mode #sheet{ opacity:.35; pointer-events:none; }
+    #pin-banner{
+      position:fixed; top:14px; left:50%; transform:translateX(-50%); z-index:40;
+      width:min(92vw,440px); background:var(--surface); border:1px solid var(--line);
+      border-radius:14px; box-shadow:var(--shadow); padding:10px 14px;
+      display:flex; align-items:center; gap:10px; font-weight:600; font-size:.9rem;
+    }
+    #pin-card{
+      position:fixed; bottom:calc(var(--sheet-h) + 12px); left:50%; transform:translateX(-50%); z-index:40;
+      width:min(92vw,440px); background:var(--surface); border:1px solid var(--line);
+      border-radius:14px; box-shadow:var(--shadow); padding:14px;
+    }
+
+    /* Form */
+    #add-form{ --bs-offcanvas-bg:var(--surface); --bs-offcanvas-color:var(--ink); --bs-offcanvas-border-color:var(--line); }
+    #add-form .btn-close{ min-width:44px; min-height:44px; }
+    /* the whole switch row is a 44px tap target, not just the small switch */
+    #add-form .form-switch{ display:flex; align-items:center; min-height:44px; padding-left:0; }
+    #add-form .form-switch .form-check-input{ float:none; margin:0; flex:0 0 auto; }
+    #add-form .form-switch .form-check-label{ flex:1 1 auto; min-height:44px; display:flex; align-items:center; padding-left:10px; }
+    @media (max-width:991.98px){
+      #add-form.offcanvas-bottom{ height:auto; max-height:88vh; border-radius:18px 18px 0 0; }
+    }
+    .form-label{ font-weight:600; font-size:.88rem; }
+    .form-control,.form-select{ background:var(--surface); border-color:var(--line); color:var(--ink); min-height:46px; }
+    .form-control:focus,.form-select:focus{ border-color:var(--primary); box-shadow:0 0 0 .2rem var(--primary-soft); background:var(--surface); color:var(--ink); }
+    .form-control::placeholder{ color:var(--ink2); }
+    .jenis-btn{
+      display:inline-flex; align-items:center; gap:7px; border:1px solid var(--line); background:var(--surface);
+      color:var(--ink2); border-radius:12px; padding:9px 13px; font-size:.83rem; font-weight:600; min-height:44px;
+    }
+    .jenis-btn svg{ width:17px; height:17px; fill:currentColor; }
+    .btn-check:checked + .jenis-btn{ background:var(--primary-soft); border-color:var(--primary); color:var(--teal-ink); }
+    .was-validated .btn-check:invalid + .jenis-btn{ border-color:var(--bs-form-invalid-color); }
+    .was-validated .jenis-group:has(.btn-check:invalid) .invalid-feedback{ display:block; }
+    .form-switch .form-check-input{ width:2.6em; height:1.4em; }
+    .form-check-input:checked{ background-color:var(--primary); border-color:var(--primary); }
+    .form-check-input:focus{ border-color:var(--primary); box-shadow:0 0 0 .2rem var(--primary-soft); }
+    .submit{ flex:0 0 auto; width:auto; min-width:200px; min-height:44px; padding:0 26px; }
+    .success-circle{
+      width:88px; height:88px; border-radius:50%; background:var(--success-soft); color:var(--success-ink);
+      display:flex; align-items:center; justify-content:center; font-size:44px; margin:24px auto 16px;
+    }
+
+    /* Toast */
+    #toast{ --bs-toast-bg:var(--surface); --bs-toast-color:var(--ink); --bs-toast-border-color:var(--line); border-radius:12px; }
+    .toast-container{ z-index:1090; }
+  </style>
+</head>
+<body>
+
+  <main id="app" class="row g-0">
+    <!-- Sheet: bottom sheet on mobile, static left sidebar on desktop (same DOM) -->
+    <section id="sheet" class="col-lg-4" aria-label="Daftar spot">
+      <button id="sheet-handle" type="button" aria-expanded="false" aria-label="Buka atau tutup daftar penuh">
+        <span class="bar" aria-hidden="true"></span>
+      </button>
+      <div class="sheet-header">
+        <div>
+          <div class="brand">Singgah</div>
+          <div class="tagline">Mandi &amp; istirahat gratis</div>
+        </div>
+        <button id="theme-toggle" type="button" class="btn btn-surface ms-auto" aria-label="Ganti ke mode gelap">
+          <i class="bi bi-moon-stars" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div id="sheet-scroll">
+        <!-- List view -->
+        <div id="list-view">
+          <div class="search-wrap">
+            <i class="bi bi-search" aria-hidden="true"></i>
+            <label for="search" class="visually-hidden">Cari spot</label>
+            <input id="search" type="search" class="form-control" placeholder="Cari masjid, musala, SPBU…" autocomplete="off">
+          </div>
+          <div class="d-flex flex-wrap gap-2 mb-2" role="group" aria-label="Saring jenis spot">
+            <button type="button" class="btn chip active" data-type="all" aria-pressed="true">Semua</button>
+            <button type="button" class="btn chip" data-type="masjid_besar" aria-pressed="false">Masjid</button>
+            <button type="button" class="btn chip" data-type="musala" aria-pressed="false">Musala</button>
+            <button type="button" class="btn chip" data-type="terminal" aria-pressed="false">Terminal</button>
+            <button type="button" class="btn chip" data-type="spbu" aria-pressed="false">SPBU</button>
+            <button type="button" class="btn chip" data-type="rest_area" aria-pressed="false">Rest Area</button>
+          </div>
+          <div id="list-count" class="tagline mb-2" aria-live="polite"></div>
+          <div id="spot-list" class="d-grid gap-2"></div>
+          <div id="my-reviews" class="d-none">
+            <h2>Tinjauan saya</h2>
+            <p class="tagline">Spot ini menunggu tinjauan. Belum tampil di peta.</p>
+            <div id="pending-list" class="d-grid gap-2"></div>
+          </div>
+        </div>
+
+        <!-- Detail view (replaces the list inside the same sheet) -->
+        <div id="detail-view" class="d-none">
+          <button id="detail-back" type="button" class="btn btn-surface mb-3">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> Kembali
+          </button>
+          <div id="detail-content"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Map -->
+    <div id="map" class="col-lg-8" role="application" aria-label="Peta spot"></div>
+  </main>
+
+  <!-- Floating map controls -->
+  <button id="fab-add" type="button" class="btn btn-primary">
+    <i class="bi bi-plus-lg" aria-hidden="true"></i> Tambah
+  </button>
+  <button id="geo" type="button" class="btn btn-surface" aria-label="Gunakan lokasi saya">
+    <i class="bi bi-geo-alt" aria-hidden="true"></i>
+  </button>
+
+  <!-- Desktop legend (once, top-right of the map) -->
+  <div id="legend" aria-hidden="true">
+    <div class="fw-bold mb-1">Jenis spot</div>
+    <div id="legend-rows"></div>
+  </div>
+
+  <!-- Add mode: banner + pin confirmation card -->
+  <div id="pin-banner" class="d-none" role="status">
+    <i class="bi bi-pin-map" aria-hidden="true"></i>
+    <span>Ketuk peta untuk menaruh pin</span>
+    <button id="pin-cancel" type="button" class="btn btn-surface ms-auto" aria-label="Batal tambah spot">
+      <i class="bi bi-x-lg" aria-hidden="true"></i>
+    </button>
+  </div>
+  <div id="pin-card" class="d-none">
+    <div class="fw-bold mb-1">Pin di titik ini?</div>
+    <div id="pin-coords" class="tagline mb-2"></div>
+    <button id="pin-next" type="button" class="btn btn-primary w-100">Lanjut isi info</button>
+  </div>
+
+  <!-- Add-spot form: offcanvas bottom on mobile, right end on desktop (CSS override) -->
+  <div class="offcanvas offcanvas-bottom" tabindex="-1" id="add-form" aria-labelledby="add-form-title">
+    <div class="offcanvas-header">
+      <h1 class="offcanvas-title fs-5 fw-bold" id="add-form-title">Tambah spot</h1>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Tutup"></button>
+    </div>
+    <div class="offcanvas-body">
+      <form id="spot-form" class="needs-validation" novalidate>
+        <div id="form-view">
+          <div class="mb-3">
+            <label class="form-label" for="f-name">Nama spot</label>
+            <input id="f-name" type="text" class="form-control" required maxlength="120" placeholder="Nama masjid, musala, atau tempatnya">
+            <div class="invalid-feedback">Nama spot wajib diisi.</div>
+          </div>
+
+          <fieldset class="mb-3">
+            <legend class="form-label fs-6">Jenis</legend>
+            <div class="jenis-group d-flex flex-wrap gap-2" id="f-type"></div>
+            <div class="invalid-feedback">Pilih jenis spot.</div>
+          </fieldset>
+
+          <div class="mb-3">
+            <label class="form-label" for="f-water">Air</label>
+            <select id="f-water" class="form-select">
+              <option value="" selected>Belum tahu</option>
+              <option value="kran_mandi">Kran mandi terang</option>
+              <option value="wudhu_only">Hanya air wudhu</option>
+              <option value="air_isi">Air isi ulang</option>
+              <option value="tidak_ada">Tidak ada air</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="f-hours">Jam buka</label>
+            <input id="f-hours" type="text" class="form-control" placeholder="24 jam" maxlength="60">
+          </div>
+
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="f-bike">
+            <label class="form-check-label" for="f-bike">Parkir sepeda</label>
+          </div>
+
+          <fieldset class="mb-3">
+            <legend class="form-label fs-6">Ramah perempuan</legend>
+            <div class="d-flex flex-wrap gap-2">
+              <input type="radio" class="btn-check" name="f-women" id="f-women-yes" value="true">
+              <label class="jenis-btn" for="f-women-yes">Ya</label>
+              <input type="radio" class="btn-check" name="f-women" id="f-women-no" value="false">
+              <label class="jenis-btn" for="f-women-no">Tidak</label>
+              <input type="radio" class="btn-check" name="f-women" id="f-women-unknown" value="" checked>
+              <label class="jenis-btn" for="f-women-unknown">Belum ada info</label>
+            </div>
+          </fieldset>
+
+          <div class="mb-3">
+            <label class="form-label" for="f-notes">Catatan</label>
+            <textarea id="f-notes" class="form-control" rows="2" maxlength="300" placeholder="Contoh: izin dulu ke marbot sebelum istirahat"></textarea>
+          </div>
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary submit" aria-describedby="reassurance">Kirim untuk ditinjau</button>
+            <p id="reassurance" class="tagline mt-2 mb-0">Spot baru diperiksa dulu sebelum tampil di peta.</p>
+          </div>
+        </div>
+      </form>
+
+      <!-- Success view -->
+      <div id="success-view" class="d-none text-center">
+        <div class="success-circle"><i class="bi bi-check2-circle" aria-hidden="true"></i></div>
+        <h2 class="fw-bold fs-4">Terima kasih!</h2>
+        <p class="text-secondary">Spot kamu sedang ditinjau. Kalau disetujui, langsung muncul di peta.</p>
+        <button id="success-back" type="button" class="btn btn-primary submit mt-2">Kembali ke peta</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast host -->
+  <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
+    <div id="toast" class="toast align-items-center" role="status" aria-live="polite" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body" id="toast-body"></div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Tutup"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // CONFIG — all constants in one place (the real app keeps these in js/config.js).
+    const CONFIG = {
+      TILE_URL: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // never pre-cache tiles (OSM policy)
+      CENTER: [-7.7956, 110.3695], // Yogyakarta
+      ZOOM: 13,
+      SPOTS_KEY: 'singgah_user_spots',
+      THEME_KEY: 'singgah_theme',
+    };
+
+    // TYPES — label, pin colour and white glyph per spot type (matches the approved board).
+    const TYPES = {
+      masjid_besar: { label: 'Masjid Besar', color: '#0E7C66', cls: 't-masjid',
+        glyph: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C7.6 3 4 6.8 4 11.5V20h16v-8.5C20 6.8 16.4 3 12 3z"/><rect x="2" y="20" width="20" height="2"/></svg>' },
+      musala: { label: 'Musala', color: '#9333EA', cls: 't-musala',
+        glyph: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5l8-3 8 3v16h-5v-6h-6v6H4z"/></svg>' },
+      terminal: { label: 'Terminal', color: '#B45309', cls: 't-terminal',
+        glyph: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M4 4c0-1.1.9-2 2-2h12c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2v2h-2v-2H8v2H6v-2c-1.1 0-2-.9-2-2V4zm2 2v5h12V6H6zm1.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm9 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/></svg>' },
+      spbu: { label: 'SPBU', color: '#0E7490', cls: 't-spbu',
+        glyph: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2s6 6.6 6 11a6 6 0 1 1-12 0c0-4.4 6-11 6-11z"/></svg>' },
+      rest_area: { label: 'Rest Area', color: '#15803D', cls: 't-rest',
+        glyph: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3L2 20h7l3-6 3 6h7L12 3z"/></svg>' },
+    };
+
+    // SPOTS — mock rows shaped exactly like the Supabase spots table (mechanical swap later).
+    const hoursAgo = h => new Date(Date.now() - h * 3600 * 1000).toISOString();
+    const SPOTS = [
+      { id: 's1', name: 'Musala Terminal Giwangan (Blok C)', type: 'terminal', lat: -7.8267, lng: 110.3757,
+        water: 'kran_mandi', hours: '24 jam', bike_parking: true, women_friendly: null,
+        notes: 'Izin dulu ke petugas sebelum istirahat.', status: 'approved', source: 'playbook',
+        last_verified_at: hoursAgo(2), created_at: hoursAgo(200) },
+      { id: 's2', name: 'Masjid Jogokariyan', type: 'masjid_besar', lat: -7.8155, lng: 110.3675,
+        water: 'kran_mandi', hours: '24 jam', bike_parking: true, women_friendly: true,
+        notes: 'Ramah musafir; ada kamar mandi di sisi selatan.', status: 'approved', source: 'playbook',
+        last_verified_at: hoursAgo(26), created_at: hoursAgo(300) },
+      { id: 's3', name: 'Masjid Gede Kauman', type: 'masjid_besar', lat: -7.8070, lng: 110.3630,
+        water: 'kran_mandi', hours: '04.00–21.00', bike_parking: true, women_friendly: null,
+        notes: null, status: 'approved', source: 'playbook', last_verified_at: null, created_at: hoursAgo(300) },
+      { id: 's4', name: 'Masjid Kampus UGM', type: 'masjid_besar', lat: -7.7660, lng: 110.3780,
+        water: 'kran_mandi', hours: '24 jam', bike_parking: true, women_friendly: true,
+        notes: null, status: 'approved', source: 'playbook', last_verified_at: null, created_at: hoursAgo(300) },
+      { id: 's5', name: 'Musala Stasiun Tugu', type: 'terminal', lat: -7.7828, lng: 110.3649,
+        water: 'wudhu_only', hours: '04.00–22.00', bike_parking: true, women_friendly: null,
+        notes: null, status: 'approved', source: 'playbook', last_verified_at: null, created_at: hoursAgo(300) },
+      { id: 's6', name: 'SPBU Jl. Kaliurang KM 5', type: 'spbu', lat: -7.7520, lng: 110.3730,
+        water: 'air_isi', hours: '24 jam', bike_parking: true, women_friendly: null,
+        notes: null, status: 'approved', source: 'playbook', last_verified_at: null, created_at: hoursAgo(300) },
+      { id: 's7', name: 'Musala Rest Area Trans-Java KM 207 (Batang)', type: 'rest_area', lat: -6.9667, lng: 109.6833,
+        water: 'kran_mandi', hours: '24 jam', bike_parking: true, women_friendly: null,
+        notes: null, status: 'approved', source: 'playbook', last_verified_at: null, created_at: hoursAgo(300) },
+      { id: 's8', name: "Masjid Jami Ni'matul Ittihad (Pondok Pinang, Jakarta)", type: 'masjid_besar', lat: -6.2680, lng: 106.7990,
+        water: 'kran_mandi', hours: '24 jam', bike_parking: true, women_friendly: null,
+        notes: null, status: 'approved', source: 'playbook', last_verified_at: null, created_at: hoursAgo(300) },
+      { id: 's9', name: 'Musala Jami Al-Ikhlas', type: 'musala', lat: -7.7710, lng: 110.4110,
+        water: 'wudhu_only', hours: null, bike_parking: false, women_friendly: null,
+        notes: null, status: 'pending', source: 'user', last_verified_at: null, created_at: hoursAgo(5) },
+    ];
+
+    // state — one small object; mode drives the screen state machine.
+    const state = { query: '', type: 'all', mode: 'browse', pin: null, detailId: null, submitted: false };
+    let userSpots = [];
+    try {
+      userSpots = JSON.parse(localStorage.getItem(CONFIG.SPOTS_KEY) || '[]');
+    } catch (e) { userSpots = []; }
+
+    // helpers — small pure functions used by the renderers.
+    const $ = sel => document.querySelector(sel);
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const isUnknown = v => v === null || v === undefined || v === '';
+    const UNKNOWN = '<span class="unknown">Belum ada info</span>';
+    const WATER_LABELS = { kran_mandi: 'Kran mandi', wudhu_only: 'Wudhu saja', air_isi: 'Air isi', tidak_ada: 'Tidak ada' };
+    const waterLabel = v => isUnknown(v) ? UNKNOWN : esc(WATER_LABELS[v] || v);
+    const womenLabel = v => v === true ? 'Ya' : v === false ? 'Tidak' : UNKNOWN;
+    const boolLabel = v => v ? 'Ya' : 'Tidak';
+
+    function relTime(iso) {
+      if (isUnknown(iso)) return null;
+      const mins = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+      if (mins < 60) return 'baru saja';
+      const hours = Math.floor(mins / 60);
+      if (hours < 24) return hours + ' jam lalu';
+      return Math.floor(hours / 24) + ' hari lalu';
+    }
+
+    // distance-ish label from the Yogya centre (prototype stand-in for real distance).
+    function distanceLabel(lat, lng) {
+      const [lat1, lng1] = CONFIG.CENTER;
+      const rad = Math.PI / 180;
+      const dLat = (lat - lat1) * rad, dLng = (lng - lng1) * rad;
+      const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * rad) * Math.cos(lat * rad) * Math.sin(dLng / 2) ** 2;
+      const km = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      if (km < 1) return Math.round(km * 1000) + ' m';
+      return km.toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' km';
+    }
+
+    function showToast(msg) {
+      $('#toast-body').textContent = msg;
+      bootstrap.Toast.getOrCreateInstance($('#toast'), { delay: 2600 }).show();
+    }
+
+    // theme — Bootstrap native data-bs-theme, persisted in localStorage.
+    function applyTheme(theme) {
+      document.documentElement.dataset.bsTheme = theme;
+      try { localStorage.setItem(CONFIG.THEME_KEY, theme); } catch (e) { /* ignore */ }
+      const dark = theme === 'dark';
+      $('#theme-toggle').innerHTML = '<i class="bi ' + (dark ? 'bi-sun' : 'bi-moon-stars') + '" aria-hidden="true"></i>';
+      $('#theme-toggle').setAttribute('aria-label', dark ? 'Ganti ke mode terang' : 'Ganti ke mode gelap');
+    }
+    $('#theme-toggle').addEventListener('click', () => {
+      applyTheme(document.documentElement.dataset.bsTheme === 'dark' ? 'light' : 'dark');
+    });
+    applyTheme(document.documentElement.dataset.bsTheme || 'light');
+
+    // map — Leaflet with OSM tiles; markers only for approved spots.
+    const map = L.map('map', { zoomControl: false }).setView(CONFIG.CENTER, CONFIG.ZOOM);
+    L.control.zoom({ zoomInTitle: 'Perbesar', zoomOutTitle: 'Perkecil' }).addTo(map);
+    L.tileLayer(CONFIG.TILE_URL, { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+    const markerLayer = L.layerGroup().addTo(map);
+    let tempPin = null;
+
+    function pinIcon(type) {
+      const t = TYPES[type];
+      return L.divIcon({ className: '', html: '<div class="pin-hit"><div class="pin" style="--pin:' + t.color + '">' + t.glyph + '</div></div>',
+        iconSize: [44, 44], iconAnchor: [22, 42] });
+    }
+
+    function renderMarkers(spots) {
+      markerLayer.clearLayers();
+      spots.forEach(s => {
+        L.marker([s.lat, s.lng], { icon: pinIcon(s.type), title: s.name })
+          .on('click', () => openDetail(s.id))
+          .addTo(markerLayer);
+      });
+    }
+
+    // list — cards for approved spots; pending spots live only in "Tinjauan saya".
+    const approved = () => SPOTS.filter(s => s.status === 'approved');
+    const pending = () => SPOTS.filter(s => s.status === 'pending').concat(userSpots);
+
+    function filtered() {
+      const q = state.query.trim().toLowerCase();
+      return approved().filter(s =>
+        (state.type === 'all' || s.type === state.type) &&
+        (q === '' || s.name.toLowerCase().includes(q)));
+    }
+
+    function cardHtml(s) {
+      const t = TYPES[s.type];
+      const rel = relTime(s.last_verified_at);
+      const pill = rel
+        ? '<span class="v-pill">✓ ' + rel + '</span>'
+        : '<span class="v-pill unknown">Belum diverifikasi</span>';
+      const water = isUnknown(s.water) ? 'Belum ada info' : WATER_LABELS[s.water];
+      const hours = isUnknown(s.hours) ? 'Belum ada info' : esc(s.hours);
+      return '<button type="button" class="spot-card" data-id="' + s.id + '">' +
+        '<span class="type-tile ' + t.cls + '">' + t.glyph + '</span>' +
+        '<span class="flex-grow-1">' +
+          '<span class="spot-name d-block">' + esc(s.name) + '</span>' +
+          '<span class="spot-meta d-block">' + t.label + ' · ' + distanceLabel(s.lat, s.lng) + '</span>' +
+          '<span class="mini-chip"><i class="bi bi-droplet" aria-hidden="true"></i>' + water + '</span>' +
+          '<span class="mini-chip"><i class="bi bi-clock" aria-hidden="true"></i>' + hours + '</span>' +
+          '<span class="mini-chip"><i class="bi bi-bicycle" aria-hidden="true"></i>' + boolLabel(s.bike_parking) + '</span>' +
+        '</span>' + pill + '</button>';
+    }
+
+    function renderList() {
+      const spots = filtered();
+      $('#list-count').textContent = spots.length + ' spot';
+      $('#spot-list').innerHTML = spots.length
+        ? spots.map(cardHtml).join('')
+        : '<p class="tagline py-3">Tidak ada spot yang cocok. Coba kata lain atau pilih Semua.</p>';
+      $('#spot-list').querySelectorAll('.spot-card').forEach(el =>
+        el.addEventListener('click', () => openDetail(el.dataset.id)));
+      renderMarkers(spots);
+      renderPending();
+    }
+
+    function renderPending() {
+      const list = pending();
+      $('#my-reviews').classList.toggle('d-none', list.length === 0);
+      $('#pending-list').innerHTML = list.map(s =>
+        '<article class="pending-card">' +
+          '<div class="d-flex align-items-start gap-2">' +
+            '<span class="type-tile ' + TYPES[s.type].cls + '">' + TYPES[s.type].glyph + '</span>' +
+            '<div><div class="spot-name">' + esc(s.name) + '</div>' +
+            '<div class="spot-meta mb-0">' + TYPES[s.type].label + '</div></div>' +
+            '<span class="pending-badge ms-auto">Menunggu tinjauan</span>' +
+          '</div>' +
+        '</article>').join('');
+    }
+
+    // detail — attribute rows; unknown values always render "Belum ada info".
+    function openDetail(id) {
+      const s = SPOTS.find(x => x.id === id);
+      if (!s) return;
+      state.detailId = id;
+      const t = TYPES[s.type];
+      const rel = relTime(s.last_verified_at);
+      const notes = isUnknown(s.notes)
+        ? '<div class="attr-row"><i class="bi bi-journal-text" aria-hidden="true"></i><span class="label">Catatan</span>' + UNKNOWN + '</div>'
+        : '<div class="note-box"><i class="bi bi-info-circle" aria-hidden="true"></i><span>' + esc(s.notes) + '</span></div>';
+      $('#detail-content').innerHTML =
+        '<div class="d-flex align-items-start gap-3 mb-2">' +
+          '<span class="type-tile ' + t.cls + '">' + t.glyph + '</span>' +
+          '<div><h1 class="spot-name fs-5">' + esc(s.name) + '</h1>' +
+          '<div class="spot-meta">' + t.label + ' · ' + distanceLabel(s.lat, s.lng) + '</div></div>' +
+        '</div>' +
+        '<div class="d-flex flex-wrap gap-2 mb-2">' +
+          '<span class="attr-badge ' + t.cls + '"><i class="bi bi-droplet" aria-hidden="true"></i>' + waterLabel(s.water) + '</span>' +
+          '<span class="attr-badge ' + t.cls + '"><i class="bi bi-clock" aria-hidden="true"></i>' + (isUnknown(s.hours) ? 'Belum ada info' : esc(s.hours)) + '</span>' +
+          '<span class="attr-badge ' + t.cls + '"><i class="bi bi-bicycle" aria-hidden="true"></i>' + boolLabel(s.bike_parking) + '</span>' +
+        '</div>' +
+        '<div class="attr-row"><i class="bi bi-droplet" aria-hidden="true"></i><span class="label">Air</span><span>' + waterLabel(s.water) + '</span></div>' +
+        '<div class="attr-row"><i class="bi bi-clock" aria-hidden="true"></i><span class="label">Jam</span><span>' + (isUnknown(s.hours) ? UNKNOWN : esc(s.hours)) + '</span></div>' +
+        '<div class="attr-row"><i class="bi bi-bicycle" aria-hidden="true"></i><span class="label">Parkir sepeda</span><span>' + boolLabel(s.bike_parking) + '</span></div>' +
+        '<div class="attr-row"><i class="bi bi-gender-female" aria-hidden="true"></i><span class="label">Ramah perempuan</span><span>' + womenLabel(s.women_friendly) + '</span></div>' +
+        notes +
+        '<div class="verify-line">' + (rel ? 'Diverifikasi ' + rel : 'Belum diverifikasi') + '</div>' +
+        '<div class="d-flex flex-wrap gap-2">' +
+          '<button id="verify-btn" type="button" class="btn btn-outline-success"><i class="bi bi-shield-check" aria-hidden="true"></i> Masih ada ✓</button>' +
+          '<a id="rute-btn" class="btn btn-primary" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=' + s.lat + ',' + s.lng + '"><i class="bi bi-signpost-split" aria-hidden="true"></i> Rute</a>' +
+        '</div>';
+      $('#list-view').classList.add('d-none');
+      $('#detail-view').classList.remove('d-none');
+      document.body.classList.add('sheet-expanded');
+      $('#sheet-handle').setAttribute('aria-expanded', 'true');
+      $('#verify-btn').addEventListener('click', () => verifySpot(s.id));
+      $('#detail-back').focus();
+    }
+
+    function closeDetail() {
+      state.detailId = null;
+      $('#detail-view').classList.add('d-none');
+      $('#list-view').classList.remove('d-none');
+    }
+    $('#detail-back').addEventListener('click', closeDetail);
+
+    // verify — prototype keeps the bump in memory; the real build persists it via the
+    // rate-limited bump_verified Postgres function in Supabase (1 bump per spot per hour).
+    function verifySpot(id) {
+      const s = SPOTS.find(x => x.id === id);
+      if (!s) return;
+      s.last_verified_at = new Date().toISOString();
+      openDetail(id);
+      renderList();
+      showToast('Terima kasih! Verifikasi tercatat.');
+    }
+
+    // filters — search and chips drive cards AND markers together.
+    $('#search').addEventListener('input', e => { state.query = e.target.value; renderList(); });
+    document.querySelectorAll('.chip').forEach(btn => btn.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+      state.type = btn.dataset.type;
+      renderList();
+    }));
+
+    // sheet — tap the handle to toggle; drag up/down also works.
+    const handle = $('#sheet-handle');
+    let dragY = null, dragged = false;
+    function setSheet(expanded) {
+      document.body.classList.toggle('sheet-expanded', expanded);
+      handle.setAttribute('aria-expanded', String(expanded));
+    }
+    handle.addEventListener('click', () => {
+      if (dragged) { dragged = false; return; }
+      setSheet(!document.body.classList.contains('sheet-expanded'));
+    });
+    handle.addEventListener('pointerdown', e => { dragY = e.clientY; dragged = false; });
+    handle.addEventListener('pointerup', e => {
+      if (dragY === null) return;
+      const dy = e.clientY - dragY;
+      dragY = null;
+      if (Math.abs(dy) > 30) { dragged = true; setSheet(dy < 0); }
+    });
+
+    // add flow — pin mode → form (offcanvas) → success; new spots land pending in localStorage.
+    const offcanvas = new bootstrap.Offcanvas($('#add-form'));
+
+    function enterPinMode() {
+      state.mode = 'pin';
+      document.body.classList.add('add-mode');
+      $('#pin-banner').classList.remove('d-none');
+      closeDetail();
+      map.on('click', onMapClick);
+    }
+    function exitPinMode() {
+      state.mode = 'browse';
+      state.pin = null;
+      document.body.classList.remove('add-mode');
+      $('#pin-banner').classList.add('d-none');
+      $('#pin-card').classList.add('d-none');
+      if (tempPin) { map.removeLayer(tempPin); tempPin = null; }
+      map.off('click', onMapClick);
+    }
+    function onMapClick(e) {
+      state.pin = { lat: e.latlng.lat, lng: e.latlng.lng };
+      if (tempPin) map.removeLayer(tempPin);
+      tempPin = L.marker([state.pin.lat, state.pin.lng], {
+        icon: L.divIcon({ className: '', html: '<div class="pin-hit"><div class="pin pin-temp">' + TYPES.masjid_besar.glyph + '</div></div>',
+          iconSize: [44, 44], iconAnchor: [22, 42] }),
+      }).addTo(map);
+      $('#pin-coords').textContent = state.pin.lat.toFixed(5) + ', ' + state.pin.lng.toFixed(5);
+      $('#pin-card').classList.remove('d-none');
+    }
+    $('#fab-add').addEventListener('click', enterPinMode);
+    $('#pin-cancel').addEventListener('click', exitPinMode);
+    $('#pin-next').addEventListener('click', () => {
+      if (!state.pin) return;
+      state.mode = 'form';
+      $('#pin-banner').classList.add('d-none');
+      $('#pin-card').classList.add('d-none');
+      offcanvas.show();
+    });
+    // dismissing the form returns to pin mode (the pin stays); success exits instead.
+    $('#add-form').addEventListener('hidden.bs.offcanvas', () => {
+      if (state.submitted) { state.submitted = false; exitPinMode(); return; }
+      if (state.mode === 'form') {
+        state.mode = 'pin';
+        $('#pin-banner').classList.remove('d-none');
+        if (state.pin) $('#pin-card').classList.remove('d-none');
+      }
+    });
+
+    // form — build the Jenis radio group from TYPES, then validate and submit.
+    $('#f-type').innerHTML = Object.entries(TYPES).map(([key, t]) =>
+      '<input type="radio" class="btn-check" name="f-type" id="f-type-' + key + '" value="' + key + '" required>' +
+      '<label class="jenis-btn" for="f-type-' + key + '">' + t.glyph + t.label + '</label>').join('');
+
+    $('#spot-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const form = e.target;
+      if (!form.checkValidity()) { form.classList.add('was-validated'); return; }
+      const women = form.querySelector('input[name="f-women"]:checked').value;
+      const spot = {
+        id: (crypto.randomUUID ? crypto.randomUUID() : 'u' + Date.now()),
+        name: $('#f-name').value.trim(),
+        type: form.querySelector('input[name="f-type"]:checked').value,
+        lat: state.pin.lat, lng: state.pin.lng,
+        water: $('#f-water').value || null,
+        hours: $('#f-hours').value.trim() || null,
+        bike_parking: $('#f-bike').checked,
+        women_friendly: women === '' ? null : women === 'true',
+        notes: $('#f-notes').value.trim() || null,
+        status: 'pending', source: 'user',
+        last_verified_at: null, created_at: new Date().toISOString(),
+      };
+      userSpots.push(spot);
+      try { localStorage.setItem(CONFIG.SPOTS_KEY, JSON.stringify(userSpots)); } catch (e) { /* ignore */ }
+      state.submitted = true;
+      $('#form-view').classList.add('d-none');
+      $('#success-view').classList.remove('d-none');
+      renderPending();
+      $('#success-back').focus();
+    });
+
+    $('#success-back').addEventListener('click', () => {
+      offcanvas.hide(); // hidden.bs.offcanvas handler exits pin mode because submitted = true
+      closeDetail();
+      const form = $('#spot-form');
+      form.reset();
+      form.classList.remove('was-validated');
+      $('#form-view').classList.remove('d-none');
+      $('#success-view').classList.add('d-none');
+      renderList();
+    });
+
+    // geolocate — pan to the user; on failure toast and keep the app usable.
+    $('#geo').addEventListener('click', () => {
+      if (!navigator.geolocation) { showToast('Lokasi tidak tersedia.'); return; }
+      navigator.geolocation.getCurrentPosition(
+        pos => map.setView([pos.coords.latitude, pos.coords.longitude], 15),
+        () => showToast('Lokasi tidak tersedia.'),
+        { timeout: 8000 }
+      );
+    });
+
+    // legend — desktop only, one row per type.
+    $('#legend-rows').innerHTML = Object.values(TYPES).map(t =>
+      '<div><span class="dot" style="background:' + t.color + '"></span>' + t.label + '</div>').join('');
+
+    // init — first render; re-check map size when the viewport crosses the breakpoint.
+    renderList();
+    window.addEventListener('resize', () => map.invalidateSize());
+  </script>
+</body>
+</html>
