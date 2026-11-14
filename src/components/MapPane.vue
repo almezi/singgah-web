@@ -56,7 +56,43 @@ let redrawTimer = null; // debounce untuk redrawMarkers (plain setTimeout — ta
 
 // Lane F infrastructure — imported, never edited (A5). The 'Lokasi tidak tersedia.'
 // toast on failure is already handled inside locate().
-const { locate, loading: geoLoading } = useGeolocation();
+const { locate, loading: geoLoading, position: userFix } = useGeolocation();
+
+// ---- Indikator lokasi pengguna ala Google Maps (permintaan owner, 2026-11-15): ----
+// titik biru + cincin denyut + lingkaran akurasi, muncul setelah "Lokasi saya" ditekan.
+let userDot = null;
+let userAccuracyCircle = null;
+watch(userFix, (pos) => {
+  if (!map || !pos) return;
+  const ll = [pos.lat, pos.lng];
+  const acc = Math.max(20, Math.round(pos.accuracy || 30)); // akurasi minimal 20 m agar terlihat
+  if (userAccuracyCircle) {
+    userAccuracyCircle.setLatLng(ll).setRadius(acc);
+  } else {
+    userAccuracyCircle = L.circle(ll, {
+      radius: acc,
+      color: '#1a73e8',
+      weight: 1,
+      fillColor: '#1a73e8',
+      fillOpacity: 0.12,
+      interactive: false,
+    }).addTo(map);
+  }
+  if (userDot) {
+    userDot.setLatLng(ll);
+  } else {
+    userDot = L.marker(ll, {
+      icon: L.divIcon({
+        className: 'sg-user-dot-wrap',
+        html: '<div class="sg-user-dot"></div>',
+        iconSize: [18, 18],
+        iconAnchor: [9, 9],
+      }),
+      interactive: false,
+      zIndexOffset: 2000, // selalu di atas pin spot
+    }).addTo(map);
+  }
+});
 
 // ---- Pin factory: own L.divIcon only (sidesteps Leaflet's broken default-icon paths) ----
 function makeIcon(style, selected = false) {
@@ -341,6 +377,44 @@ onBeforeUnmount(() => {
 .sg-pin--temp {
   background: var(--singgah-teal);
   box-shadow: 0 3px 10px rgba(18, 51, 44, 0.5);
+}
+
+/* Indikator lokasi pengguna: titik biru + denyut halus (konvensi Google Maps).
+   Warna lokasi sengaja biru khas "kamu di sini" agar tak tertukar dengan pin spot. */
+.sg-user-dot-wrap {
+  background: none;
+  border: none;
+}
+.sg-user-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1a73e8;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 6px rgba(18, 51, 44, 0.4);
+  animation: sg-user-pulse 2s ease-out infinite;
+}
+@keyframes sg-user-pulse {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(26, 115, 232, 0.45),
+      0 1px 6px rgba(18, 51, 44, 0.4);
+  }
+  70% {
+    box-shadow:
+      0 0 0 14px rgba(26, 115, 232, 0),
+      0 1px 6px rgba(18, 51, 44, 0.4);
+  }
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(26, 115, 232, 0),
+      0 1px 6px rgba(18, 51, 44, 0.4);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sg-user-dot {
+    animation: none; /* hormati preferensi gerak minimal */
+  }
 }
 
 /* Integrator: pin terpilih — cincin ganda + sedikit membesar, supaya terlihat jelas

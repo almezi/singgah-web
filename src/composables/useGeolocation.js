@@ -19,7 +19,12 @@ function locate() {
     loading.value = true;
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        position.value = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        // accuracy (meter) ikut disimpan — dipakai lingkaran akurasi di peta
+        position.value = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          accuracy: pos.coords.accuracy,
+        };
         loading.value = false;
         resolve(position.value);
       },
