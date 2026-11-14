@@ -84,6 +84,12 @@ Locked stack: Vue 3 + Vite, Bootstrap 5 + Icons, Leaflet 1.9, leaflet.markerclus
 @supabase/supabase-js — all npm. No TypeScript, no router, no state library. Any new dependency
 needs the owner's approval first (`AGENTS.md`) and must earn its bundle weight.
 
+**Bootstrap controls are branded** (esthetics review, 2026-11-15): `.btn-primary`,
+`.btn-outline-success`, form focus rings, and links read their colors from the brand tokens in
+`main.css` — the default Bootstrap blue `#0d6efd` must never reach the screen. New controls
+inheriting Bootstrap styles are automatically on-brand; if you see blue, fix the token, not the
+component.
+
 ### 10. Secrets and safety are hard boundaries
 
 `service_role` / `sb_secret_` keys never touch the frontend, the repo, or any log. The seed

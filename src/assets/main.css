@@ -47,6 +47,111 @@ body {
   background: var(--singgah-page);
 }
 
+/* ---- Brand alignment (review estetika 2026-11-15): semua kontrol Bootstrap memakai
+   warna merek teal — biru bawaan #0d6efd yang clash dengan identitas board dilarang ---- */
+:root {
+  --bs-primary: #0e7c66;
+  --bs-primary-rgb: 14, 124, 102;
+  --bs-primary-bg-subtle: #ddeee8;
+  --bs-primary-border-subtle: #9dcbbc;
+  --bs-success: #15803d;
+  --bs-success-rgb: 21, 128, 61;
+  --bs-link-color: #0e7c66;
+  --bs-link-color-rgb: 14, 124, 102;
+  --bs-link-hover-color: #0b5d4e;
+  --bs-link-hover-color-rgb: 11, 93, 78;
+  --bs-focus-ring-color: rgba(14, 124, 102, 0.25);
+}
+[data-bs-theme='dark'] {
+  --bs-primary: #3dbfa3;
+  --bs-primary-rgb: 61, 191, 163;
+  --bs-primary-bg-subtle: #12281f;
+  --bs-primary-border-subtle: #1d4d3f;
+  --bs-link-color: #5fd4bc;
+  --bs-link-color-rgb: 95, 212, 188;
+  --bs-link-hover-color: #7ee0cb;
+  --bs-focus-ring-color: rgba(61, 191, 163, 0.3);
+}
+
+.btn-primary {
+  --bs-btn-bg: #0e7c66;
+  --bs-btn-border-color: #0e7c66;
+  --bs-btn-color: #fff;
+  --bs-btn-hover-bg: #0b6653;
+  --bs-btn-hover-border-color: #0b6653;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: #0b5d4e;
+  --bs-btn-active-border-color: #0b5d4e;
+  --bs-btn-active-color: #fff;
+  --bs-btn-disabled-bg: #0e7c66;
+  --bs-btn-disabled-border-color: #0e7c66;
+  --bs-btn-focus-shadow-rgb: 14, 124, 102;
+}
+.btn-outline-success {
+  --bs-btn-color: #15803d;
+  --bs-btn-border-color: #15803d;
+  --bs-btn-hover-bg: #15803d;
+  --bs-btn-hover-border-color: #15803d;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: #15803d;
+  --bs-btn-active-border-color: #15803d;
+  --bs-btn-active-color: #fff;
+  --bs-btn-focus-shadow-rgb: 21, 128, 61;
+}
+[data-bs-theme='dark'] .btn-outline-success {
+  --bs-btn-color: #7cc79b;
+  --bs-btn-border-color: #7cc79b;
+  --bs-btn-hover-bg: #7cc79b;
+  --bs-btn-hover-border-color: #7cc79b;
+  --bs-btn-active-bg: #7cc79b;
+  --bs-btn-active-border-color: #7cc79b;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #0e7c66;
+  box-shadow: 0 0 0 0.2rem rgba(14, 124, 102, 0.25);
+}
+[data-bs-theme='dark'] .form-control:focus,
+[data-bs-theme='dark'] .form-select:focus {
+  border-color: #3dbfa3;
+  box-shadow: 0 0 0 0.2rem rgba(61, 191, 163, 0.3);
+}
+.form-check-input:checked {
+  background-color: #0e7c66;
+  border-color: #0e7c66;
+}
+[data-bs-theme='dark'] .form-check-input:checked {
+  background-color: #3dbfa3;
+  border-color: #3dbfa3;
+}
+.form-check-input:focus {
+  border-color: #0e7c66;
+  box-shadow: 0 0 0 0.2rem rgba(14, 124, 102, 0.25);
+}
+
+/* Transisi interaksi halus — bukan instan 0ms, bukan berlebihan (ui-ux-pro-max §7);
+   hormati preferensi reduced-motion */
+.spot-card,
+.chip,
+.btn,
+.close-btn,
+.add-close {
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spot-card,
+  .chip,
+  .btn,
+  .close-btn,
+  .add-close {
+    transition: none;
+  }
+}
+
 /* Cluster pin: gelembung teal berangka saat ribuan pin berdekatan (lane A + integrator) */
 .sg-cluster-wrap {
   background: none;
@@ -84,6 +189,9 @@ body {
     border-radius: 16px;
     box-shadow: var(--singgah-shadow);
   }
+  .sheet-handle {
+    display: none; /* pegangan hanya untuk sheet ponsel */
+  }
   .app-pane .app-pane__map {
     flex: 1 1 auto;
     min-width: 0;
@@ -117,5 +225,18 @@ body {
     background: var(--singgah-card);
     border-radius: 1rem 1rem 0 0;
     box-shadow: 0 -0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+  /* Pegangan sheet: afordansi "bisa digeser" ala board ponsel */
+  .sheet-handle {
+    display: block;
+    position: sticky;
+    top: 6px;
+    z-index: 5;
+    width: 36px;
+    height: 4px;
+    margin: 6px auto 0;
+    border-radius: 99px;
+    background: var(--singgah-line);
+    flex: 0 0 auto;
   }
 }

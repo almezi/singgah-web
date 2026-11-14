@@ -85,6 +85,7 @@ onMounted(() => {
 <template>
   <div class="app-pane">
     <aside class="app-pane__side d-flex flex-column">
+      <span class="sheet-handle" aria-hidden="true"></span>
       <header class="d-flex align-items-center justify-content-between p-3 border-bottom">
         <h1 class="h5 m-0 fw-bold d-flex align-items-center gap-2">
           <span class="brand-badge"><i class="bi bi-geo-alt-fill"></i></span>
@@ -152,11 +153,10 @@ onMounted(() => {
   left: var(--singgah-map-inset);
   right: var(--singgah-map-inset);
   bottom: var(--singgah-map-inset);
-  /* tinggi PASTI — anak langsungnya elemen absolut (milik lane B), tanpa ini
-     tinggi pembungkus runtuh ke 0 dan isinya tak terlihat di ponsel */
-  height: min(60dvh, 520px);
   overflow-y: auto;
   z-index: 1200; /* di atas peta, di bawah offcanvas */
+  /* tinggi diatur per breakpoint: ponsel = tinggi pasti (lihat media query bawah),
+     desktop = top+bottom meregang penuh */
 }
 
 /* isi (root milik lane B) memenuhi pembungkus, bukan menggantung di bawah */
@@ -176,6 +176,7 @@ onMounted(() => {
     bottom: 14px;
     right: auto;
     width: var(--singgah-sidebar-w);
+    height: auto;
     max-height: none;
     background: var(--singgah-card);
     border: 1px solid var(--singgah-line);
@@ -224,6 +225,11 @@ onMounted(() => {
   .fab-add {
     right: var(--singgah-map-inset);
     bottom: calc(55dvh + var(--singgah-map-inset) + env(safe-area-inset-bottom));
+  }
+  /* tinggi PASTI — anak langsungnya elemen absolut (milik lane B); tanpa ini
+     tinggi pembungkus runtuh ke 0 dan isinya tak terlihat di ponsel */
+  .detail-anchor {
+    height: min(60dvh, 520px);
   }
 }
 </style>

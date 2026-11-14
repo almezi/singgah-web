@@ -175,6 +175,7 @@ watch([() => props.spots, () => props.query, () => props.type], () => {
       </button>
 
       <p v-if="!spots.length" class="empty-line py-3">
+        <i class="bi bi-map" aria-hidden="true"></i>
         Tidak ada spot yang cocok. Coba kata lain atau pilih Semua.
       </p>
     </div>

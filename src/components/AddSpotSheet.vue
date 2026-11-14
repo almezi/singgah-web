@@ -445,6 +445,30 @@ onBeforeUnmount(() => {
   min-height: 44px;
   font-weight: 600;
 }
+
+/* Kolom isian (review estetika): selaras board — latar surface-2, radius 12, tinggi 46,
+   fokus memakai warna merek (global main.css), placeholder redup */
+.add-offcanvas .form-control,
+.add-offcanvas .form-select {
+  min-height: 46px;
+  border-radius: 12px;
+  border-color: var(--bs-border-color);
+  background-color: var(--bs-tertiary-bg);
+  color: var(--bs-body-color);
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+}
+.add-offcanvas .form-control::placeholder {
+  color: var(--bs-secondary-color);
+}
+.add-offcanvas .form-control:focus,
+.add-offcanvas .form-select:focus {
+  background-color: var(--bs-tertiary-bg);
+}
+.add-offcanvas textarea.form-control {
+  min-height: 88px;
+  resize: vertical;
+}
 .add-submit {
   min-width: 200px;
 }
