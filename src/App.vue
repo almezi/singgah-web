@@ -7,7 +7,7 @@
 -->
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useSpots } from './composables/useSpots';
 import { useGeolocation } from './composables/useGeolocation';
 import { showToast } from './lib/toast';
@@ -26,6 +26,97 @@ const { position: userPos } = useGeolocation();
 const selectedId = ref(null);
 const selectedSpot = computed(() => spots.value.find((s) => s.id === selectedId.value) || null);
 
+// ---- Sheet yang bisa ditarik ala Google Maps (ponsel, mode daftar) ----
+// Tiga posisi snapp: peek 180px (handel+header+cari) · half 55dvh · full (layar − 96px).
+// Tarik dari pegangan; FAB + tombol lokasi mengikuti lewat var --singgah-sheet-h.
+const sheetEl = ref(null);
+const sheetDragging = ref(false);
+const SHEET_PEEK = 180;
+let dragStart = { y: 0, h: 0 };
+let dragLast = { y: 0, t: 0, v: 0 };
+
+function setSheetHeight(v) {
+  document.documentElement.style.setProperty(
+    '--singgah-sheet-h',
+    typeof v === 'number' ? Math.round(v) + 'px' : v,
+  );
+}
+function maxSheetPx() {
+  return window.innerHeight - 96; /* sisakan strip peta + FAB di atas sheet penuh */
+}
+function onHandleDown(e) {
+  if (isDesktop.value || selectedSpot.value || addActive.value) return;
+  sheetDragging.value = true;
+  dragStart = { y: e.clientY, h: sheetEl.value.getBoundingClientRect().height };
+  dragLast = { y: e.clientY, t: performance.now(), v: 0 };
+  window.addEventListener('pointermove', onHandleMove);
+  window.addEventListener('pointerup', onHandleUp);
+}
+function onHandleMove(e) {
+  if (!sheetDragging.value || !sheetEl.value) return;
+  const now = performance.now();
+  const dt = Math.max(1, now - dragLast.t);
+  dragLast.v = (dragLast.y - e.clientY) / dt; // px/ms, positif = ditarik ke atas
+  dragLast.y = e.clientY;
+  dragLast.t = now;
+  const h = Math.min(Math.max(dragStart.h + (dragStart.y - e.clientY), SHEET_PEEK), maxSheetPx());
+  setSheetHeight(h);
+}
+function onHandleUp() {
+  window.removeEventListener('pointermove', onHandleMove);
+  window.removeEventListener('pointerup', onHandleUp);
+  if (!sheetDragging.value || !sheetEl.value) return;
+  sheetDragging.value = false;
+  const h = sheetEl.value.getBoundingClientRect().height;
+  const snaps = [SHEET_PEEK, window.innerHeight * 0.55, maxSheetPx()];
+  let target = snaps[0];
+  let best = Infinity;
+  for (const s of snaps) {
+    const d = Math.abs(s - h);
+    if (d < best) {
+      best = d;
+      target = s;
+    }
+  }
+  // fling: gerakan cepat melompat ke posisi berikutnya (ala Google Maps)
+  if (Math.abs(dragLast.v) > 0.6) {
+    const above = snaps.filter((s) => s > h + 8);
+    const below = snaps.filter((s) => s < h - 8);
+    if (dragLast.v > 0 && above.length) target = Math.min(...above);
+    if (dragLast.v < 0 && below.length) target = Math.max(...below);
+  }
+  setSheetHeight(Math.round(target));
+}
+
+// Responsif: satu kebenaran untuk mode desktop vs sheet (titik pecah 992px).
+// Ponsel: detail MENGGANTIKAN isi sheet (tanpa tumpang tindih, umpan balik owner).
+// Desktop: detail sebagai panel yang menggantikan sidebar (board frame 3).
+const mqDesktop = window.matchMedia('(min-width: 992px)');
+const isDesktop = ref(mqDesktop.matches);
+function onMqChange(e) {
+  isDesktop.value = e.matches;
+}
+
+function closeDetail() {
+  selectedId.value = null;
+  setSheetHeight('55dvh'); // kembali ke posisi paruh setelah menutup detail
+}
+
+// Mode detail di ponsel: sheet membesar ke 70dvh (cukup untuk seluruh rincian)
+watch(
+  () => [selectedSpot.value, isDesktop.value],
+  ([spot, desktop]) => {
+    if (spot && !desktop) setSheetHeight('min(70dvh, 590px)');
+  },
+);
+
+// Umpan balik owner: "Lokasi saya" = aksi peta → sheet turun ke peek agar hasilnya
+// terlihat. Mendengarkan state posisi bersama (bukan tombolnya) — apa pun yang
+// memicu locate, sheet selalu menurun saat fix didapat.
+watch(userPos, () => {
+  if (!isDesktop.value) setSheetHeight(SHEET_PEEK + 'px');
+});
+
 // Alur tambah spot (I2): FAB → pin → form → sukses → kembali
 const addActive = ref(false);
 const pin = ref(null);
@@ -37,12 +128,16 @@ const submitState = ref('idle');
 function startAddFlow() {
   addActive.value = true;
   pin.value = null;
+  // Umpan balik owner: menambah spot = aksi peta → sheet turun ke peek agar
+  // peta bebas diketuk untuk menaruh pin (ala Google Maps)
+  if (!isDesktop.value) setSheetHeight(SHEET_PEEK + 'px');
 }
 
 function resetAddFlow() {
   addActive.value = false;
   pin.value = null;
   submitState.value = 'idle';
+  if (!isDesktop.value) setSheetHeight('55dvh'); // alur selesai → kembali ke half
 }
 
 // MapPane mengirim dua argumen terpisah sesuai kontrak (A6)
@@ -78,15 +173,30 @@ function onVerify(spotId) {
 }
 
 onMounted(() => {
+  mqDesktop.addEventListener('change', onMqChange);
   load().catch((err) => console.error('Gagal memuat spot:', err));
+});
+
+onBeforeUnmount(() => {
+  mqDesktop.removeEventListener('change', onMqChange);
+  window.removeEventListener('pointermove', onHandleMove);
+  window.removeEventListener('pointerup', onHandleUp);
 });
 </script>
 
 <template>
   <div class="app-pane">
-    <aside class="app-pane__side d-flex flex-column">
-      <span class="sheet-handle" aria-hidden="true"></span>
-      <header class="d-flex align-items-center justify-content-between p-3 border-bottom">
+    <aside
+      ref="sheetEl"
+      class="app-pane__side d-flex flex-column"
+      :class="{ 'has-detail': selectedSpot && !isDesktop, 'is-dragging': sheetDragging }"
+    >
+      <!-- Pegangan = zona tarik (pointerdown di sini; daftar di bawahnya tetap bisa digulir) -->
+      <span class="sheet-handle" aria-hidden="true" @pointerdown="onHandleDown"></span>
+      <header
+        v-if="isDesktop || !selectedSpot"
+        class="d-flex align-items-center justify-content-between p-3 border-bottom"
+      >
         <h1 class="h5 m-0 fw-bold d-flex align-items-center gap-2">
           <span class="brand-badge"><i class="bi bi-geo-alt-fill"></i></span>
           Singgah
@@ -94,7 +204,15 @@ onMounted(() => {
         <DarkModeToggle />
       </header>
 
+      <!-- Ponsel: detail MENGGANTIKAN isi sheet (bukan overlay di atas daftar) -->
+      <SpotDetail
+        v-if="selectedSpot && !isDesktop"
+        :spot="selectedSpot"
+        @close="closeDetail"
+        @verify="onVerify"
+      />
       <SpotList
+        v-else
         :spots="filteredSpots"
         :query="query"
         :type="type"
@@ -104,6 +222,8 @@ onMounted(() => {
         @update:type="type = $event"
         @select="selectedId = $event"
       />
+
+      <p class="map-credit">Peta © OpenStreetMap contributors</p>
     </aside>
 
     <MapPane
@@ -116,13 +236,19 @@ onMounted(() => {
     />
 
     <!-- FAB "+ Tambah": hanya tampil saat alur tambah tidak aktif (I2) -->
-    <button v-if="!addActive" type="button" class="fab-add btn shadow" @click="startAddFlow">
+    <button
+      v-if="!addActive && (isDesktop || !selectedSpot)"
+      type="button"
+      class="fab-add btn shadow"
+      @click="startAddFlow"
+    >
       <i class="bi bi-plus-lg me-1"></i>Tambah
     </button>
 
     <!-- Detail: ponsel = kartu sheet di bawah; desktop = menggantikan panel sidebar
          (board frame 3). Pembungkus ini yang menentukan posisi, isi tetap milik lane B. -->
-    <div v-if="selectedSpot" class="detail-anchor">
+    <!-- Desktop: detail sebagai panel yang menggantikan sidebar (board frame 3) -->
+    <div v-if="selectedSpot && isDesktop" class="detail-anchor">
       <SpotDetail :spot="selectedSpot" @close="selectedId = null" @verify="onVerify" />
     </div>
 
@@ -167,6 +293,34 @@ onMounted(() => {
 .detail-anchor :deep(.card) {
   min-height: 100%;
   box-sizing: border-box;
+}
+
+/* Ponsel: detail di dalam sheet — MENGALIR (bukan overlay di atas daftar),
+   sheet ikut membesar ke 70dvh, dan credit peta tampil di kaki sheet.
+   !important diperlukan untuk mengalahkan utilitas .position-absolute Bootstrap */
+.app-pane__side :deep(.spot-detail-wrap) {
+  position: static !important;
+  padding: 0 12px 12px;
+}
+.app-pane__side :deep(.spot-detail) {
+  max-height: none;
+  max-width: none;
+}
+.app-pane__side.has-detail {
+  max-height: 70dvh;
+}
+.map-credit {
+  display: none;
+  font-size: 0.72rem;
+  color: var(--bs-secondary-color);
+  text-align: center;
+  padding: 0 12px 10px;
+  margin: 0;
+}
+@media (max-width: 991.98px) {
+  .map-credit {
+    display: block;
+  }
 }
 
 @media (min-width: 992px) {
@@ -224,12 +378,13 @@ onMounted(() => {
 @media (max-width: 991.98px) {
   .fab-add {
     right: var(--singgah-map-inset);
-    bottom: calc(55dvh + var(--singgah-map-inset) + env(safe-area-inset-bottom));
+    bottom: calc(var(--singgah-sheet-h, 55dvh) + var(--singgah-map-inset) + env(safe-area-inset-bottom));
   }
   /* tinggi PASTI — anak langsungnya elemen absolut (milik lane B); tanpa ini
-     tinggi pembungkus runtuh ke 0 dan isinya tak terlihat di ponsel */
+     tinggi pembungkus runtuh ke 0 dan isinya tak terlihat di ponsel.
+     Di mode detail, var --singgah-sheet-h diubah App menjadi 70dvh */
   .detail-anchor {
-    height: min(60dvh, 520px);
+    height: var(--singgah-sheet-h, 55dvh);
   }
 }
 </style>

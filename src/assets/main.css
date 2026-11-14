@@ -215,28 +215,59 @@ body {
        yang datang belakangan lewat import leaflet.css di MapPane.vue */
     position: absolute;
     inset: 0;
+    z-index: 0; /* seluruh isi peta (termasuk atribusi Leaflet) tetap DI BAWAH sheet */
   }
   .app-pane__side {
     position: relative;
     z-index: 500; /* panel selalu di atas peta */
     margin-top: auto; /* dorong sheet ke bawah — peta tetap terlihat di atasnya */
-    max-height: 55dvh;
+    height: var(--singgah-sheet-h, 55dvh); /* bisa ditarik: peek/half/full ala Google Maps */
     overflow-y: auto;
     background: var(--singgah-card);
     border-radius: 1rem 1rem 0 0;
     box-shadow: 0 -0.5rem 1rem rgba(0, 0, 0, 0.15);
+    transition: height 0.25s ease;
   }
-  /* Pegangan sheet: afordansi "bisa digeser" ala board ponsel */
+  .app-pane__side.is-dragging {
+    transition: none; /* saat ditarik, tinggi mengikuti jari tanpa animasi */
+  }
+  /* Pegangan = zona tarik selebar sheet (target sentuh lega), pil visual di tengah */
   .sheet-handle {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: sticky;
-    top: 6px;
+    top: 0;
     z-index: 5;
+    width: 100%;
+    height: 24px;
+    flex: 0 0 auto;
+    touch-action: none;
+    cursor: grab;
+  }
+  .sheet-handle::before {
+    content: '';
     width: 36px;
     height: 4px;
-    margin: 6px auto 0;
     border-radius: 99px;
     background: var(--singgah-line);
-    flex: 0 0 auto;
+  }
+  .sheet-handle:active {
+    cursor: grabbing;
+  }
+  /* Kontrol Leaflet tidak boleh menimpa sheet: atribusi tampil sebagai credit di dalam
+     sheet (selalu terbaca), tombol lokasi melayang di atas sheet sejajar FAB.
+     Spesifikasi 0,2,0 agar menang atas rule .sg-geolocate di MapPane.vue */
+  .app-pane__map .leaflet-control-attribution {
+    display: none;
+  }
+  .app-pane .sg-geolocate {
+    left: var(--singgah-map-inset);
+    bottom: calc(var(--singgah-sheet-h, 55dvh) + var(--singgah-map-inset));
+  }
+  /* Saat detail terbuka (sheet membesar ke 70dvh) = mode membaca:
+     tombol lokasi disembunyikan agar tidak menimpa panel detail */
+  .app-pane__side.has-detail ~ .app-pane__map .sg-geolocate {
+    display: none;
   }
 }
