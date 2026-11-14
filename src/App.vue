@@ -45,7 +45,9 @@ function maxSheetPx() {
   return window.innerHeight - 96; /* sisakan strip peta + FAB di atas sheet penuh */
 }
 function onHandleDown(e) {
-  if (isDesktop.value || selectedSpot.value || addActive.value) return;
+  // addActive TIDAK mengecualikan: saat mode pin (banner), sheet tetap boleh ditarik.
+  // Offcanvas form yang terbuka menutupi handle secara alami, jadi tak ada konflik.
+  if (isDesktop.value || selectedSpot.value) return;
   sheetDragging.value = true;
   dragStart = { y: e.clientY, h: sheetEl.value.getBoundingClientRect().height };
   dragLast = { y: e.clientY, t: performance.now(), v: 0 };
