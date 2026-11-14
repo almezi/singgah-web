@@ -6,8 +6,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { isUnknown } from '../lib/supabase';
-import { showToast } from '../lib/toast';
+import { SPOT_TYPES, TYPE_GLYPHS, WATER_LABELS, isUnknown, verifyText } from '../lib/spotView';
 
 const props = defineProps({
   spot: { type: Object, default: null },
@@ -17,45 +16,17 @@ const emit = defineEmits(['close', 'verify']);
 // B8: real build persists verification via the rate-limited write path — the bump_verified
 // Postgres function (security definer, 1 bump per spot per hour, decided at G3, 2026-11-09).
 // This component only emits verify(spot.id) and re-renders the line from the prop.
+// Toast dimiliki App.vue (review 2026-11-15): sukses saat resolve, gagal saat catch.
 function onVerify() {
   emit('verify', props.spot.id);
-  showToast('Terima kasih! Verifikasi tercatat.');
 }
-
-// Jenis spot: label + kelas tint warna (docs/design-system.md §2 — palet board disetujui)
-const TYPES = {
-  masjid_besar: { label: 'Masjid Besar', cls: 't-masjid' },
-  musala: { label: 'Musala', cls: 't-musala' },
-  terminal: { label: 'Terminal', cls: 't-terminal' },
-  spbu: { label: 'SPBU', cls: 't-spbu' },
-  rest_area: { label: 'Rest Area', cls: 't-rest' },
-};
-
-// Glyph per jenis — SVG statis milik desain board (bukan data pengguna; aman untuk v-html)
-const TYPE_GLYPHS = {
-  masjid_besar:
-    '<path d="M12 3C7.6 3 4 6.8 4 11.5V20h16v-8.5C20 6.8 16.4 3 12 3z"/><rect x="2" y="20" width="20" height="2"/>',
-  musala: '<path d="M4 21V5l8-3 8 3v16h-5v-6h-6v6H4z"/>',
-  terminal:
-    '<path fill-rule="evenodd" d="M4 4c0-1.1.9-2 2-2h12c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2v2h-2v-2H8v2H6v-2c-1.1 0-2-.9-2-2V4zm2 2v5h12V6H6zm1.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm9 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>',
-  spbu: '<path d="M12 2s6 6.6 6 11a6 6 0 1 1-12 0c0-4.4 6-11 6-11z"/>',
-  rest_area: '<path d="M12 3L2 20h7l3-6 3 6h7L12 3z"/>',
-};
-
-// Label nilai kolom `water` (docs/ui-copy.md §3)
-const WATER_LABELS = {
-  kran_mandi: 'Kran mandi',
-  wudhu_only: 'Wudhu saja',
-  air_isi: 'Air isi',
-  tidak_ada: 'Tidak ada',
-};
 
 // Cermin semantik isUnknown() untuk keputusan gaya (isBlank = null/undefined/'')
 function isBlank(v) {
   return v === null || v === undefined || v === '';
 }
 
-const typeInfo = computed(() => TYPES[props.spot.type] || null);
+const typeInfo = computed(() => SPOT_TYPES[props.spot.type] || null);
 const typeLabel = computed(() => (typeInfo.value ? typeInfo.value.label : props.spot.type));
 const glyph = computed(() => TYPE_GLYPHS[props.spot.type] || '');
 
@@ -77,18 +48,8 @@ const hasNotes = computed(() => !isBlank(props.spot.notes));
 const notesValue = computed(() => isUnknown(props.spot.notes));
 
 // B4: garis verifikasi — 'Diverifikasi …' saat ada tanggal, 'Belum diverifikasi' saat kosong
-const verifiedRel = computed(() => {
-  const iso = props.spot.last_verified_at;
-  if (isBlank(iso)) return null;
-  const mins = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
-  if (mins < 60) return 'baru saja';
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return hours + ' jam lalu';
-  return Math.floor(hours / 24) + ' hari lalu';
-});
-const verifyLine = computed(() =>
-  verifiedRel.value ? 'Diverifikasi ' + verifiedRel.value : 'Belum diverifikasi',
-);
+// (logika waktu relatif hidup di modul bersama src/lib/spotView.js)
+const verifyLine = computed(() => verifyText(props.spot.last_verified_at));
 
 // B5: Rute memakai koordinat milik baris ini sendiri (spot.lat / spot.lng)
 const routeUrl = computed(

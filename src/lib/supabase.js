@@ -28,10 +28,8 @@ function assertClient() {
  * notes, status, source, last_verified_at, created_at
  */
 
-// isUnknown(value) — nilai kosong SELALU tampil 'Belum ada info', tidak pernah dikarang
-export function isUnknown(value) {
-  return value === null || value === undefined || value === '' ? 'Belum ada info' : value;
-}
+// isUnknown(value) pindah ke src/lib/spotView.js (2026-11-15, review: ini helper
+// tampilan, bukan urusan database) — impor dari situ bila diperlukan.
 
 // loadApprovedSpots() — baca SEMUA spot approved; RLS membatasi baris di sisi database.
 // PostgREST membatasi ±1000 baris per permintaan secara bawaan, jadi kita ambil

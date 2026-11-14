@@ -74,7 +74,10 @@ supabase-js v2 via npm** — the standard client, same REST endpoint underneath.
 | `loadApprovedSpots()` | `async () => SPOT[]` | `from('spots').select('*').eq('status','approved')` |
 | `insertPendingSpot(payload)` | `async (object) => void` | insert with `status:'pending'`, `source:'user'`, `last_verified_at:null` |
 | `bumpVerified(spotId)` | `async (uuid) => void` | `rpc('bump_verified')` — `security definer` Postgres function, 1 bump/spot/hour (G3, decided 2026-11-09) |
-| `isUnknown(value)` | `(any) => string` | Returns `'Belum ada info'` for `null` / `undefined` / `''` |
+
+`isUnknown(value)` moved to `src/lib/spotView.js` on 2026-11-15 (review: it is a presentation
+helper, not a database concern) — together with the shared type metadata (SPOT_TYPES,
+TYPE_GLYPHS, WATER_LABELS, TYPE_CHIPS, relTime, verifyText) that SpotList and SpotDetail both use.
 
 Reference style from the spec (simple, explicit, one job):
 

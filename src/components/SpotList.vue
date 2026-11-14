@@ -6,7 +6,16 @@
      (App.vue), sehingga daftar dan peta selalu berubah bersamaan (B2 + A4). -->
 
 <script setup>
-import { isUnknown } from '../lib/supabase';
+import { computed, ref, watch } from 'vue';
+import {
+  SPOT_TYPES,
+  TYPE_CHIPS,
+  TYPE_GLYPHS,
+  WATER_LABELS,
+  isUnknown,
+  relTime,
+  verifyText as verifyTextIso,
+} from '../lib/spotView';
 
 const props = defineProps({
   spots: { type: Array, default: () => [] },
@@ -17,46 +26,11 @@ const props = defineProps({
 });
 const emit = defineEmits(['update:query', 'update:type', 'select']);
 
-// Jenis spot: label Indonesia + kelas tint warna (docs/design-system.md §2 — palet board disetujui)
-const TYPES = {
-  masjid_besar: { label: 'Masjid Besar', cls: 't-masjid' },
-  musala: { label: 'Musala', cls: 't-musala' },
-  terminal: { label: 'Terminal', cls: 't-terminal' },
-  spbu: { label: 'SPBU', cls: 't-spbu' },
-  rest_area: { label: 'Rest Area', cls: 't-rest' },
-};
-
-// Glyph per jenis — SVG statis milik desain board (bukan data pengguna; aman untuk v-html)
-const TYPE_GLYPHS = {
-  masjid_besar:
-    '<path d="M12 3C7.6 3 4 6.8 4 11.5V20h16v-8.5C20 6.8 16.4 3 12 3z"/><rect x="2" y="20" width="20" height="2"/>',
-  musala: '<path d="M4 21V5l8-3 8 3v16h-5v-6h-6v6H4z"/>',
-  terminal:
-    '<path fill-rule="evenodd" d="M4 4c0-1.1.9-2 2-2h12c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2v2h-2v-2H8v2H6v-2c-1.1 0-2-.9-2-2V4zm2 2v5h12V6H6zm1.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm9 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>',
-  spbu: '<path d="M12 2s6 6.6 6 11a6 6 0 1 1-12 0c0-4.4 6-11 6-11z"/>',
-  rest_area: '<path d="M12 3L2 20h7l3-6 3 6h7L12 3z"/>',
-};
-
-// Chip saringan: 'Semua' ('' = semua jenis) + lima jenis (teks: docs/ui-copy.md §2)
-const CHIPS = [
-  { value: '', label: 'Semua' },
-  { value: 'masjid_besar', label: 'Masjid Besar' },
-  { value: 'musala', label: 'Musala' },
-  { value: 'terminal', label: 'Terminal' },
-  { value: 'spbu', label: 'SPBU' },
-  { value: 'rest_area', label: 'Rest Area' },
-];
-
-// Label nilai kolom `water` (docs/ui-copy.md §3)
-const WATER_LABELS = {
-  kran_mandi: 'Kran mandi',
-  wudhu_only: 'Wudhu saja',
-  air_isi: 'Air isi',
-  tidak_ada: 'Tidak ada',
-};
+// Chip saringan dari modul kanonik: 'Semua' ('' = semua jenis) + lima jenis (spotView.js)
+const CHIPS = TYPE_CHIPS;
 
 function typeInfo(spot) {
-  return TYPES[spot.type] || null;
+  return SPOT_TYPES[spot.type] || null;
 }
 function typeLabel(spot) {
   const t = typeInfo(spot);
@@ -93,30 +67,34 @@ function distanceText(spot) {
     : km.toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' km';
 }
 
-// Waktu relatif verifikasi: 'baru saja' · '2 jam lalu' · '3 hari lalu' (docs/ui-copy.md §1)
-function relTime(iso) {
-  if (iso === null || iso === undefined || iso === '') return null;
-  const mins = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
-  if (mins < 60) return 'baru saja';
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return hours + ' jam lalu';
-  return Math.floor(hours / 24) + ' hari lalu';
-}
-
+// Waktu relatif verifikasi ('baru saja' · '2 jam lalu' · '3 hari lalu') hidup di
+// modul bersama src/lib/spotView.js — komponen ini hanya membungkusnya per spot.
 function hasVerification(spot) {
   return relTime(spot.last_verified_at) !== null;
 }
 
 // Pil verifikasi kartu (B1): hijau 'Diverifikasi …' saat ada tanggal, redup 'Belum diverifikasi'
 function verifyText(spot) {
-  const rel = relTime(spot.last_verified_at);
-  return rel ? 'Diverifikasi ' + rel : 'Belum diverifikasi';
+  return verifyTextIso(spot.last_verified_at);
 }
 
 // Teks mini-chip kartu: nilai kosong SELALU 'Belum ada info' lewat isUnknown()
 function waterText(water) {
   return isUnknown(WATER_LABELS[water] ?? water);
 }
+
+// Review 2026-11-15: 7.173 kartu ≈ 100k node DOM terlalu berat untuk ponsel — render bertahap.
+// Mulai 50 kartu; tombol 'Tampilkan 50 lagi' memunculkan 50 berikutnya sampai semua tampil.
+// Baris hitungan di atas tetap menampilkan jumlah LENGKAP (spots.length), bukan yang tampil.
+const shownCount = ref(50);
+const visibleSpots = computed(() => props.spots.slice(0, shownCount.value));
+function showMore() {
+  shownCount.value += 50;
+}
+// Daftar/pencarian/jenis berubah → kembali ke 50 kartu pertama
+watch([() => props.spots, () => props.query, () => props.type], () => {
+  shownCount.value = 50;
+});
 </script>
 
 <template>
@@ -153,10 +131,11 @@ function waterText(water) {
 
     <p class="list-count mb-2" aria-live="polite">{{ spots.length }} spot</p>
 
-    <!-- Kartu spot (B1 + B9): bentuk kartu mockup telepon; ketuk → emit select(spot.id) -->
+    <!-- Kartu spot (B1 + B9): bentuk kartu mockup telepon; ketuk → emit select(spot.id).
+         Render bertahap: hanya visibleSpots (50 pertama, +50 per klik) yang dirender. -->
     <div class="d-grid gap-2">
       <button
-        v-for="spot in spots"
+        v-for="spot in visibleSpots"
         :key="spot.id"
         type="button"
         class="spot-card"
@@ -183,6 +162,16 @@ function waterText(water) {
         <span class="v-pill" :class="{ unknown: !hasVerification(spot) }">
           {{ verifyText(spot) }}
         </span>
+      </button>
+
+      <!-- Review 2026-11-15: render bertahap — muncul hanya saat masih ada kartu tersembunyi -->
+      <button
+        v-if="shownCount < spots.length"
+        type="button"
+        class="chip"
+        @click="showMore"
+      >
+        Tampilkan 50 lagi
       </button>
 
       <p v-if="!spots.length" class="empty-line py-3">

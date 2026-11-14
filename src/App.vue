@@ -66,13 +66,15 @@ function onSubmit(payload) {
     });
 }
 
-// B7: komponen menampilkan toast optimis saat tombol ditekan; di sini kita menulis
-// lewat jalur berbatas waktu dan memberi tahu bila gagal (mis. kuota 1×/jam habis).
+// B7 versi jujur (review 2026-11-15): toast dimiliki PARENT — sukses hanya saat tulisan
+// benar-benar berhasil, gagal diberitahu terpisah. Komponen hanya emit, tanpa toast.
 function onVerify(spotId) {
-  markVerified(spotId).catch((err) => {
-    console.error('Gagal menyimpan verifikasi:', err);
-    showToast('Gagal menyimpan verifikasi. Coba lagi nanti.');
-  });
+  markVerified(spotId)
+    .then(() => showToast('Terima kasih! Verifikasi tercatat.'))
+    .catch((err) => {
+      console.error('Gagal menyimpan verifikasi:', err);
+      showToast('Gagal menyimpan verifikasi. Coba lagi nanti.');
+    });
 }
 
 onMounted(() => {

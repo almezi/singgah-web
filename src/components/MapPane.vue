@@ -11,6 +11,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster'; // ribuan pin: yang berdekatan digabung jadi gelembung berangka
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import { TILE_URL } from '../lib/config';
+import { SPOT_TYPES } from '../lib/spotView';
 import { useGeolocation } from '../composables/useGeolocation';
 
 // ---- Props / emits (frozen contract, docs/api-contract.md §2) ----
@@ -34,14 +35,14 @@ const TYPE_STYLE = {
 // Presentation fallback for an out-of-contract type — valid data never reaches it.
 const FALLBACK_STYLE = { cls: 'sg-pin--unknown', glyph: 'bi-geo-alt-fill' };
 
-// A2: legend, shown once on desktop (≥992px) — labels from docs/ui-copy.md §2
-const LEGEND = [
-  { cls: 'sg-pin--masjid_besar', glyph: 'bi-bank', label: 'Masjid Besar' },
-  { cls: 'sg-pin--musala', glyph: 'bi-building-fill', label: 'Musala' },
-  { cls: 'sg-pin--terminal', glyph: 'bi-bus-front-fill', label: 'Terminal' },
-  { cls: 'sg-pin--spbu', glyph: 'bi-droplet-fill', label: 'SPBU' },
-  { cls: 'sg-pin--rest_area', glyph: 'bi-umbrella-fill', label: 'Rest Area' },
-];
+// A2: legend, shown once on desktop (≥992px). Labels come from the canonical SPOT_TYPES
+// (src/lib/spotView.js) so a label fix happens in ONE place; the sg-pin-- class + bi-
+// glyph are Leaflet-specific and stay here (same bits the markers use, from TYPE_STYLE).
+const LEGEND = Object.entries(SPOT_TYPES).map(([type, t]) => ({
+  cls: TYPE_STYLE[type].cls,
+  glyph: TYPE_STYLE[type].glyph,
+  label: t.label,
+}));
 
 // ---- Map state (plain lets — Leaflet objects are not reactive) ----
 const mapEl = ref(null); // template ref → #map
@@ -51,6 +52,7 @@ let tempPin = null;
 let resizeHandler = null;
 let markersById = new Map(); // id → { marker, spot, style } — untuk sorotan pin terpilih
 let prevSelectedId = null;
+let redrawTimer = null; // debounce untuk redrawMarkers (plain setTimeout — tanpa lodash)
 
 // Lane F infrastructure — imported, never edited (A5). The 'Lokasi tidak tersedia.'
 // toast on failure is already handled inside locate().
@@ -91,6 +93,13 @@ function redrawMarkers() {
     markersById.set(spot.id, { marker, spot, style });
   }
   prevSelectedId = props.selectedId;
+}
+
+// Debounce 200ms: satu ketukan tombol search = satu perubahan filteredSpots di parent,
+// jadi tanpa ini rebuild penuh (hingga 7.173 pin) jalan per karakter. Ketukan terakhir menang.
+function scheduleRedraw() {
+  clearTimeout(redrawTimer);
+  redrawTimer = setTimeout(redrawMarkers, 200);
 }
 
 // ---- A5: geolocate → fly (or jump, if reduced motion) the map to the fix ----
@@ -140,8 +149,8 @@ function exitPinMode() {
   }
 }
 
-// A4: search/chips filtering happens upstream (filteredSpots) — we only redraw.
-watch(() => props.spots, redrawMarkers);
+// A4: search/chips filtering happens upstream (filteredSpots) — we only redraw (debounced).
+watch(() => props.spots, scheduleRedraw);
 // A6: toggling pinMode wires/unwires the tap handler; cancel stays AddSpotSheet's job.
 watch(() => props.pinMode, (on) => (on ? enterPinMode() : exitPinMode()));
 
@@ -226,6 +235,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  clearTimeout(redrawTimer); // pending debounce must not fire into a removed map
   window.removeEventListener('resize', resizeHandler);
   if (map) {
     map.remove(); // clears panes, layers and listeners
