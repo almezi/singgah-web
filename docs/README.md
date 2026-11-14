@@ -5,6 +5,7 @@ one-paragraph description of every file lives in `docs/guided-tour.md`.*
 
 | I want to… | Open |
 |---|---|
+| Read the source of truth, the backstory, or the build prompts | `SPEC-singgah.md` · `HANDOFF-musafir-project.md` · `MOCKUP-PROMPT-singgah.md` · `PROTOTYPE-PROMPT-singgah.md` |
 | Understand how the technology fits together | `architecture.md` |
 | Know which function / DOM ID to call, and who owns which file | `api-contract.md` |
 | See the `spots` table columns and allowed values | `data-model.md` |
@@ -14,6 +15,7 @@ one-paragraph description of every file lives in `docs/guided-tour.md`.*
 | Ship it to a public URL | `deployment.md` |
 | Approve a spot / keep the free tier awake | `owner-guide.md` |
 | Run the pre-deploy checks | `manual-test-checklist.md` |
+| See how Wave P was verified (prototype sign-off) | `prototype-verification.md` |
 | See locked decisions, open questions, contradictions | `decision-log.md` |
 | Why there is no React / React Native conversion | `decision-log.md` §F |
 | Choose a git branching strategy | `branching-strategy.md` |
@@ -23,7 +25,7 @@ one-paragraph description of every file lives in `docs/guided-tour.md`.*
 
 ## Priority order
 
-1. `../SPEC-singgah.md` — **source of truth**
+1. `SPEC-singgah.md` — **source of truth** (same folder since 2026-11-14)
 2. `../AGENTS.md` — working rules and hard boundaries
 3. `../tasks/plan.md`, `../tasks/todo.md` — what we will build and in what order
 4. `architecture.md` → `api-contract.md` → `data-model.md` — the build contract
@@ -33,10 +35,15 @@ one-paragraph description of every file lives in `docs/guided-tour.md`.*
 
 ## Status
 
-**Planning approved / Wave P in progress.** `tasks/plan.md` and `tasks/todo.md` were **approved
-2026-11-09 (gate G1)**; OQ-2 (plain fetch) and OQ-13 (branching) were decided the same day. The
-prototype is being built on `build/mvp`; Wave 0+ is gated on G2 (accounts), and D1 also needs the
-playbook file (OQ-6). The work is gated: Specify → Plan → Tasks → Implement.
+**Planning approved / Wave P done.** `tasks/plan.md` and `tasks/todo.md` were **approved
+2026-11-09 (gate G1)**; OQ-2 (plain fetch — amended 2026-11-14, OQ-15) and OQ-13 (branching) were
+decided the same day.
+`prototype/index.html` was built on `build/mvp` and **verified 2026-11-10** — all 8 "Done when"
+items pass, zero console errors (`prototype-verification.md`). **Wave 0 (F1–F6) is unblocked
+2026-11-14 (OQ-14)** — Supabase created, URL + anon key with the owner; the Vercel account is
+deferred to before deploy. **Same day (OQ-15): the stack switched to Vue 3 + Vite** — the docs
+describe the Vue architecture now. D1 also needs the playbook file (OQ-6).
+The work is gated: Specify → Plan → Tasks → Implement.
 
 When a decision changes: **`SPEC-singgah.md` first**, then the affected docs, then code.
 

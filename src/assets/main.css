@@ -1,0 +1,106 @@
+/*
+  src/assets/main.css — token brand + mekanika layout dua panel / bottom sheet.
+  Aturan Bootstrap-first (SPEC Code Style): Bootstrap menangani komponen; file ini
+  hanya override kecil — token warna, font, dan layout .app-pane. Dimiliki lane F.
+*/
+
+:root {
+  /* Token pin per jenis spot (docs/design-system.md — palet board yang disetujui) */
+  --singgah-teal: #0e7c66;    /* masjid_besar */
+  --singgah-violet: #9333ea;  /* musala */
+  --singgah-amber: #b45309;   /* terminal */
+  --singgah-water: #0e7490;   /* spbu */
+  --singgah-green: #15803d;   /* rest_area */
+  --singgah-sidebar-w: 380px; /* lebar sidebar desktop */
+
+  /* Token board: latar pasir hangat + kartu putih membulat (docs/design-system.md §1) */
+  --singgah-page: #f6f4ee;
+  --singgah-card: #ffffff;
+  --singgah-line: #e4dfd2;
+  --singgah-shadow: 0 10px 30px rgba(18, 51, 44, 0.14);
+}
+
+/* Mode gelap: halaman hijau-hitam pekat, kartu sedikit lebih terang */
+[data-bs-theme='dark'] {
+  --singgah-page: #0f1713;
+  --singgah-card: #17201b;
+  --singgah-line: #26302a;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background: var(--singgah-page);
+}
+
+/* Cluster pin: gelembung teal berangka saat ribuan pin berdekatan (lane A + integrator) */
+.sg-cluster-wrap {
+  background: none;
+  border: none;
+}
+.sg-cluster {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--singgah-teal);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.78rem;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 12px rgba(18, 51, 44, 0.35);
+}
+
+/* Desktop ≥992px: kanvas pasir hangat, sidebar + peta sebagai kartu mengambang (board) */
+@media (min-width: 992px) {
+  .app-pane {
+    display: flex;
+    height: 100dvh; /* border-box: padding termasuk di dalamnya */
+    padding: 14px;
+    gap: 14px;
+  }
+  .app-pane__side {
+    width: var(--singgah-sidebar-w);
+    flex: 0 0 auto;
+    overflow-y: auto;
+    background: var(--singgah-card);
+    border: 1px solid var(--singgah-line);
+    border-radius: 16px;
+    box-shadow: var(--singgah-shadow);
+  }
+  .app-pane .app-pane__map {
+    flex: 1 1 auto;
+    min-width: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--singgah-line);
+    box-shadow: var(--singgah-shadow);
+  }
+}
+
+/* Mobile <992px: peta layar penuh di belakang, panel menjadi bottom sheet di bawah */
+@media (max-width: 991.98px) {
+  .app-pane {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+  }
+  .app-pane .app-pane__map {
+    /* spesifikasi 0,2,0 — mengalahkan .leaflet-container{position:relative}
+       yang datang belakangan lewat import leaflet.css di MapPane.vue */
+    position: absolute;
+    inset: 0;
+  }
+  .app-pane__side {
+    position: relative;
+    z-index: 500; /* panel selalu di atas peta */
+    margin-top: auto; /* dorong sheet ke bawah — peta tetap terlihat di atasnya */
+    max-height: 55dvh;
+    overflow-y: auto;
+    background: var(--singgah-card);
+    border-radius: 1rem 1rem 0 0;
+    box-shadow: 0 -0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+}

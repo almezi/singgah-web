@@ -3,10 +3,10 @@
 *What this doc does: writes down the frozen interface so parallel agents never edit each other's
 files. This is the companion to `tasks/todo.md` and `docs/architecture.md`.*
 
-**Status: planned contract, not yet implemented.** It is derived from `SPEC-singgah.md` → Data
-Model and `tasks/todo.md` → F (Foundation). Once F6 is done, this contract is **frozen**: lanes
-read it, they do not change it. If a lane needs a change, it reports back to the owner instead of
-editing.
+**Status: FROZEN 2026-11-14 — Wave 0 (F1–F6) executed; contract is now read-only for all lanes.**
+Revised 2026-11-14 for the Vue 3 + Vite stack (OQ-15). It is derived from `docs/SPEC-singgah.md` →
+Data Model and `tasks/todo.md` → F (Foundation). If a lane needs a change, it reports back to the
+owner instead of editing.
 
 ---
 
@@ -14,38 +14,43 @@ editing.
 
 | File | Owner lane | Writes | Everyone else |
 |---|---|---|---|
-| `index.html` | F (wave 0), then I only (wave 4) | DOM IDs, CDN tags, script order | Read only |
-| `js/config.js` | F | constants | Read only |
-| `js/api.js` | F | Supabase calls + SPOT field list | Read only |
-| `js/map.js` | A | map behaviour | Read only |
-| `js/spots.js`, `js/verify.js` | B | list/detail/verify | Read only |
-| `js/contribute.js` | C | add flow + form | Read only |
+| `index.html` (Vite entry) | F (wave 0) | root div + module script | Read only |
+| `package.json`, `vite.config.js` | F | dependencies + build config | Read only |
+| `src/main.js` | F (wave 0), then I only (wave 4) | createApp, CSS imports, theme bootstrap | Read only |
+| `src/App.vue` | F (wave 0), then I only (wave 4) | layout shell, component wiring | Read only |
+| `src/lib/config.js` | F | constants | Read only |
+| `src/lib/supabase.js` | F | Supabase calls + SPOT field list | Read only |
+| `src/composables/useSpots.js` | F | shared spots state | Read only |
+| `src/composables/useGeolocation.js` | F | geolocation wrapper | Read only |
+| `src/lib/toast.js` | F | `showToast(message)` global Bootstrap toast | Read only |
+| `src/components/MapPane.vue` | A | map behaviour | Read only |
+| `src/components/SpotList.vue`, `SpotDetail.vue` | B | list/detail/verify | Read only |
+| `src/components/AddSpotSheet.vue` | C | add flow + form | Read only |
+| `src/components/DarkModeToggle.vue` | F | theme toggle | Read only |
 | `data/`, `scripts/` | D | seed data + script | Read only |
 | `supabase/` | E | schema + RLS + verify write path | Read only |
 | `docs/`, `README.md` | T | documentation | Read only |
-| `css/style.css` | I | token overrides, pins, sheet | Read only |
 
-Rule: **no two agents write the same file.** Cross-lane work happens through function names and
-DOM IDs only.
+Rule: **no two agents write the same file.** Cross-lane work happens through the frozen contract
+below (api functions, props/emits, `useSpots` state) only.
 
-## 2. DOM mount IDs (defined once in `index.html`, F2)
+## 2. Component contract (props down, events up; `App.vue` wires everything)
 
-| ID | What mounts here | Used by |
-|---|---|---|
-| `#map` | Leaflet map container | A |
-| `#spot-list` | approved spot cards | B |
-| `#detail` | detail card | B |
-| `#add-form` | add-spot offcanvas + success state | C |
-| `#search` | search input | B |
-| `#chips` | type filter chips | B |
-| `#fab-add` | `+ Tambah` button | C |
-| `#geo` | geolocate button | A |
-| `#toast` | Bootstrap toast host | A, B, C |
-| `#sheet` | bottom sheet / desktop sidebar container | I |
+| Component | Props (in) | Emits (out) | Job |
+|---|---|---|---|
+| `MapPane.vue` | `spots` (already filtered), `pinMode`, `selectedId` | `select(spotId)`, `pin-placed(lat, lng)` | Leaflet map, pins (selected pin is highlighted + map flies to it), geolocate button, pin-drop mode |
+| `SpotList.vue` | `spots` (filtered), `query`, `type`, `pendingMine`, `userPos` | `update:query`, `update:type`, `select(spotId)` | cards, search, chips, `Tinjauan saya` |
+| `SpotDetail.vue` | `spot` | `close`, `verify(spotId)` | detail fields, `Masih ada ✓`, `Rute` |
+| `AddSpotSheet.vue` | `active` (flow started), `pin` (`{lat,lng}` or `null`), `submitState` (`idle/pending/success/error`) | `cancel`, `submit(payload)` | banner, form, honest success state (success only after the write resolves) |
+| `DarkModeToggle.vue` | — | — | `data-bs-theme` + `localStorage` |
 
-Every lane points at an ID; nobody adds a new ID without reporting back.
+The "+ Tambah" FAB is rendered by `App.vue` (integrator, Wave 4); it starts the add flow
+(`active` + `pinMode`) and consumes `submit(payload)` via `useSpots().addPending`.
 
-## 3. Config constants (`js/config.js`, F3)
+Element IDs (`#map`, `#spot-list`, …) live **inside** each component's own template and are not
+reached across components — a lane touches only its own template.
+
+## 3. Config constants (`src/lib/config.js`, F2)
 
 | Constant | Value | Rule |
 |---|---|---|
@@ -53,43 +58,50 @@ Every lane points at an ID; nobody adds a new ID without reporting back.
 | `SUPABASE_ANON_KEY` | public anon key | **never** `service_role` |
 | `TILE_URL` | `https://tile.openstreetmap.org/{z}/{x}/{y}.png` | the **only** tile URL in the repo |
 
+Values migrate from the owner's `js/config.js` in F2 (OQ-14: owner consents before the old file
+is deleted). A `.env.local` with `VITE_*` names may override them; `.env.local` is gitignored.
 No tile URL, project URL, or key may appear in any other file. Seed credentials live in an
 environment variable read by `scripts/seed-spots.mjs` and are never committed.
 
-## 4. `js/api.js` function signatures (F4, F5)
+## 4. `src/lib/supabase.js` function signatures (F3)
 
-Access style decided at OQ-2 (2026-11-09): **plain `fetch` wrapper** to the Supabase REST API.
-supabase-js v2 remains an allowed CDN dependency but is not loaded in v0.1.
+Access style decided at OQ-2 (2026-11-09, plain fetch) and **amended 2026-11-14 (OQ-15):
+supabase-js v2 via npm** — the standard client, same REST endpoint underneath.
 
-| Function | Shape | Does |
+| Export | Shape | Does |
 |---|---|---|
-| `supabaseHeaders()` | `() => object` | Returns `apikey` + `Authorization: Bearer <anon>` + `Content-Type` |
-| `loadApprovedSpots()` | `async () => SPOT[]` | `GET /rest/v1/spots?status=eq.approved&select=*` |
-| `insertPendingSpot(payload)` | `async (object) => void` | `POST` with `status:'pending'`, `source:'user'`, `last_verified_at:null` |
-| `bumpVerified(spotId)` | `async (uuid) => void` | `POST /rest/v1/rpc/bump_verified` — `security definer` Postgres function, 1 bump/spot/hour (G3, decided 2026-11-09) |
+| `supabase` | client instance | `createClient(SUPABASE_URL, SUPABASE_ANON_KEY)` |
+| `loadApprovedSpots()` | `async () => SPOT[]` | `from('spots').select('*').eq('status','approved')` |
+| `insertPendingSpot(payload)` | `async (object) => void` | insert with `status:'pending'`, `source:'user'`, `last_verified_at:null` |
+| `bumpVerified(spotId)` | `async (uuid) => void` | `rpc('bump_verified')` — `security definer` Postgres function, 1 bump/spot/hour (G3, decided 2026-11-09) |
 | `isUnknown(value)` | `(any) => string` | Returns `'Belum ada info'` for `null` / `undefined` / `''` |
 
 Reference style from the spec (simple, explicit, one job):
 
 ```js
-// js/api.js — ambil spot yang sudah approved untuk peta
-async function loadApprovedSpots() {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/spots?status=eq.approved&select=*`, {
-    headers: supabaseHeaders(),
-  });
-  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
-  return res.json(); // array of SPOT objects
+// src/lib/supabase.js — satu pintu untuk semua panggilan Supabase
+import { createClient } from '@supabase/supabase-js';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config';
+
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+export async function loadApprovedSpots() {
+  const { data, error } = await supabase
+    .from('spots')
+    .select('*')
+    .eq('status', 'approved');
+  if (error) throw error;
+  return data; // array of SPOT objects
 }
 ```
 
-Code style: `camelCase` functions/variables, `kebab-case` file names, one job per file, every file
-starts with a one-line comment saying what it does, code comments in simple English, UI strings in
-Indonesian.
+Code style: `camelCase` functions/variables, `PascalCase.vue` components, one job per file, every
+file starts with a one-line comment saying what it does, code comments in simple English, UI
+strings in Indonesian. No TypeScript in v0.1.
 
 ## 5. The frozen `SPOT` field contract
 
 Field names are **exactly** the `spots` table columns. Do not rename, do not add, do not drop.
-This is what makes the later prototype→Supabase swap mechanical.
 
 ```text
 id, name, type, lat, lng, water, hours, bike_parking, women_friendly,
@@ -114,28 +126,33 @@ notes, status, source, last_verified_at, created_at
 
 Unknown data rule: `isUnknown(value)` returns `'Belum ada info'`. **Never invent a default.**
 
-## 6. Cross-lane hooks (call by name, never import the file)
+## 6. Shared state (`src/composables/useSpots.js`, F6)
 
-| Hook | Defined by | Called by | Shape |
-|---|---|---|---|
-| `filterMarkers(query, type)` | A (`js/map.js`) | B | filters pins |
-| `showDetail(spotId)` | B (`js/spots.js`) | A, I | opens detail |
-| `renderList(spots)` | B | I | draws cards |
-| `enterPinMode()` / `exitPinMode()` | A | C | starts/stops pin-drop mode |
-| `onPinPlaced(lat, lng)` | C | A | receives dropped pin |
-| `bumpVerified(spotId)` | F (`js/api.js`) | B | verification write |
-| `insertPendingSpot(payload)` | F | C | contribution write |
-| `loadApprovedSpots()` | F | I | initial read |
+One composable holds all list/map state; `App.vue` owns it and passes it down as props.
 
-Scripts load in dependency order in `index.html`:
-`config.js` → `api.js` → `map.js` → `spots.js` → `verify.js` → `contribute.js`.
-Plain `<script>` tags, no modules, no imports, no bundler.
+| Member | Shape | Job |
+|---|---|---|
+| `spots` | `ref<SPOT[]>` | approved spots only (from `loadApprovedSpots()`) |
+| `pendingMine` | `ref<SPOT[]>` | the user's own pending spots (`localStorage` of submitted ids) |
+| `query`, `type` | `ref<string>` | search text + selected type chip |
+| `filteredSpots` | `computed<SPOT[]>` | applies `query` + `type` (drives both list and map) |
+| `TYPES` | `string[]` | `masjid_besar · musala · terminal · spbu · rest_area` |
+| `load()` | `async () => void` | initial read |
+| `addPending(payload)` | `async () => void` | submit + record in `pendingMine` |
+| `markVerified(spotId)` | `async () => void` | `bumpVerified` + refresh the row |
+
+`src/composables/useGeolocation.js` (owned by F): `useGeolocation()` →
+`{ position: ref<{lat,lng}|null>, loading, locate() }`. `locate()` resolves `{lat,lng}` or shows
+the `Lokasi tidak tersedia.` toast and rejects — the app stays usable (A5). MapPane owns the
+geolocate button; `App.vue` passes `position` to `SpotList` as the `userPos` prop (distance text).
 
 ## 7. Contract change process
 
-1. A lane discovers it needs a new field, ID, or function.
-2. It **reports back** to the owner. It does not edit `index.html`, `js/config.js`, or `js/api.js`.
-3. Owner decides. If the `spots` table or stack changes, `SPEC-singgah.md` is updated **first**.
+1. A lane discovers it needs a new field, prop, emit, or function.
+2. It **reports back** to the owner. It does not edit `src/lib/*`, `src/composables/useSpots.js`,
+   or another lane's component.
+3. Owner decides. If the `spots` table or stack changes, `docs/SPEC-singgah.md` is updated
+   **first**.
 4. This doc is updated, then the F/I lane implements it.
 
 Hard boundaries that never change: anon key only, RLS on, pending never public, no personal data,

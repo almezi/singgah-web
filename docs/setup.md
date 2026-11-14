@@ -3,8 +3,12 @@
 *What this doc does: the steps to run Singgah on your own computer, from zero to a working map.
 Written for a beginner. No install step exists for the app itself — that is the point.*
 
-**Status: planned.** The app code does not exist yet. In §1, steps 1–2 and 6 are still open owner
-tasks; the decisions in steps 3–5 were made 2026-11-09 (gates G3–G5, after G1 approval).
+**Status: Wave P prototype done (verified 2026-11-10); backend app code still planned.** You can
+already run the clickable prototype with §4's server command — see
+`docs/prototype-verification.md` for what was checked. In §1, step 1 is done (Supabase created,
+2026-11-14), step 2 (Vercel) is deferred to before deploy (OQ-14), and step 6 (playbook file,
+OQ-6) is still open; the decisions in steps 3–5 were made 2026-11-09 (gates G3–G5, after G1
+approval).
 
 ---
 
@@ -13,24 +17,29 @@ tasks; the decisions in steps 3–5 were made 2026-11-09 (gates G3–G5, after G
 | Thing | Used for | Cost |
 |---|---|---|
 | A browser (Chrome or Safari) | testing | free |
-| Python 3 | local static server | already on macOS |
-| Node ≥ 18 | only for the seed script | free |
+| Node ≥ 20.19 (or ≥ 22.12) | Vite dev server + build + the seed script | free |
 | A Supabase account | database + approval dashboard | free tier |
-| A Vercel account | hosting | free tier |
+| A Vercel account | hosting (only needed before deploy) | free tier |
 | A text editor / AI coding tool | writing files | — |
 
-No `npm install`. No build command. No `.env` file for the frontend (the anon key is public by
-design). `.gitignore` already ignores `.env` and `*.local` for the seed script's private key.
+One `npm install` after cloning (Vue, Vite, Bootstrap, Leaflet, supabase-js). No `.env` file is
+required for the frontend — the anon key is public by design and lives in `src/lib/config.js`;
+an optional `.env.local` (gitignored) can override it. `.gitignore` already ignores `.env` and
+`*.local` for the seed script's private key.
 
 ## 1. Owner gates (do these first)
 
-1. Create the Supabase project. Copy its **project URL** and **anon key**.
+1. ✅ Done 2026-11-14 — Supabase project created; the owner pastes its **project URL** and
+   **anon key** into `js/config.js` personally (Wave 0 step F2 migrates them into
+   `src/lib/config.js` — OQ-15).
    Never copy the `service_role` key into any file under `index.html`, `css/`, `js/`, or `data/`.
-2. Create the Vercel account (or an approved free alternative).
+2. **Open (deferred 2026-11-14, OQ-14)** — Vercel account; needed before deploy (P1) only. On
+   signup, skip the "Import Git Repository" screen (we deploy via `npx vercel --prod`).
 3. ✅ Done 2026-11-09 — gate G3: verification writes use the `bump_verified` Postgres function
    (`security definer`, 1 bump/spot/hour).
 4. ✅ Done 2026-11-09 — gate G4: desktop keeps the always-on two-pane map.
-5. ✅ Done 2026-11-09 — gate G5: build `prototype/index.html` first (Wave P).
+5. ✅ Done 2026-11-09 (decision) / 2026-11-10 (built + verified) — gate G5: build
+   `prototype/index.html` first (Wave P). All 8 "Done when" checks pass, zero console errors.
 6. Copy the trip playbook source markdown into this repo (it is currently missing) so the seed
    data can be transcribed accurately.
 
@@ -45,29 +54,33 @@ design). `.gitignore` already ignores `.env` and `*.local` for the seed script's
 
 ## 3. Put the keys in one place
 
-`js/config.js` holds three constants and nothing else:
+`src/lib/config.js` will hold three constants and nothing else (created in Wave 0, F2, migrating
+the owner's values from `js/config.js`):
 
 ```js
-// js/config.js — satu tempat untuk semua alamat dan kunci publik
+// src/lib/config.js — satu tempat untuk semua alamat dan kunci publik
 const SUPABASE_URL = 'https://<project>.supabase.co';
 const SUPABASE_ANON_KEY = '<public-anon-key>';
 const TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 ```
 
-The tile URL appears **only** here. The anon key is safe to be public because RLS enforces the
-rules. The `service_role` key belongs nowhere in the frontend, ever.
+The tile URL appears **only** here. The anon key is safe to be public (it ships inside the Vite
+bundle) because RLS enforces the rules. The `service_role` key belongs nowhere in the frontend,
+ever.
 
 ## 4. Run it locally
 
 From the project root:
 
 ```
-python3 -m http.server 8080
+npm install     # once
+npm run dev
 ```
 
-Then open `http://localhost:8080` (or `http://localhost:8080/prototype/index.html` for the
-prototype). Because there is no build step, editing a file and refreshing the browser is the whole
-development loop.
+Then open the URL Vite prints (default `http://localhost:5173`). The dev server hot-reloads:
+editing a file and watching the browser update is the whole development loop. To open the plain
+static prototype, serve the folder separately: `python3 -m http.server 8080`, then open
+`http://localhost:8080/prototype/index.html`.
 
 To check a phone layout, use your browser's device toolbar at 390 × 844. Note: headless Chrome
 clamps its layout viewport to a 500px minimum, so a "375px" screenshot is a crop of a 500px
@@ -91,7 +104,7 @@ Always dry-run first. See `docs/data-model.md` §5 and `docs/research-osm-seedin
 - [ ] `Belum ada info` appears somewhere (unknown data is shown honestly)
 - [ ] No English words are visible in the UI
 - [ ] A newly added spot does **not** appear in the public list or map
-- [ ] `grep -r service_role index.html css js` returns nothing
+- [ ] `grep -r service_role index.html src` returns nothing
 
 Then run the full `docs/manual-test-checklist.md` on a real phone over mobile data.
 
@@ -99,6 +112,7 @@ Then run the full `docs/manual-test-checklist.md` on a real phone over mobile da
 
 | Symptom | Likely cause |
 |---|---|
+| `npm run dev` fails | Node too old for Vite — use Node ≥ 20.19 (or ≥ 22.12) |
 | Blank map | wrong `TILE_URL`, or offline; tiles are network-only by design |
 | No spots | anon key wrong, RLS not enabled, or rows still `pending` |
 | `401` / `403` on read | anon key missing from headers, or RLS policy too strict |
@@ -107,6 +121,7 @@ Then run the full `docs/manual-test-checklist.md` on a real phone over mobile da
 
 ## 8. Related docs
 
+- `docs/prototype-verification.md` — Wave P sign-off record
 - `docs/architecture.md` — how the layers fit together
 - `docs/api-contract.md` — frozen constants and function names
 - `docs/deployment.md` — shipping to a public URL

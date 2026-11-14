@@ -79,16 +79,17 @@ decision 5 locks the two-pane version — confirmed at G4, 2026-11-09 (OQ-10 clo
 Use built-in Bootstrap 5.3 components and utilities **before** writing custom CSS: `offcanvas`
 (add form), `toast`, `badge`, `btn`, `btn-group` pills, form validation, `data-bs-theme`.
 Custom CSS is limited to three things: the `:root` token override block, map pins, and bottom-sheet
-mechanics. See OQ-7 — SPEC's project tree omits `css/` while `AGENTS.md` lists `css/style.css`.
+mechanics. See OQ-7 — with the Vue stack (OQ-15) custom CSS most naturally lives in the SFC
+`<style>` blocks plus one small global override file; the owner still decides where.
 
-CDN versions (locked):
+Dependency versions (locked; npm since OQ-15, 2026-11-14 — originally CDN):
 
 | Library | Version |
 |---|---|
 | Bootstrap CSS + JS bundle | 5.3.3 |
 | Bootstrap Icons | 1.11.3 |
 | Leaflet | 1.9.4 |
-| supabase-js | v2 — allowed, not loaded (OQ-2: plain fetch) |
+| supabase-js | v2 — npm dependency (OQ-2 amended by OQ-15) |
 | Plus Jakarta Sans | 400–800 |
 
 ## 5. Accessibility rules (from the UI/UX audit already applied to the board)

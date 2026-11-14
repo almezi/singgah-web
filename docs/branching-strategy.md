@@ -13,7 +13,8 @@ git state of this repo.*
 implementation phase, and tag every deploy. Branch by *phase*, never by *agent*.**
 
 That is a simplified GitHub Flow with a staging branch. It is deliberately small: a solo beginner
-owner, no CI, no build step, and a manual checklist do not need GitFlow.
+owner, no CI, and a manual checklist do not need GitFlow. (Amended 2026-11-14: the app now builds
+with Vite — OQ-15 — but the workflow is unchanged; `npm run build` runs locally and on Vercel.)
 
 ---
 

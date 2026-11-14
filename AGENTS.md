@@ -3,17 +3,28 @@
 ## What this repo is
 
 Singgah: a mobile-first web app where cyclists/backpackers in Indonesia find free wash & rest
-spots (masjid besar, musala, terminal, SPBU, rest areas). **Currently pre-code**: the repo holds
-the spec, handoff, approved design frames, the plan/task list (approved at gate G1, 2026-11-09)
-and the full documentation set — but no application code. Plan/tasks are approved; Wave P
-(prototype, mock data) is unblocked and runs on `build/mvp`. Wave 0+ waits on G2 (accounts);
-OQ-6 (playbook file) blocks D1 only.
+spots (masjid besar, musala, terminal, SPBU, rest areas). **Currently early Implement**: the repo
+holds the spec, handoff, approved design frames, the plan/task list (approved at gate G1,
+2026-11-09), the full documentation set, and a **clickable mock-data prototype**
+`prototype/index.html` — but no backend application code. **Wave P is done and verified
+2026-11-10** (`docs/prototype-verification.md`: all 8 "Done when" items pass, zero console
+errors). **Wave 0 (F1–F6) is unblocked as of 2026-11-14** (OQ-14): Supabase is created and the
+owner holds the URL + anon key. The **Vercel account** is deferred to before deploy (Wave 5).
+OQ-6 (playbook file) blocks D1 only. Do not write `supabase/` before Wave 3.
+
+**Stack changed 2026-11-14 (OQ-15): the app is now Vue 3 + Vite** (JavaScript, no TypeScript),
+with Bootstrap 5 + Icons, Leaflet 1.9 and supabase-js v2 as npm dependencies — amending the
+original "plain JS, no build step" decision with the owner's consent. The verified plain-JS
+prototype stays untouched as the design reference. `js/config.js` holds the owner-pasted Supabase
+URL + anon key; the Wave 0 scaffold migrates those values into the Vue app config (the old file
+is deleted only with the owner's consent). `tasks/todo.md` is rewritten around Vue lanes — read
+the new version before coding.
 
 ## Read these first
 
-- `SPEC-singgah.md` — the source of truth. Scope, data model, boundaries, success criteria.
+- `docs/SPEC-singgah.md` — the source of truth. Scope, data model, boundaries, success criteria.
   Update the spec FIRST when a decision changes, then change code.
-- `HANDOFF-musafir-project.md` — project backstory and locked product decisions.
+- `docs/HANDOFF-musafir-project.md` — project backstory and locked product decisions.
 - `README.md` and `docs/README.md` — documentation index; `docs/guided-tour.md` explains every
   file in reading order.
 - `docs/api-contract.md` — the frozen DOM IDs, config constants and function signatures. Parallel
@@ -23,6 +34,8 @@ OQ-6 (playbook file) blocks D1 only.
 - `docs/branching-strategy.md` — adopted git workflow (OQ-13, 2026-11-09): one protected `main`,
   one short-lived `build/mvp` for all waves, a tag per deploy. **Branch by phase, not by agent** —
   parallel agents share this working directory, so they commit to the same branch, different files.
+- `docs/prototype-verification.md` — Wave P sign-off (verified 2026-11-10). Read it before
+  changing `prototype/index.html`, so a verified flow is not silently regressed.
 
 ## Workflow rules (spec-driven development)
 
@@ -34,8 +47,9 @@ OQ-6 (playbook file) blocks D1 only.
 
 ## Locked decisions (from the spec — do not relitigate silently)
 
-- Plain HTML/JS with **Bootstrap 5 + Bootstrap Icons via CDN — no JS framework, no build step,
-  no npm project**. Leaflet 1.9 and supabase-js v2 via CDN only.
+- **Vue 3 + Vite (JavaScript, no TypeScript)** with **Bootstrap 5 + Bootstrap Icons, Leaflet 1.9
+  and supabase-js v2 as npm dependencies** (amended 2026-11-14, OQ-15 — was "plain HTML/JS via
+  CDN, no build step"). No other dependencies without asking the owner.
 - Launch area: Yogya city + Jakarta→Yogya corridor only.
 - Open add-spot flow, no login. User submissions land `status='pending'`; only the owner
   approves, via the Supabase dashboard. Only `approved` rows are publicly readable.
@@ -45,25 +59,30 @@ OQ-6 (playbook file) blocks D1 only.
 ## Commands
 
 ```
-Dev (local server):  python3 -m http.server 8080     # http://localhost:8080
+Install (once):      npm install                     # Vue, Vite, Bootstrap, Leaflet, supabase-js
+Dev (local server):  npm run dev                     # Vite dev server with hot reload
 Seed database:       node scripts/seed-spots.mjs     # Overpass + playbook JSON → Supabase
-Deploy:              npx vercel --prod
+Deploy:              npx vercel --prod               # auto-detects Vite: builds, serves dist/
 ```
 
-No build, lint, or automated test runner exists. Verification = manual checklist in
+No lint or automated test runner exists. Verification = manual checklist in
 `docs/manual-test-checklist.md` (run before every deploy) + owner dogfooding on a real trip.
 
 ## Planned layout (from the spec)
 
 ```
-index.html          single page: map + list + detail + add form
-css/style.css       mobile-first styles
-js/                 config.js · api.js · map.js · spots.js · contribute.js · verify.js
+index.html          Vite entry (one root div + module script)
+src/main.js         createApp + Bootstrap imports + theme bootstrap
+src/App.vue         layout shell: two-pane desktop, bottom sheet mobile
+src/lib/            config.js (URL + anon key + TILE_URL) · supabase.js (client + 3 API functions)
+src/composables/    useSpots.js · useGeolocation.js
+src/components/     MapPane.vue · SpotList.vue · SpotDetail.vue · AddSpotSheet.vue · DarkModeToggle.vue
 scripts/            seed-spots.mjs
 data/               playbook-spots.json (real researched spots — research data, do not rewrite casually)
 design/             singgah-mockup.html (UI mockup reference — approved look, tokens, palettes)
-prototype/          index.html (clickable mock-data prototype — Bootstrap, pre-Supabase)
-docs/               manual-test-checklist.md + architecture.md, api-contract.md,
+prototype/          index.html (verified plain-JS prototype — untouched design reference)
+docs/               SPEC-singgah.md, HANDOFF-musafir-project.md, *_PROMPT-singgah.md,
+                    manual-test-checklist.md + architecture.md, api-contract.md,
                     data-model.md, design-system.md, ui-copy.md, setup.md,
                     deployment.md, owner-guide.md, decision-log.md, guided-tour.md,
                     README.md, research-*.md

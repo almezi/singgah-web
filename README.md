@@ -8,29 +8,35 @@ Launch area: **Yogyakarta city + the Jakarta→Yogya corridor**. UI language: **
 
 ---
 
-## ⚠️ Status: pre-code — planning phase
+## ⚠️ Status: Wave P prototype done — Wave 0 unblocked (2026-11-14)
 
-No application code exists yet. This repo holds the spec, the plan, the task list, the approved
-design, and the documentation. Work is gated:
+No **backend application** code exists yet. This repo holds the spec, the plan, the task list,
+the approved design, the documentation, and a **clickable mock-data prototype**
+(`prototype/index.html`) — no Supabase backend yet. Work is gated:
 
 **Specify → Plan → Tasks → Implement**, with owner review between phases.
 
 `tasks/plan.md` and `tasks/todo.md` were **approved 2026-11-09 (gate G1)**; branching (OQ-13) and
-the API style (OQ-2) were decided the same day. The prototype (Wave P) is being built on
-`build/mvp`; Wave 0+ still needs G2 (Supabase + Vercel accounts). See `AGENTS.md`.
+the API style (OQ-2) were decided the same day. **Wave P was built and verified 2026-11-10** —
+all 8 "Done when" checks pass with zero console errors
+([`docs/prototype-verification.md`](docs/prototype-verification.md)). The next step is **Wave 0
+(F1–F6, the frozen contract)** — unblocked 2026-11-14 (OQ-14): Supabase is created and the owner
+pastes the URL + anon key into `js/config.js`; the Vercel account is deferred to before deploy.
+See `AGENTS.md`.
 
 ## The short version of the technology
 
-A **static single-page site with no build step**. Plain HTML/JS + Bootstrap 5 + Bootstrap Icons
-and Leaflet 1.9 — all via CDN; Supabase is reached with a plain `fetch` wrapper (OQ-2). The
-browser reads approved spots directly from
-Supabase through Row Level Security. Vercel serves the files. A Node seed script (offline, never
-shipped) fills the database from OSM/Overpass plus researched playbook data.
+A **Vue 3 single-page app built with Vite** (OQ-15, 2026-11-14 — JavaScript, no TypeScript).
+Bootstrap 5 + Bootstrap Icons, Leaflet 1.9 and supabase-js v2 are npm dependencies (OQ-2
+amended: supabase-js replaces the plain-fetch wrapper). The browser reads approved spots directly
+from Supabase through Row Level Security. Vercel auto-detects Vite (`npm run build` → `dist/`).
+A Node seed script (offline, never shipped) fills the database from OSM/Overpass plus researched
+playbook data.
 
 ```
 Browser (phone / laptop)
-   ├── index.html + js/*.js + css/style.css      ← static files on Vercel
-   ├── Bootstrap / Icons / Leaflet / fonts      ← CDN
+   ├── Vue app (src/ components + composables)   ← built by Vite, served from dist/
+   ├── Bootstrap / Icons / Leaflet / supabase-js ← npm dependencies, bundled
    ├── Supabase REST (anon key, RLS)            ← approved spots only
    └── OSM tiles (network only)                 ← one TILE_URL constant
 ```
@@ -43,12 +49,13 @@ G3). Full detail:
 ## Commands
 
 ```
-python3 -m http.server 8080     # local dev → http://localhost:8080
+npm install                     # once — Vue, Vite, Bootstrap, Leaflet, supabase-js
+npm run dev                     # local dev → Vite dev server with hot reload
 node scripts/seed-spots.mjs     # Overpass + playbook JSON → Supabase (offline, after schema)
-npx vercel --prod               # deploy a static site
+npx vercel --prod               # deploy — auto-detects Vite: builds, serves dist/
 ```
 
-No `npm install`, no build, no lint, no test runner. Verification is the
+No lint, no test runner. Verification is the
 [manual checklist](docs/manual-test-checklist.md), run before every deploy.
 
 ## Documentation
@@ -67,13 +74,14 @@ every file, in reading order. Or use the [`docs/README.md`](docs/README.md) inde
 | Deployment + free tiers | [`docs/deployment.md`](docs/deployment.md) |
 | Owner operations (approve spots) | [`docs/owner-guide.md`](docs/owner-guide.md) |
 | Pre-deploy checklist | [`docs/manual-test-checklist.md`](docs/manual-test-checklist.md) |
+| Wave P prototype verification record | [`docs/prototype-verification.md`](docs/prototype-verification.md) |
 | Locked decisions + open questions | [`docs/decision-log.md`](docs/decision-log.md) |
 | Git branching strategy (proposal) | [`docs/branching-strategy.md`](docs/branching-strategy.md) |
 | Plan / task list | [`tasks/plan.md`](tasks/plan.md) · [`tasks/todo.md`](tasks/todo.md) |
 | OSM seeding research | [`docs/research-osm-seeding.md`](docs/research-osm-seeding.md) |
 | Mobile strategy + cost research | [`docs/research-mobile-strategy.md`](docs/research-mobile-strategy.md) |
 
-**Source of truth:** [`SPEC-singgah.md`](SPEC-singgah.md). **Working rules:**
+**Source of truth:** [`docs/SPEC-singgah.md`](docs/SPEC-singgah.md). **Working rules:**
 [`AGENTS.md`](AGENTS.md). When a decision changes, update the spec **first**, then the docs, then
 code.
 
