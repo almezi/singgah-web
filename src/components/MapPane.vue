@@ -358,8 +358,8 @@ onBeforeUnmount(() => {
 .sg-legend {
   display: none;
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: var(--singgah-map-inset);
+  right: var(--singgah-map-inset);
   z-index: 1000;
   flex-direction: column;
   gap: 6px;
@@ -399,8 +399,8 @@ onBeforeUnmount(() => {
 /* ---- A5: geolocate button — ≥44px touch target (design-system §5) ---- */
 .sg-geolocate {
   position: absolute;
-  left: 12px;
-  bottom: 12px;
+  left: var(--singgah-map-inset);
+  bottom: var(--singgah-map-inset);
   z-index: 1000;
   width: 44px;
   height: 44px;

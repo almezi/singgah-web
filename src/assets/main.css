@@ -18,6 +18,14 @@
   --singgah-card: #ffffff;
   --singgah-line: #e4dfd2;
   --singgah-shadow: 0 10px 30px rgba(18, 51, 44, 0.14);
+
+  /* Overlay peta seragam (umpan balik owner): semua elemen di atas peta memakai
+     jarak & radius yang sama seperti .sg-legend — guardrail #5, satu sumber token */
+  --singgah-map-inset: 12px;
+  --singgah-overlay-radius: 14px;
+  --singgah-page-pad: 14px; /* bingkai halaman desktop: jarak kartu-kartu ke tepi */
+  --singgah-attrib-h: 17px; /* tinggi garis atribusi Leaflet — FAB tidak boleh menutupinya
+                               (atribusi © OpenStreetMap wajib tampak, lisensi ODbL) */
 }
 
 /* Mode gelap: halaman hijau-hitam pekat, kartu sedikit lebih terang */
@@ -25,6 +33,13 @@
   --singgah-page: #0f1713;
   --singgah-card: #17201b;
   --singgah-line: #26302a;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden; /* app peta = viewport tetap; halaman tidak pernah menggulir (mencegah
+                       scrollbar sesaat yang menggeser overlay 15px) */
 }
 
 body {
@@ -57,8 +72,8 @@ body {
   .app-pane {
     display: flex;
     height: 100dvh; /* border-box: padding termasuk di dalamnya */
-    padding: 14px;
-    gap: 14px;
+    padding: var(--singgah-page-pad);
+    gap: var(--singgah-page-pad);
   }
   .app-pane__side {
     width: var(--singgah-sidebar-w);

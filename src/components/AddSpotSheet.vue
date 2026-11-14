@@ -381,19 +381,25 @@ onBeforeUnmount(() => {
 /* C1/C2: banner langkah 1 (gaya kartu banner board disetujui) */
 .add-banner {
   position: fixed;
-  top: 14px;
+  top: var(--singgah-map-inset);
   left: 50%;
   transform: translateX(-50%);
   z-index: 1041;
   width: min(92vw, 440px);
   background: var(--bs-body-bg);
   border: 1px solid var(--bs-border-color);
-  border-radius: 14px;
+  border-radius: var(--singgah-overlay-radius);
   box-shadow: 0 10px 30px rgba(18, 51, 44, 0.14);
   padding: 12px 14px;
   color: var(--bs-body-color);
   font-weight: 600;
   font-size: 0.9rem;
+}
+/* Desktop: kartu peta turun 14px dari tepi (bingkai halaman) — banner mengikutinya */
+@media (min-width: 992px) {
+  .add-banner {
+    top: calc(var(--singgah-page-pad) + var(--singgah-map-inset));
+  }
 }
 .add-banner .bi-pin-map {
   color: var(--bs-secondary-color);

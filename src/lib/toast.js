@@ -8,13 +8,16 @@ export function showToast(message) {
   if (!host) {
     host = document.createElement('div');
     host.id = 'toast-host';
-    host.className = 'toast-container position-fixed bottom-0 start-50 translate-middle-x p-3';
+    host.className = 'toast-container position-fixed start-50 translate-middle-x';
+    host.style.bottom = 'var(--singgah-map-inset)';
+    host.style.padding = '0';
     host.style.zIndex = '2000';
     document.body.appendChild(host);
   }
 
   const el = document.createElement('div');
   el.className = 'toast align-items-center text-bg-dark border-0';
+  el.style.borderRadius = 'var(--singgah-overlay-radius)'; // seragam dengan legenda
   el.setAttribute('role', 'alert');
   el.innerHTML =
     '<div class="d-flex"><div class="toast-body"></div>' +

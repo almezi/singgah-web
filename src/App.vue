@@ -126,6 +126,7 @@ onMounted(() => {
     </div>
 
     <AddSpotSheet
+      class="add-sheet-host"
       :active="addActive"
       :pin="pin"
       :submit-state="submitState"
@@ -136,14 +137,21 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/* Pembungkus AddSpotSheet dikeluarkan dari alur flex (display: contents) — tanpa ini
+   div kosongnya memakan satu slot gap 14px dan kartu peta jadi lebih sempit.
+   Anak-anaknya semuanya position: fixed, jadi tetap tampil normal. */
+.add-sheet-host {
+  display: contents;
+}
+
 /* Detail anchor (umpan balik owner): panel selalu menempel pada sisi objek aktif —
    ponsel: kartu sheet di bawah; desktop: menggantikan panel sidebar — dan dibatasi
    tingginya + bisa digulir, jadi isunya tidak pernah terpotong. */
 .detail-anchor {
   position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 12px;
+  left: var(--singgah-map-inset);
+  right: var(--singgah-map-inset);
+  bottom: var(--singgah-map-inset);
   /* tinggi PASTI — anak langsungnya elemen absolut (milik lane B), tanpa ini
      tinggi pembungkus runtuh ke 0 dan isinya tak terlihat di ponsel */
   height: min(60dvh, 520px);
@@ -189,16 +197,21 @@ onMounted(() => {
   font-size: 1rem;
 }
 
-/* FAB "+ Tambah" — melayang di atas peta; di ponsel naik di atas bottom sheet */
+/* FAB "+ Tambah" — 12px dari tepi KARTU PETA (seragam dengan legenda) dan DI ATAS garis
+   atribusi Leaflet (17px) — atribusi © OpenStreetMap wajib selalu terlihat (ODbL).
+   Desktop = jarak halaman + inset + tinggi atribusi; ponsel = inset langsung, naik di atas sheet */
 .fab-add {
   position: fixed;
-  right: 1rem;
-  bottom: calc(1rem + env(safe-area-inset-bottom));
+  right: calc(var(--singgah-page-pad) + var(--singgah-map-inset));
+  bottom: calc(
+    var(--singgah-page-pad) + var(--singgah-map-inset) + var(--singgah-attrib-h) + 6px +
+      env(safe-area-inset-bottom)
+  );
   z-index: 1030;
   background: var(--singgah-teal);
   color: #fff;
   border: none;
-  border-radius: 2rem;
+  border-radius: var(--singgah-overlay-radius);
   padding: 0.65rem 1.15rem;
   font-weight: 600;
 }
@@ -209,7 +222,8 @@ onMounted(() => {
 
 @media (max-width: 991.98px) {
   .fab-add {
-    bottom: calc(55dvh + 1rem + env(safe-area-inset-bottom));
+    right: var(--singgah-map-inset);
+    bottom: calc(55dvh + var(--singgah-map-inset) + env(safe-area-inset-bottom));
   }
 }
 </style>
