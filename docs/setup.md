@@ -3,12 +3,13 @@
 *What this doc does: the steps to run Singgah on your own computer, from zero to a working map.
 Written for a beginner. No install step exists for the app itself — that is the point.*
 
-**Status: Wave P prototype done (verified 2026-11-10); backend app code still planned.** You can
-already run the clickable prototype with §4's server command — see
-`docs/prototype-verification.md` for what was checked. In §1, step 1 is done (Supabase created,
-2026-11-14), step 2 (Vercel) is deferred to before deploy (OQ-14), and step 6 (playbook file,
-OQ-6) is still open; the decisions in steps 3–5 were made 2026-11-09 (gates G3–G5, after G1
-approval).
+**Status: the Vue app (v0.1) is built and runs — §4 gets you from zero to a live map.** The
+database is live with ±7.2k approved spots; the researched playbook spots are transcribed
+(OQ-6 closed 2026-11-15) and pass `--dry-run`, awaiting owner approval for the real seed run
+(§5). The old clickable prototype (`prototype/index.html`) still runs as the design reference.
+In §1, step 1 is done (Supabase created, 2026-11-14), step 2 (Vercel) is deferred to before
+deploy (OQ-14), and step 6 (playbook file, OQ-6) closed 2026-11-15; the decisions in steps 3–5
+were made 2026-11-09 (gates G3–G5, after G1 approval).
 
 ---
 
@@ -40,8 +41,9 @@ an optional `.env.local` (gitignored) can override it. `.gitignore` already igno
 4. ✅ Done 2026-11-09 — gate G4: desktop keeps the always-on two-pane map.
 5. ✅ Done 2026-11-09 (decision) / 2026-11-10 (built + verified) — gate G5: build
    `prototype/index.html` first (Wave P). All 8 "Done when" checks pass, zero console errors.
-6. Copy the trip playbook source markdown into this repo (it is currently missing) so the seed
-   data can be transcribed accurately.
+6. ✅ Done 2026-11-15 (OQ-6) — the trip playbook source markdown is now in the repo at
+   `docs/research-playbook-source.md`, and the 11 researched spots are transcribed into
+   `data/playbook-spots.json` (dry-run passed; owner approval for the real seed still open).
 
 ## 2. Database setup (once)
 
@@ -54,8 +56,8 @@ an optional `.env.local` (gitignored) can override it. `.gitignore` already igno
 
 ## 3. Put the keys in one place
 
-`src/lib/config.js` will hold three constants and nothing else (created in Wave 0, F2, migrating
-the owner's values from `js/config.js`):
+`src/lib/config.js` holds three constants and nothing else (done in Wave 0, F2; the owner's real
+values are already pasted in — the placeholder block below is only the shape):
 
 ```js
 // src/lib/config.js — satu tempat untuk semua alamat dan kunci publik
@@ -68,19 +70,34 @@ The tile URL appears **only** here. The anon key is safe to be public (it ships 
 bundle) because RLS enforces the rules. The `service_role` key belongs nowhere in the frontend,
 ever.
 
-## 4. Run it locally
+## 4. Run it locally (and stop it)
 
 From the project root:
 
 ```
 npm install     # once
-npm run dev
+npm run dev     # start the local dev server
 ```
 
-Then open the URL Vite prints (default `http://localhost:5173`). The dev server hot-reloads:
-editing a file and watching the browser update is the whole development loop. To open the plain
-static prototype, serve the folder separately: `python3 -m http.server 8080`, then open
-`http://localhost:8080/prototype/index.html`.
+Then open the URL Vite prints — default `http://localhost:5173`. The dev server hot-reloads:
+editing a file and watching the browser update is the whole development loop.
+
+**How to stop it: press `Ctrl+C` in the same terminal where `npm run dev` is running** (hold
+Ctrl, tap C — on macOS the same, even though the key is labeled Ctrl). That kills the Vite dev
+server immediately. Three things worth knowing:
+
+- The browser tab stays open, but it no longer updates — nothing wrong with the tab, the server
+  behind it is just gone.
+- **Nothing is lost.** Your edits live in the files, the data lives in Supabase. Stopping is
+  always safe.
+- Closing the terminal window does the same thing — the server dies with it.
+
+To start again, run `npm run dev` whenever you want. If the port is busy (an old server still
+running in another terminal), Vite picks the next free port and **prints the URL it actually
+used** — always open the URL from the terminal, not from memory.
+
+To open the plain static prototype, serve the folder separately: `python3 -m http.server 8080`,
+then open `http://localhost:8080/prototype/index.html` (stop that server the same way: Ctrl+C).
 
 To check a phone layout, use your browser's device toolbar at 390 × 844. Note: headless Chrome
 clamps its layout viewport to a 500px minimum, so a "375px" screenshot is a crop of a 500px
@@ -113,6 +130,7 @@ Then run the full `docs/manual-test-checklist.md` on a real phone over mobile da
 | Symptom | Likely cause |
 |---|---|
 | `npm run dev` fails | Node too old for Vite — use Node ≥ 20.19 (or ≥ 22.12) |
+| Vite prints a different port than 5173 | an old dev server is still running — stop it with Ctrl+C in its terminal, or just open the URL Vite prints |
 | Blank map | wrong `TILE_URL`, or offline; tiles are network-only by design |
 | No spots | anon key wrong, RLS not enabled, or rows still `pending` |
 | `401` / `403` on read | anon key missing from headers, or RLS policy too strict |

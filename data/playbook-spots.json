@@ -1,1 +1,123 @@
-[]
+[
+  {
+    "name": "Masjid Jami' Ni'matul Ittihad",
+    "type": "masjid_besar",
+    "lat": -6.2700383,
+    "lng": 106.7756150,
+    "water": "kran_mandi",
+    "hours": null,
+    "bike_parking": null,
+    "women_friendly": null,
+    "notes": "MCK + wudhu standar — titik mandi utama sebelum naik bus. Satu jalan dengan konter AKAP Pondok Pinang (±200–400 m dari titik naik bus di Jl. Ciputat Raya)."
+  },
+  {
+    "name": "Masjid Baiturrahman",
+    "type": "masjid_besar",
+    "lat": -6.2784531,
+    "lng": 106.7705690,
+    "water": "wudhu_only",
+    "hours": null,
+    "bike_parking": null,
+    "women_friendly": null,
+    "notes": "Fasilitas wudhu di Pondok Pinang (Jl. Buana III), dekat titik naik bus."
+  },
+  {
+    "name": "Masjid Jami' Al Huda",
+    "type": "masjid_besar",
+    "lat": -6.266495,
+    "lng": 106.782306,
+    "water": null,
+    "hours": null,
+    "bike_parking": null,
+    "women_friendly": null,
+    "notes": "Masjid lebih besar ±2 km dari titik naik bus Pondok Pinang, dekat Pondok Indah Mall 2 (Jl. Alam Elok II No. 1)."
+  },
+  {
+    "name": "Terminal Lebak Bulus",
+    "type": "terminal",
+    "lat": -6.289296,
+    "lng": 106.774826,
+    "water": null,
+    "hours": null,
+    "bike_parking": null,
+    "women_friendly": null,
+    "notes": "Terminal alternatif ±2–3 km dari Pondok Pinang; Handoyo Eksekutif ±15:00 → Terminal Jombor (Yogya utara, ±9,5 jam). Satu kawasan dengan MRT Lebak Bulus — titik persis konter perlu dicek di lokasi."
+  },
+  {
+    "name": "Rest Area KM 19 Tol Jakarta–Cikampek",
+    "type": "rest_area",
+    "lat": -6.268982,
+    "lng": 107.037107,
+    "water": "kran_mandi",
+    "hours": null,
+    "bike_parking": null,
+    "women_friendly": null,
+    "notes": "Musala + MCK di dalam rest area (Masjid Darussalam KM 19A). Pemberhentian bus arah Yogya di sisi KM 19 B; mandi penuh jarang realistis saat berhenti 15–30 menit — wudhu yang realistis."
+  },
+  {
+    "name": "Rest Area KM 207 Tol Palikanci",
+    "type": "rest_area",
+    "lat": -6.7754995,
+    "lng": 108.5627459,
+    "water": "kran_mandi",
+    "hours": null,
+    "bike_parking": null,
+    "women_friendly": null,
+    "notes": "Musala + MCK (rest area Type A/B Trans-Java). Wudhu realistis saat pemberhentian bus 15–30 menit — jangan berencana mandi penuh."
+  },
+  {
+    "name": "Rest Area KM 260 Banjaratma",
+    "type": "rest_area",
+    "lat": -6.9066622,
+    "lng": 108.9835353,
+    "water": "kran_mandi",
+    "hours": null,
+    "bike_parking": null,
+    "women_friendly": null,
+    "notes": "Rest area warisan (eks pabrik gula) di Tol Pejagan–Pemalang, sisi KM 260 B. Musala + MCK; singgahan banyak bus jalur Pantura."
+  },
+  {
+    "name": "Terminal Giwangan",
+    "type": "terminal",
+    "lat": -7.8352861,
+    "lng": 110.3926960,
+    "water": null,
+    "hours": null,
+    "bike_parking": null,
+    "women_friendly": null,
+    "notes": "Terminal AKAP Yogyakarta — titik turun bus Kramat Djati dari Jakarta (Jl. Imogiri Timur). Ada musala di dalam terminal — lihat Musala Blok C."
+  },
+  {
+    "name": "Musala Blok C (Masjid Al-Hidayah)",
+    "type": "musala",
+    "lat": -7.8352861,
+    "lng": 110.3926960,
+    "water": "kran_mandi",
+    "hours": null,
+    "bike_parking": null,
+    "women_friendly": null,
+    "notes": "Musala di dalam Terminal Giwangan (Blok C / Masjid Al-Hidayah) — mandi pemulihan setelah ±12 jam bus. Kosong ±04:00–05:00 saat kedatangan bus."
+  },
+  {
+    "name": "Masjid Gedhe Kauman",
+    "type": "masjid_besar",
+    "lat": -7.803834,
+    "lng": 110.362384,
+    "water": "kran_mandi",
+    "hours": null,
+    "bike_parking": null,
+    "women_friendly": null,
+    "notes": "Masjid besar (1773) di sisi Alun-Alun Utara/Keraton — staf siang-malam, rutin menerima musafir istirahat/bermalam; pilihan istirahat paling mudah di Yogya (masjid besar lazim punya MCK)."
+  },
+  {
+    "name": "Masjid Kampus UGM",
+    "type": "masjid_besar",
+    "lat": -7.7734014,
+    "lng": 110.3800163,
+    "water": null,
+    "hours": null,
+    "bike_parking": null,
+    "women_friendly": null,
+    "notes": "Masjid kampus besar di Sarjana Square, dikelola mahasiswa, sangat terbiasa dengan musafir muda yang transit."
+  }
+]

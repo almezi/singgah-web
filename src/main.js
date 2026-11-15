@@ -2,9 +2,8 @@
 // Dimiliki lane F (Wave 0), lalu integrator (Wave 4).
 
 import { createApp } from 'vue';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
-import 'bootstrap'; // JS bundle: offcanvas, toast, collapse, dll.
+import './assets/bootstrap-custom.scss'; // Bootstrap SCSS — hanya modul yang dipakai (lihat header file)
+import './assets/icons.css';             // 24 ikon Bootstrap Icons sebagai CSS mask — tanpa font
 import './assets/main.css';
 import App from './App.vue';
 

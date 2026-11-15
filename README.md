@@ -8,21 +8,19 @@ Launch area: **Yogyakarta city + the Jakarta→Yogya corridor**. UI language: **
 
 ---
 
-## ⚠️ Status: Wave P prototype done — Wave 0 unblocked (2026-11-14)
+## ⚠️ Status: app v0.1 built — deploy pending (2026-11-15)
 
-No **backend application** code exists yet. This repo holds the spec, the plan, the task list,
-the approved design, the documentation, and a **clickable mock-data prototype**
-(`prototype/index.html`) — no Supabase backend yet. Work is gated:
+The **Vue app is built and runs** on `build/mvp`: all five components (map, list, detail,
+add-spot sheet, dark mode), the frozen contract (`src/lib/*`), and a live Supabase project with
+**±7.2k approved spots** anyone can read (RLS verified live — pending rows are invisible to
+anon; `bump_verified` responds). The researched playbook spots are transcribed into
+`data/playbook-spots.json` (OQ-6 closed 2026-11-15, dry-run passed — awaiting owner approval for
+the real seed run). The verified plain-JS prototype (`prototype/index.html`) stays untouched as
+the design reference.
 
-**Specify → Plan → Tasks → Implement**, with owner review between phases.
-
-`tasks/plan.md` and `tasks/todo.md` were **approved 2026-11-09 (gate G1)**; branching (OQ-13) and
-the API style (OQ-2) were decided the same day. **Wave P was built and verified 2026-11-10** —
-all 8 "Done when" checks pass with zero console errors
-([`docs/prototype-verification.md`](docs/prototype-verification.md)). The next step is **Wave 0
-(F1–F6, the frozen contract)** — unblocked 2026-11-14 (OQ-14): Supabase is created and the owner
-pastes the URL + anon key into `js/config.js`; the Vercel account is deferred to before deploy.
-See `AGENTS.md`.
+Remaining before launch: the real seed run, the Vercel account + deploy (P0–P1), and the
+real-phone checklist (I6 / P2–P5). Work is still gated — **Specify → Plan → Tasks → Implement**,
+with owner review between phases. See `AGENTS.md` and `tasks/todo.md`.
 
 ## The short version of the technology
 
@@ -50,11 +48,13 @@ G3). Full detail:
 
 ```
 npm install                     # once — Vue, Vite, Bootstrap, Leaflet, supabase-js
-npm run dev                     # local dev → Vite dev server with hot reload
+npm run dev                     # start local dev → Vite dev server (open http://localhost:5173)
+Ctrl+C                          # STOP the dev server — press in the same terminal
 node scripts/seed-spots.mjs     # Overpass + playbook JSON → Supabase (offline, after schema)
 npx vercel --prod               # deploy — auto-detects Vite: builds, serves dist/
 ```
 
+Full beginner walkthrough (start, stop, what breaks when): [`docs/setup.md`](docs/setup.md) §4.
 No lint, no test runner. Verification is the
 [manual checklist](docs/manual-test-checklist.md), run before every deploy.
 

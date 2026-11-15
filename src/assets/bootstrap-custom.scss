@@ -1,0 +1,39 @@
+// src/assets/bootstrap-custom.scss — Bootstrap SCSS, hanya modul yang benar-benar dipakai.
+// Mengganti 'bootstrap/dist/css/bootstrap.min.css' yang utuh (±230 kB): navbar, modal,
+// dropdown, carousel, tabel, tooltip, dsb. tidak dipakai aplikasi dan tidak diimpor.
+// PENTING: kalau nanti komponen mulai memakai kelas Bootstrap lain (mis. modal, navbar,
+// spinner), tambahkan @import modulnya di sini — jangan kembali ke CSS utuh.
+// Urutan 1 wajib (functions → variables → variables-dark → maps → mixins) mengikuti
+// dokumentasi Bootstrap "optimize" — jangan diacak.
+
+// 1. Fondasi Sass (wajib, urut)
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark"; // tema gelap data-bs-theme
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+
+// 2. Variabel CSS (:root + [data-bs-theme=dark]) + reset + tipografi
+@import "bootstrap/scss/root";
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/type";
+
+// 3. Tata letak — grid/containers Bootstrap TIDAK diimpor: aplikasi tidak memakai
+//    row/col/container (layout dua-pane & bottom-sheet pakai CSS custom di main.css).
+
+// 4. Komponen yang dipakai aplikasi
+@import "bootstrap/scss/forms";       // form-label / control / check / switch / select
+@import "bootstrap/scss/buttons";     // .btn
+@import "bootstrap/scss/transitions"; // .fade / .show (backdrop offcanvas)
+@import "bootstrap/scss/badge";       // .badge
+@import "bootstrap/scss/alert";       // .alert
+@import "bootstrap/scss/card";        // .card
+@import "bootstrap/scss/offcanvas";   // sheet tambah-spot (mobile bottom / desktop end)
+@import "bootstrap/scss/toasts";      // showToast() di src/lib/toast.js
+@import "bootstrap/scss/close";       // .btn-close
+
+// 5. Helper (.visually-hidden) + utilities (d-flex, me-2, position-fixed, text-bg-dark, …)
+//    utilities harus paling akhir (api menghasilkan kelasnya dari $utilities).
+@import "bootstrap/scss/helpers";
+@import "bootstrap/scss/utilities";
+@import "bootstrap/scss/utilities/api";

@@ -104,9 +104,12 @@ never accidentally show them. Public list and map are built from `loadApprovedSp
 | `user` | the add-spot form in the browser | `pending` |
 
 The playbook JSON is **research data** — do not rewrite it casually or delete it. It comes from the
-real Jakarta→Yogyakarta trip playbook. Note: the source playbook markdown named in
-`HANDOFF-musafir-project.md` is **not currently in this repo**; the owner must copy it in before
-step D1. This is a real gap, listed in `docs/decision-log.md` (OQ-6).
+real Jakarta→Yogyakarta trip playbook, now in the repo at `docs/research-playbook-source.md`
+(OQ-6 closed 2026-11-15). The 11 entries transcribed into `data/playbook-spots.json` carry only
+what the playbook actually researched; coordinates were resolved against OpenStreetMap
+(Nominatim/Overpass), never invented. Terminal Pondok Pinang has no entry on purpose (no
+mappable OSM point — street-side shadow terminal), and no SPBU entry exists because the
+playbook names no specific station (OQ-6 row in `docs/decision-log.md`).
 
 ### OSM tag mapping (from `docs/research-osm-seeding.md`)
 

@@ -1,7 +1,7 @@
 // src/lib/toast.js — utilitas toast Bootstrap global (infrastruktur lane F).
 // Dipakai lintas lane lewat kontrak: showToast('pesan') — teks selalu bahasa Indonesia.
 
-import * as bootstrap from 'bootstrap';
+import Toast from 'bootstrap/js/dist/toast'; // hanya komponen Toast (bukan seluruh bundle Bootstrap)
 
 export function showToast(message) {
   let host = document.getElementById('toast-host');
@@ -26,7 +26,7 @@ export function showToast(message) {
   el.querySelector('.toast-body').textContent = message;
 
   host.appendChild(el);
-  const toast = new bootstrap.Toast(el, { delay: 3000 });
+  const toast = new Toast(el, { delay: 3000 });
   toast.show();
   el.addEventListener('hidden.bs.toast', () => el.remove());
 }

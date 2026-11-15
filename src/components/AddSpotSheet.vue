@@ -13,7 +13,7 @@
 
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
-import { Offcanvas } from 'bootstrap';
+import Offcanvas from 'bootstrap/js/dist/offcanvas'; // hanya komponen Offcanvas (bukan seluruh bundle)
 
 const props = defineProps({
   active: { type: Boolean, default: false },

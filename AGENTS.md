@@ -61,6 +61,7 @@ the new version before coding.
 ```
 Install (once):      npm install                     # Vue, Vite, Bootstrap, Leaflet, supabase-js
 Dev (local server):  npm run dev                     # Vite dev server with hot reload
+Stop (local server): Ctrl+C in the dev terminal      # kills the Vite dev server, nothing is lost
 Seed database:       node scripts/seed-spots.mjs     # Overpass + playbook JSON → Supabase
 Deploy:              npx vercel --prod               # auto-detects Vite: builds, serves dist/
 ```

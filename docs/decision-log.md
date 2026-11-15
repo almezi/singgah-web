@@ -36,7 +36,7 @@ When a decision changes: **spec → docs → code**.
 | **OQ-3** | Tile style: default **OSM** or **Carto Voyager**? | `MOCKUP-PROMPT-singgah.md` asks for "Carto Voyager vibe, NOT the busy default OSM style"; SPEC Open Question 3 says default OSM for MVP | SPEC Open Question 3 + `docs/architecture.md` |
 | **OQ-4** | Who sets up the weekly DB heartbeat? | Free Supabase projects auto-pause after 7 days idle | SPEC Open Question 4 + `docs/deployment.md` |
 | ✅ **OQ-5** | **Decided 2026-11-09 (G1): yes, dark mode in v0.1.** Owner approved `tasks/todo.md` including F6/I4 with this conflict explicitly flagged; the board stays light-only as the light-theme reference | F6 builds the toggle, I4 checks contrast in both themes | Recorded in SPEC decision 7 + `docs/design-system.md` §6 |
-| **OQ-6** | Where is the **trip playbook source markdown**? | `HANDOFF-musafir-project.md` names `musafir-playbook-pondok-pinang-yogya.md`, but it is **not in this repo**. Step D1 cannot transcribe research data without it | copy the file into the repo; then `data/playbook-spots.json` |
+| ✅ **OQ-6** | **Closed 2026-11-15: the playbook markdown is in the repo and D1/D2 transcription is drafted.** The original file was found (as `HANDOFF` pointed) and copied to `docs/research-playbook-source.md`; 11 researched spots were transcribed into `data/playbook-spots.json` with OSM-resolved coordinates (Nominatim/Overpass — never invented). Awaiting the owner's D1 approval, then the real seed run. **Skipped on purpose:** Terminal Pondok Pinang (no mappable OSM point — a street-side shadow terminal; inventing coordinates is against the honesty rule) and generic SPBU (no specific station named in the playbook) | `data/playbook-spots.json` + `docs/research-playbook-source.md`; dry-run passed 2026-11-15 (playbook 11 + osm ≈ 7168) | this row + `docs/data-model.md` §4 + `tasks/todo.md` |
 | **OQ-7** | Where does custom CSS live? | SPEC decision 6 says Bootstrap "replaces hand-rolled CSS" and SPEC's project tree has no `css/` folder; `AGENTS.md` planned layout lists `css/style.css`; `PROTOTYPE-PROMPT` asks for a small `:root` override block | SPEC Project Structure, then `docs/architecture.md` |
 | **OQ-8** | Which **UI copy** is canonical? | The mockup prompt, prototype prompt and approved board disagree on several strings (success text, search placeholder, water labels, chip labels) | `docs/ui-copy.md` → "Conflicts to confirm" |
 | **OQ-9** | Do we ship a **PWA manifest + icons** in v0.1? | SPEC Out of Scope parks PWA/offline, but SPEC Open Question 5 says "manifest + icons prepared at real build" | SPEC Open Question 5 + `docs/deployment.md` §8 |
@@ -68,7 +68,7 @@ These were found while writing the docs. They are **not resolved here** — the 
    commitment.
 5. **Custom CSS.** See OQ-7. `docs/architecture.md` lists `css/style.css` following
    `AGENTS.md`, but SPEC's tree omits it.
-6. **Playbook file.** See OQ-6. Referenced but absent — a real blocker for the data lane.
+6. **Playbook file.** See OQ-6 — **closed 2026-11-15**: the file now lives at `docs/research-playbook-source.md` and the transcription is drafted in `data/playbook-spots.json` (awaiting owner approval).
 7. **Desktop map.** See OQ-10. **Resolved 2026-11-09 (G4): keep the board's always-on map.**
    SPEC decision 5 is unchanged; the three-mode idea is rejected for MVP.
 8. **String capitalization.** SPEC prose writes `belum ada info` (lowercase); the approved board

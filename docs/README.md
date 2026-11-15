@@ -13,7 +13,7 @@ one-paragraph description of every file lives in `docs/guided-tour.md`.*
 | See the `spots` table columns and allowed values | `data-model.md` |
 | Check colors, fonts, pins, accessibility rules | `design-system.md` |
 | Find the exact Indonesian wording | `ui-copy.md` |
-| Run it on my own computer | `setup.md` |
+| Start & stop the app on my own computer | `setup.md` |
 | Ship it to a public URL | `deployment.md` |
 | Approve a spot / keep the free tier awake | `owner-guide.md` |
 | Run the pre-deploy checks | `manual-test-checklist.md` |
@@ -23,6 +23,7 @@ one-paragraph description of every file lives in `docs/guided-tour.md`.*
 | Choose a git branching strategy | `branching-strategy.md` |
 | Read one paragraph about every file | `guided-tour.md` |
 | Understand where the seed data comes from | `research-osm-seeding.md` |
+| Read the owner-researched trip playbook (source of the playbook spots) | `research-playbook-source.md` |
 | Understand the PWA / cost / tile-policy research | `research-mobile-strategy.md` |
 
 ## Priority order

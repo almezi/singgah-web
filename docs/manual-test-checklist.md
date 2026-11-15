@@ -11,6 +11,11 @@ Run date: ____________   Device / browser: ______________________   Network: ___
 Build / commit: ____________________________   Tester: ______________________
 ```
 
+**Before you start:** run `npm run dev` from the project root and open the URL it prints
+(default `http://localhost:5173`). When you finish, stop the server: **Ctrl+C in the same
+terminal** (nothing is lost — files and database are untouched). Full walkthrough:
+`docs/setup.md` §4.
+
 ---
 
 ## A. The 7 checks from the SPEC

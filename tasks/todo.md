@@ -179,6 +179,13 @@ seed script is Node, outside the Vue app.
 | D6 | Upsert to Supabase with a `--dry-run` flag | D5, E1 | Dry run shows 100+ approved spots |
 | D7 | One-line comment: never pre-cache OSM tiles (tile usage policy) | D6 | Comment present |
 
+**D1/D2 status (2026-11-15):** transcribed — 11 spots from `docs/research-playbook-source.md`
+(OQ-6 closed). Coordinates resolved against OSM (Nominatim/Overpass), never invented; unknowns
+stay null; `node scripts/seed-spots.mjs --dry-run` passes (playbook 11 + osm ≈ 7168).
+**D1's done-when (owner approval) is still open.** Skipped on purpose: Terminal Pondok Pinang
+(no mappable OSM point — street-side shadow terminal; inventing coordinates breaks the honesty
+rule) and SPBU (the playbook names no specific station).
+
 ## E — Backend lane (agent 1, batch 3)
 
 Owns **only** `supabase/`.
@@ -362,7 +369,9 @@ Do not rewrite a lane's component: report the problem back to that lane instead.
    (`docs/branching-strategy.md`). Baseline + approval edits committed on `main`.
 5. ✅ OQ-2 — decided 2026-11-09: plain `fetch` wrapper. **Amended 2026-11-14 (OQ-15):**
    supabase-js v2 via npm replaces the wrapper under the Vue stack.
-6. **OQ-6** — copy the trip playbook source markdown into the repo. Blocks D1 only.
+6. ✅ OQ-6 — closed 2026-11-15: the playbook source markdown now lives at
+   `docs/research-playbook-source.md`; `data/playbook-spots.json` holds the 11-spot
+   transcription (dry-run passed). Awaiting owner approval for the real seed run (D1).
 7. OQ-4 — who sets up the weekly heartbeat? Needed before deploy, not before Wave 0.
 8. OQ-3 — tile style. Safe default: OSM per SPEC Open Question 3; Carto Voyager is a one-line
    swap later.
