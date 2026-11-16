@@ -159,6 +159,11 @@ Read these in this order once they exist:
     checked in headless Chrome, plus an honest list of what a mock-data prototype cannot prove
     (real phone, RLS, the approve-in-dashboard flow).
 
+36c. ✅ **`docs/build-reference.md`** — the one-stop digest for building or changing the app:
+    status, stack, contracts, RLS, design tokens, UI words, guardrails, sheet mechanics and the
+    pre-deploy gate in one file. A convenience summary only — the SPEC and the canonical docs
+    win on any conflict, and every section names its canonical owner.
+
 ---
 
 **One-line version of the whole tour:** rules → plan → structure → data → look → words → run →

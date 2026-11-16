@@ -7,6 +7,7 @@ one-paragraph description of every file lives in `docs/guided-tour.md`.*
 |---|---|
 | Read the source of truth, the backstory, or the build prompts | `SPEC-singgah.md` · `HANDOFF-musafir-project.md` · `MOCKUP-PROMPT-singgah.md` · `PROTOTYPE-PROMPT-singgah.md` |
 | See what the app looks like (v0.1, real data) | `../docs/screenshots/` (15 tangkapan layar, 3 viewport) |
+| Have one go-to digest while building (contract, data, design, copy, checks in one place) | `build-reference.md` |
 | Follow the code guardrails (senior review, 2026-11-15) | `code-standards.md` |
 | Understand how the technology fits together | `architecture.md` |
 | Know which function / DOM ID to call, and who owns which file | `api-contract.md` |
