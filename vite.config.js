@@ -22,7 +22,7 @@ export default defineConfig({
       scss: {
         // Bootstrap 5.3 masih memakai @import Sass (deprecated di dart-sass 1.80+).
         // Peringatannya dibungkam sampai Bootstrap sendiri beralih ke @use.
-        silenceDeprecations: ['import', 'global-builtin', 'legacy-js-api', 'color-functions', 'mixed-decls', 'slash-div'],
+        silenceDeprecations: ['import', 'global-builtin', 'legacy-js-api', 'color-functions', 'slash-div', 'if-function'],
       },
     },
   },
