@@ -13,12 +13,14 @@
 ```
 npm install                       # once
 npm run dev                       # dev server (run it in your own terminal, do not block on it)
+npm test                          # Vitest, single run
 npm run build                     # production build into dist/
 node scripts/seed-spots.mjs       # seed Supabase (use --dry-run first)
 npx vercel --prod                 # deploy
 ```
 
-No linter or automated tests exist. Verification is `docs/manual-test-checklist.md`.
+Vitest covers the pure helpers. CI (`.github/workflows/ci.yml`) runs tests and build. No linter.
+Real verification is `docs/manual-test-checklist.md`.
 
 ## Hard rules
 

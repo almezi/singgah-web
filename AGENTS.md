@@ -59,13 +59,15 @@ the new version before coding.
 
 ```
 Install (once):      npm install                     # Vue, Vite, Bootstrap, Leaflet, supabase-js
+Test:                npm test                        # Vitest, single run
 Dev (local server):  npm run dev                     # Vite dev server with hot reload
 Stop (local server): Ctrl+C in the dev terminal      # kills the Vite dev server, nothing is lost
 Seed database:       node scripts/seed-spots.mjs     # Overpass + playbook JSON → Supabase
 Deploy:              npx vercel --prod               # auto-detects Vite: builds, serves dist/
 ```
 
-No lint or automated test runner exists. Verification = manual checklist in
+`npm test` (Vitest) covers the pure helpers (`spotView.js`, `filteredSpots`). CI runs tests and
+build on every push and PR. No linter. Real verification = manual checklist in
 `docs/manual-test-checklist.md` (run before every deploy) + owner dogfooding on a real trip.
 
 ## Planned layout (from the spec)
