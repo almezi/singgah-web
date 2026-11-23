@@ -15,9 +15,8 @@ OQ-6 (playbook file) blocks D1 only. Do not write `supabase/` before Wave 3.
 **Stack changed 2026-11-14 (OQ-15): the app is now Vue 3 + Vite** (JavaScript, no TypeScript),
 with Bootstrap 5 + Icons, Leaflet 1.9 and supabase-js v2 as npm dependencies — amending the
 original "plain JS, no build step" decision with the owner's consent. The verified plain-JS
-prototype stays untouched as the design reference. `js/config.js` holds the owner-pasted Supabase
-URL + anon key; the Wave 0 scaffold migrates those values into the Vue app config (the old file
-is deleted only with the owner's consent). `tasks/todo.md` is rewritten around Vue lanes — read
+prototype stays untouched as the design reference. The Supabase URL + anon key live in `src/lib/config.js`
+(the old placeholder `js/config.js` was deleted with the owner's consent, 2026-11-24). `tasks/todo.md` is rewritten around Vue lanes — read
 the new version before coding.
 
 ## Read these first

@@ -11,7 +11,9 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config';
 export const supabase = (() => {
   try {
     return createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  } catch {
+  } catch (err) {
+    // Jangan diam-diam: di dev tampilkan sebabnya agar salah isi config.js mudah ketemu.
+    if (import.meta.env.DEV) console.error('[supabase] createClient gagal — cek src/lib/config.js:', err);
     return null;
   }
 })();
@@ -44,6 +46,7 @@ export async function loadApprovedSpots() {
       .from('spots')
       .select('*')
       .eq('status', 'approved')
+      .order('id') // urutan tetap antar halaman — tanpa ini baris bisa dobel/hilang
       .range(from, from + PAGE - 1);
     if (error) throw error;
     all.push(...data);
@@ -58,12 +61,25 @@ export async function loadApprovedSpots() {
 // pending tentu tak terlihat oleh anon → seluruh insert ditolak (42501). Pola yang
 // benar: kirim minimal (return=minimal), lalu bangun baris lokal untuk 'Tinjauan saya'.
 // id lokal dibuat di sini hanya untuk kunci tampilan — bukan id database.
+// localId() — kunci tampilan lokal. crypto.randomUUID hanya ada di HTTPS/localhost; di
+// http://192.168.x.x (tes di ponsel) ia undefined, jadi ada cadangan.
+function localId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'local-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+}
+
 export async function insertPendingSpot(payload) {
   assertClient();
   const row = { ...payload, status: 'pending', source: 'user', last_verified_at: null };
+  // id dibuat SEBELUM insert: kalau ada yang melempar, itu terjadi sebelum database
+  // menulis — sehingga "Gagal mengirim" tidak pernah muncul untuk insert yang sebenarnya
+  // berhasil (yang memancing kirim ulang dan baris pending ganda).
+  const id = localId();
   const { error } = await supabase.from('spots').insert(row);
   if (error) throw error;
-  return { ...row, id: crypto.randomUUID() };
+  return { ...row, id };
 }
 
 // bumpVerified(spotId) — "Masih ada ✓": lewat fungsi Postgres bump_verified

@@ -21,6 +21,10 @@
 //
 // Usage:
 //   node scripts/seed-spots.mjs --dry-run   → counts only, writes NOTHING, needs no key
+//   --playbook-only                          → skip Overpass: seed ONLY the owner-researched
+//                                             playbook spots (a small curated first launch;
+//                                             OSM rows have no water/hours info and ~7,000 of
+//                                             them are heavy on mobile data). Combine with --dry-run.
 //   node scripts/seed-spots.mjs             → upserts; needs SUPABASE_URL and
 //                                             SUPABASE_SERVICE_KEY from the environment
 
@@ -389,6 +393,7 @@ async function upsertToSupabase(rows, supabaseUrl, serviceKey) {
 // ── Main ─────────────────────────────────────────────────────────────────────────────
 
 const dryRun = process.argv.includes('--dry-run');
+const playbookOnly = process.argv.includes('--playbook-only');
 
 console.log(dryRun ? 'Singgah seed — DRY RUN (nothing will be written)' : 'Singgah seed — WRITE MODE');
 
@@ -421,7 +426,7 @@ const playbookSpots = playbook.map(playbookPayload);
 // D4: query every bbox.
 const osmSpots = [];
 const seenElements = new Set(); // the same element can appear in two overlapping windows
-for (const bbox of BBOXES) {
+for (const bbox of playbookOnly ? [] : BBOXES) {
   process.stdout.write(`Overpass: ${bbox.label} (${bbox.coords}) ... `);
   const elements = await fetchOverpass(bbox);
   let added = 0;
@@ -453,7 +458,9 @@ console.log(`Dedupe           : removed ${removed} duplicates (name similarity +
 console.log(`Type breakdown   : ${typeSummary}`);
 console.log(`Total rows       : playbook ${playbookKept} + osm ${osmKept} = ${kept.length}`);
 
-if (kept.length < 100) {
+if (playbookOnly) {
+  console.log('Mode --playbook-only: Overpass dilewati, hanya spot playbook yang diseed.');
+} else if (kept.length < 100) {
   console.warn('Warning: fewer than 100 approved spots (target: >= 100, docs/data-model.md §5).');
 }
 

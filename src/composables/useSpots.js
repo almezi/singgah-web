@@ -41,6 +41,24 @@ const filteredSpots = computed(() => {
 async function load() {
   spots.value = await loadApprovedSpots();
   loadPendingMine();
+  dropApprovedFromPending();
+}
+
+// dropApprovedFromPending() — spot yang sudah disetujui owner muncul di daftar publik;
+// salinan lokalnya di "Tinjauan saya" dibuang agar tidak tampil dobel. Dianggap sama bila
+// nama sama (tanpa beda huruf besar/kecil) dan jaraknya < ±50 m (0,0005° ≈ 55 m).
+function dropApprovedFromPending() {
+  const before = pendingMine.value.length;
+  pendingMine.value = pendingMine.value.filter(
+    (p) =>
+      !spots.value.some(
+        (s) =>
+          (s.name || '').trim().toLowerCase() === (p.name || '').trim().toLowerCase() &&
+          Math.abs(s.lat - p.lat) < 0.0005 &&
+          Math.abs(s.lng - p.lng) < 0.0005,
+      ),
+  );
+  if (pendingMine.value.length !== before) savePendingMine();
 }
 
 // addPending(payload) — kirim spot baru (insertPendingSpot memaksa pending/user)
