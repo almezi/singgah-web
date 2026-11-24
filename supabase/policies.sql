@@ -33,7 +33,9 @@ create policy "anon_insert_pending_user_spots"
   on public.spots
   for insert
   to anon
-  with check (status = 'pending' and source = 'user');
+  with check (status = 'pending' and source = 'user' and last_verified_at is null);
+-- (last_verified_at must be null: an anon submitter cannot pre-fill a "verified" date that
+--  would look real once the owner approves the row. Length/range limits live in constraints.sql.)
 
 -- ---------------------------------------------------------------------------
 -- 4. DELIBERATE ABSENCE — there is NO anon UPDATE policy and NO anon DELETE policy

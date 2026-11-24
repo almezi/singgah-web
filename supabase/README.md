@@ -11,9 +11,12 @@ No keys, URLs or secrets live in these files — that is on purpose.
 3. **New query** again: paste the whole of `policies.sql` → **Run**. This enables Row Level
    Security and adds the two anon policies (read approved rows only; insert pending rows only).
 4. **New query** again: paste the whole of `functions/bump_verified.sql` → **Run**. This creates
-   the rate-limited `bump_verified(spot_id)` function and lets anon call it.
+   the rate-limited `bump_verified(spot_id)` function and lets only anon call it.
+5. **New query** again: paste the whole of `constraints.sql` → **Run**. This adds the length and
+   coordinate limits (name ≤120, notes ≤300, hours ≤60, lat/lng ranges) that the database
+   enforces even when someone skips the form.
 
-All three files are safe to re-run (they use `if not exists` / `drop policy if exists` /
+All four files are safe to re-run (they use `if not exists` / `drop policy if exists` /
 `create or replace`). Run them in this order — each step depends on the one before it.
 
 After step 2 you can check it worked: **Table Editor** → `spots` shows the table with its

@@ -9,7 +9,7 @@ src/composables/      useSpots.js · useGeolocation.js
 src/components/       MapPane · SpotList · SpotDetail · AddSpotSheet · DarkModeToggle
 src/assets/           bootstrap-custom.scss · main.css · icons.css
 scripts/              seed-spots.mjs (Node, outside the Vue app)
-supabase/             schema.sql · policies.sql · functions/bump_verified.sql
+supabase/             schema.sql · policies.sql · functions/bump_verified.sql · constraints.sql
 data/                 playbook-spots.json (researched data, do not rewrite casually)
 design/               mockups (approved look)
 prototype/            verified plain-JS prototype, keep untouched as design reference

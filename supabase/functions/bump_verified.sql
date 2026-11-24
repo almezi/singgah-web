@@ -32,6 +32,10 @@ $$;
 -- button reaches the database (POST /rest/v1/rpc/bump_verified). This grant is the
 -- entire anon write surface — the function updates one column on approved rows,
 -- nothing else. Safe to re-run; granting an already-granted permission changes nothing.
+-- Functions are executable by PUBLIC by default, which also covers `authenticated`. The app has
+-- no login, so only anon needs it: revoke the default, then grant anon explicitly.
+revoke execute on function public.bump_verified(uuid) from public;
+revoke execute on function public.bump_verified(uuid) from authenticated;
 grant execute on function public.bump_verified(uuid) to anon;
 
 -- Reminder: NO anon UPDATE or DELETE policy exists anywhere (see supabase/policies.sql §4).

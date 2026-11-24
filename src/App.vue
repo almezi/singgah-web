@@ -178,7 +178,14 @@ function onSubmit(payload) {
     .catch((err) => {
       submitState.value = 'error';
       console.error('Gagal mengirim spot:', err);
-      showToast('Gagal mengirim spot. Periksa koneksi lalu coba lagi.');
+      // 23514 = constraint (panjang / koordinat), 42501 = ditolak RLS: masalah isian,
+      // bukan koneksi — jangan suruh pengguna cek internet lalu kirim ulang percuma.
+      const badData = err && (err.code === '23514' || err.code === '42501');
+      showToast(
+        badData
+          ? 'Data spot tidak valid. Periksa isian lalu coba lagi.'
+          : 'Gagal mengirim spot. Periksa koneksi lalu coba lagi.',
+      );
     });
 }
 

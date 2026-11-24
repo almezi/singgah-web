@@ -92,7 +92,8 @@ function openForm() {
 function onSubmit() {
   const el = formEl.value;
   if (!el || !el.checkValidity()) {
-    // nama kosong (atau jenis belum dipilih) memblokir submit; Bootstrap menandai merah
+    // nama kosong / hanya spasi (pattern) atau jenis belum dipilih memblokir submit;
+    // Bootstrap menandai merah. Tanpa pattern, "   " lolos `required` lalu ditolak database.
     if (el) el.classList.add('was-validated');
     return;
   }
@@ -211,7 +212,7 @@ onBeforeUnmount(() => {
       <div class="offcanvas-body">
         <!-- Umpan balik owner: spanduk error yang jujur — form tetap terbuka agar bisa dicoba lagi -->
         <div v-if="submitState === 'error'" class="alert alert-danger py-2 mb-3" role="alert">
-          Gagal mengirim. Periksa koneksi internet lalu coba lagi.
+          Gagal mengirim. Periksa isian dan koneksi internet, lalu coba lagi.
         </div>
         <!-- C4: pola validasi Bootstrap — novalidate + was-validated saat submit -->
         <form
@@ -230,6 +231,7 @@ onBeforeUnmount(() => {
               type="text"
               class="form-control"
               required
+              pattern=".*\S.*"
               maxlength="120"
               placeholder="Nama masjid, musala, atau tempatnya"
             />

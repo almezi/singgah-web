@@ -276,7 +276,7 @@ lalu` / `✓ 2 jam lalu`.
 | Add banner | `Ketuk peta untuk menaruh pin` |
 | Add submit | `Kirim untuk ditinjau` + reassurance `Spot baru diperiksa dulu sebelum tampil di peta.` |
 | Success | `Terima kasih!` · `Spot kamu menunggu persetujuan.` · `Kembali ke peta` |
-| Toasts (in code) | `Terima kasih! Verifikasi tercatat.` · `Lokasi tidak tersedia.` · `Gagal mengirim spot. Periksa koneksi lalu coba lagi.` · `Gagal menyimpan verifikasi. Coba lagi nanti.` |
+| Toasts (in code) | `Terima kasih! Verifikasi tercatat.` · `Lokasi tidak tersedia.` · `Gagal mengirim spot. Periksa koneksi lalu coba lagi.` · `Data spot tidak valid. Periksa isian lalu coba lagi.` (database rejected the content) · `Gagal menyimpan verifikasi. Coba lagi nanti.` |
 
 Six strings still have two variants across the old prompts (search placeholder, mosque chip,
 continue button, success heading/body, water labels) — **the approved board wins until the owner
