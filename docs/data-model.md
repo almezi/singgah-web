@@ -82,12 +82,15 @@ add form). `bike_parking`: `true` → `Ya`, `false` → `Tidak`.
 | anon | `INSERT` | allowed, but forced to `status = 'pending'` and `source = 'user'` |
 | anon | `UPDATE` | **forbidden** |
 | anon | `DELETE` | **forbidden** |
+| anon | `EXECUTE bump_verified(spot_id)` | allowed — the function updates only `last_verified_at`, max 1 bump/spot/hour |
 | owner (dashboard) | all | full access, including approving pending rows |
 
-The verification bump is the exception that needs design: `Masih ada ✓` must update
-`last_verified_at` but an anon key cannot `UPDATE`. It needs a rate-limited write path — either a
-Supabase Edge Function or a Postgres function — limited to **one bump per spot per hour**.
-**Undecided: see `docs/decision-log.md` (OQ-1) and gate G3 in `tasks/todo.md`.**
+The verification bump is the one exception: `Masih ada ✓` must update `last_verified_at` but an
+anon key cannot `UPDATE`. **Decided at G3 (2026-11-09):** a `bump_verified(spot_id uuid)` Postgres
+function (`security definer`) updates only `last_verified_at` on an approved row and enforces
+**one bump per spot per hour** inside the database. Anon calls it via
+`POST /rest/v1/rpc/bump_verified`; no anon `UPDATE`/`DELETE` policies exist. See
+`docs/decision-log.md` (OQ-1, resolved).
 
 Consequence that must hold: `pending` rows are never readable anonymously, so the frontend can
 never accidentally show them. Public list and map are built from `loadApprovedSpots()` only.
@@ -101,9 +104,12 @@ never accidentally show them. Public list and map are built from `loadApprovedSp
 | `user` | the add-spot form in the browser | `pending` |
 
 The playbook JSON is **research data** — do not rewrite it casually or delete it. It comes from the
-real Jakarta→Yogyakarta trip playbook. Note: the source playbook markdown named in
-`HANDOFF-musafir-project.md` is **not currently in this repo**; the owner must copy it in before
-step D1. This is a real gap, listed in `docs/decision-log.md` (OQ-6).
+real Jakarta→Yogyakarta trip playbook, now in the repo at `docs/research-playbook-source.md`
+(OQ-6 closed 2026-11-15). The 11 entries transcribed into `data/playbook-spots.json` carry only
+what the playbook actually researched; coordinates were resolved against OpenStreetMap
+(Nominatim/Overpass), never invented. Terminal Pondok Pinang has no entry on purpose (no
+mappable OSM point — street-side shadow terminal), and no SPBU entry exists because the
+playbook names no specific station (OQ-6 row in `docs/decision-log.md`).
 
 ### OSM tag mapping (from `docs/research-osm-seeding.md`)
 

@@ -8,44 +8,54 @@ Launch area: **Yogyakarta city + the Jakarta→Yogya corridor**. UI language: **
 
 ---
 
-## ⚠️ Status: pre-code — planning phase
+## ⚠️ Status: app v0.1 built — deploy pending (2026-11-15)
 
-No application code exists yet. This repo holds the spec, the plan, the task list, the approved
-design, and the documentation. Work is gated:
+The **Vue app is built and runs** on `build/mvp`: all five components (map, list, detail,
+add-spot sheet, dark mode), the frozen contract (`src/lib/*`), and a live Supabase project with
+**±7.2k approved spots** anyone can read (RLS verified live — pending rows are invisible to
+anon; `bump_verified` responds). The researched playbook spots are transcribed into
+`data/playbook-spots.json` (OQ-6 closed 2026-11-15, dry-run passed — awaiting owner approval for
+the real seed run). The verified plain-JS prototype (`prototype/index.html`) stays untouched as
+the design reference.
 
-**Specify → Plan → Tasks → Implement**, with owner review between phases.
-
-`tasks/plan.md` and `tasks/todo.md` are **drafts awaiting your approval in a later turn**. No agent
-should write code until they are approved. See `AGENTS.md`.
+Remaining before launch: the real seed run, the Vercel account + deploy (P0–P1), and the
+real-phone checklist (I6 / P2–P5). Work is still gated — **Specify → Plan → Tasks → Implement**,
+with owner review between phases. See `AGENTS.md` and `tasks/todo.md`.
 
 ## The short version of the technology
 
-A **static single-page site with no build step**. Plain HTML/JS + Bootstrap 5 + Bootstrap Icons,
-Leaflet 1.9, and supabase-js v2 — all via CDN. The browser reads approved spots directly from
-Supabase through Row Level Security. Vercel serves the files. A Node seed script (offline, never
-shipped) fills the database from OSM/Overpass plus researched playbook data.
+A **Vue 3 single-page app built with Vite** (OQ-15, 2026-11-14 — JavaScript, no TypeScript).
+Bootstrap 5 + Bootstrap Icons, Leaflet 1.9 and supabase-js v2 are npm dependencies (OQ-2
+amended: supabase-js replaces the plain-fetch wrapper). The browser reads approved spots directly
+from Supabase through Row Level Security. Vercel auto-detects Vite (`npm run build` → `dist/`).
+A Node seed script (offline, never shipped) fills the database from OSM/Overpass plus researched
+playbook data.
 
 ```
 Browser (phone / laptop)
-   ├── index.html + js/*.js + css/style.css      ← static files on Vercel
-   ├── Bootstrap / Icons / Leaflet / fonts      ← CDN
+   ├── Vue app (src/ components + composables)   ← built by Vite, served from dist/
+   ├── Bootstrap / Icons / Leaflet / supabase-js ← npm dependencies, bundled
    ├── Supabase REST (anon key, RLS)            ← approved spots only
    └── OSM tiles (network only)                 ← one TILE_URL constant
 ```
 
 Three flows: **read** approved spots (RLS-enforced), **write** anonymous `pending` submissions,
-**verify** `Masih ada ✓` through a rate-limited write path (still undecided). Full detail:
+**verify** `Masih ada ✓` through the rate-limited `bump_verified` Postgres function (decided at
+G3). Full detail:
 [`docs/architecture.md`](docs/architecture.md).
 
 ## Commands
 
 ```
-python3 -m http.server 8080     # local dev → http://localhost:8080
+npm install                     # once — Vue, Vite, Bootstrap, Leaflet, supabase-js
+npm run dev                     # start local dev → Vite dev server (open http://localhost:5173)
+Ctrl+C                          # STOP the dev server — press in the same terminal
 node scripts/seed-spots.mjs     # Overpass + playbook JSON → Supabase (offline, after schema)
-npx vercel --prod               # deploy a static site
+npx vercel --prod               # deploy — auto-detects Vite: builds, serves dist/
 ```
 
-No `npm install`, no build, no lint, no test runner. Verification is the
+Full beginner walkthrough (start, stop, what breaks when): [`docs/setup.md`](docs/setup.md) §4.
+No lint, no test runner. Verification is the
 [manual checklist](docs/manual-test-checklist.md), run before every deploy.
 
 ## Documentation
@@ -64,13 +74,14 @@ every file, in reading order. Or use the [`docs/README.md`](docs/README.md) inde
 | Deployment + free tiers | [`docs/deployment.md`](docs/deployment.md) |
 | Owner operations (approve spots) | [`docs/owner-guide.md`](docs/owner-guide.md) |
 | Pre-deploy checklist | [`docs/manual-test-checklist.md`](docs/manual-test-checklist.md) |
+| Wave P prototype verification record | [`docs/prototype-verification.md`](docs/prototype-verification.md) |
 | Locked decisions + open questions | [`docs/decision-log.md`](docs/decision-log.md) |
 | Git branching strategy (proposal) | [`docs/branching-strategy.md`](docs/branching-strategy.md) |
 | Plan / task list | [`tasks/plan.md`](tasks/plan.md) · [`tasks/todo.md`](tasks/todo.md) |
 | OSM seeding research | [`docs/research-osm-seeding.md`](docs/research-osm-seeding.md) |
 | Mobile strategy + cost research | [`docs/research-mobile-strategy.md`](docs/research-mobile-strategy.md) |
 
-**Source of truth:** [`SPEC-singgah.md`](SPEC-singgah.md). **Working rules:**
+**Source of truth:** [`docs/SPEC-singgah.md`](docs/SPEC-singgah.md). **Working rules:**
 [`AGENTS.md`](AGENTS.md). When a decision changes, update the spec **first**, then the docs, then
 code.
 

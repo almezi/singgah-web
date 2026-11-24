@@ -10,12 +10,12 @@ Sources: `SPEC-singgah.md`, `docs/research-mobile-strategy.md`, `tasks/todo.md` 
 
 ## 1. Shape of a deploy
 
-Singgah is a **static site**: a folder of HTML, CSS, JS and JSON files. Vercel serves those files
-as-is. There is no server to configure, no build command, no environment variable in the hosting
-dashboard, and no compile step that can fail.
+Singgah is a **Vue 3 + Vite single-page app** (OQ-15). `npx vercel --prod` lets Vercel auto-detect
+Vite: it runs `npm run build` and serves the resulting `dist/` folder. There is no server we
+write, no environment variable in the hosting dashboard, and nothing to configure by hand.
 
 ```
-your computer ── npx vercel --prod ──> Vercel (static files) ──> public URL
+your computer ── npx vercel --prod ──> Vercel (npm run build → dist/) ──> public URL
                                               │
                                               └── browser calls Supabase + OSM tiles directly
 ```
@@ -41,8 +41,9 @@ From the project root:
 npx vercel --prod
 ```
 
-The first run links a free Vercel account and asks a few questions. Because there is no build
-step, the defaults are fine — it is a static folder. Vercel gives you a public `*.vercel.app` URL.
+The first run links a free Vercel account and asks a few questions. Vercel auto-detects Vite —
+build command `npm run build`, output directory `dist/` — so the defaults are fine. Vercel gives
+you a public `*.vercel.app` URL.
 
 Open that URL on a phone on mobile data (not Wi-Fi) and walk the checklist once more.
 
@@ -87,11 +88,11 @@ branch. See `docs/branching-strategy.md` §5–6 for the full branch and tag rul
 
 ## 7. What is NOT deployed
 
-`scripts/`, `supabase/`, `tasks/`, `docs/`, `design/`, and the research files are working files.
-Only the static app files need to be served. In particular, `scripts/seed-spots.mjs` and any
-privileged key must never be reachable from the public URL. If Vercel serves the whole repo by
-default, add a `vercel.json` ignore or deploy only the app folder — decide with the owner before
-adding config.
+The Vite build bundles only `index.html` and `src/` into `dist/` — so `scripts/`, `supabase/`,
+`tasks/`, `docs/`, `design/`, `prototype/`, `data/` and the research files are never reachable
+from the public URL. In particular, `scripts/seed-spots.mjs` and any privileged key are never
+shipped. (The pre-Vue plan needed a `vercel.json` ignore for this; the Vite build removes the
+concern.)
 
 ## 8. Parked for later (not MVP)
 

@@ -3,51 +3,56 @@
 *What this doc does: one plain-English paragraph per file, in the order a beginner should read
 them. Written for the owner, who is learning while building. From `tasks/todo.md` step T3.*
 
-No code exists yet, so this tour describes **planned** files too. Files that exist today are
-marked ✅; planned files are marked ⏳.
+No app code exists yet, so this tour describes **planned** files too. Files that exist today are
+marked ✅; planned files are marked ⏳. **Revised 2026-11-14 (OQ-15):** the app stack is now
+Vue 3 + Vite, so the planned-file list below changed; the earlier plain-JS plan lives in git
+history.
 
 ---
 
 ## Start here (the rules)
 
-1. ✅ **`SPEC-singgah.md`** — the source of truth. Read this first. It says what the app is, what
-   data it stores, what is locked, what is out of scope, and what "done" means. If any other file
-   disagrees with the spec, the spec wins. **Update the spec first** whenever a decision changes.
+1. ✅ **`docs/SPEC-singgah.md`** — the source of truth. Read this first. It says what the app is,
+   what data it stores, what is locked, what is out of scope, and what "done" means. If any other
+   file disagrees with the spec, the spec wins. **Update the spec first** whenever a decision
+   changes.
 
 2. ✅ **`AGENTS.md`** — the working rules for anyone (human or AI) touching this repo. It lists the
    locked decisions, the gated phases (Specify → Plan → Tasks → Implement), the hard boundaries,
    and the commands. Short and worth re-reading before each phase.
 
-3. ✅ **`HANDOFF-musafir-project.md`** — the backstory. A real Jakarta→Yogyakarta trip by bike,
+3. ✅ **`docs/HANDOFF-musafir-project.md`** — the backstory. A real Jakarta→Yogyakarta trip by bike,
    the researched rest/wash spots, and why this app exists. It also records that agent concurrency
    is capped at 2. Read it once to understand where the data comes from.
 
 ## The plan (what we will build, and in what order)
 
 4. ✅ **`tasks/plan.md`** — the Plan-phase deliverable: goal, non-goals, phase gates, risks, and
-   the definition of done. Draft, awaiting your approval.
+   the definition of done. Approved 2026-11-09 (gate G1).
 
-5. ✅ **`tasks/todo.md`** — the Tasks-phase deliverable: 63 small steps split into 8 lanes so two
-   agents can work at once without touching the same file. Each step names one file and one
-   checkable outcome. It ends with copy-paste prompts for each agent. Draft, awaiting approval.
+5. ✅ **`tasks/todo.md`** — the Tasks-phase deliverable: 58 small steps split into 9 lanes so two
+   agents can work at once without touching the same file, plus the Wave P prototype prompt.
+   Each step names one file and one checkable outcome. Approved 2026-11-09 (gate G1);
+   **revised 2026-11-14 (OQ-15) for Vue — owner re-approval pending before Wave 0**.
 
 6. ✅ **`docs/decision-log.md`** — locked decisions, open questions, and an honest list of places
    where the spec, prompts and design board disagree. Go here when something looks contradictory.
 
-6b. ✅ **`docs/branching-strategy.md`** — the proposed git workflow: one protected `main`, one
+6b. ✅ **`docs/branching-strategy.md`** — the git workflow: one protected `main`, one
     short-lived `build/mvp` integration branch, and a tag for every deploy. Explains why branches
     follow *phases*, not *agents* — two agents share this one working directory, so a single
-    `git switch` moves both of them. Still awaiting your approval (OQ-13).
+    `git switch` moves both of them. Adopted 2026-11-09 (OQ-13 closed).
 
 ## How the technology fits together
 
 7. ✅ **`docs/architecture.md`** — the technology structure: layers, the three data flows, the
-   security boundary, the screen state machine, and why there is no build step. **This is the best
+   security boundary, the screen state machine, and how Vue + Vite fit in. **This is the best
    one-page answer to "how is it built?"**
 
-8. ✅ **`docs/api-contract.md`** — the frozen interface: DOM mount IDs, config constants, function
-   signatures, the `SPOT` field list, and which lane owns which file. Read this before writing any
-   JS. Its whole purpose is to stop parallel agents from colliding.
+8. ✅ **`docs/api-contract.md`** — the frozen interface: component props/emits, config constants,
+   function signatures, the `SPOT` field list, the `useSpots` state shape, and which lane owns
+   which file. Read this before writing any component. Its whole purpose is to stop parallel
+   agents from colliding.
 
 9. ✅ **`docs/data-model.md`** — the `spots` table column by column, every allowed value, the RLS
    rules, and how OSM tags map into our columns.
@@ -95,45 +100,69 @@ marked ✅; planned files are marked ⏳.
     description of each screen. Note: they disagree with the approved board on a few colors and
     strings — see `docs/decision-log.md`.
 
-## Planned application files (⏳ not built yet)
+## The application files (Vue 3 + Vite — ⏳ planned unless marked ✅)
 
 Read these in this order once they exist:
 
-21. ⏳ **`index.html`** — the single page. CDN tags, all DOM mount points, and the script load
-    order. Start here to see how the app is assembled. Belongs to the foundation agent, then the
-    integrator.
+21. ✅ **`js/config.js`** — the owner's file holding the real Supabase URL + anon key today.
+    **Wave 0 step F2 migrates these two values into `src/lib/config.js`** (owner consents before
+    the old file is deleted). Until then, this is where the keys live.
 
-22. ⏳ **`js/config.js`** — three constants and nothing else: the project URL, the public anon key,
-    and the one tile URL. The smallest file; read it to see where secrets are (and are not).
+22. ⏳ **`index.html`** — the Vite entry: one root `<div id="app">` and one module script. Start
+    here to see how the app is assembled.
 
-23. ⏳ **`js/api.js`** — the only file that talks to Supabase. Four functions plus the
-    `isUnknown()` helper and the frozen `SPOT` field list. Read it to see the whole backend in one
-    place.
+23. ⏳ **`src/main.js`** — `createApp`, the Bootstrap CSS/Icons imports, and the theme bootstrap.
+    The smallest file with the biggest job: starting the app.
 
-24. ⏳ **`js/map.js`** — Leaflet setup, colored pins, geolocate, and pin-drop mode. Owns `#map`.
+24. ⏳ **`src/lib/config.js`** — three constants and nothing else: the project URL, the public
+    anon key, and the one tile URL. Read it to see where secrets are (and are not).
 
-25. ⏳ **`js/spots.js`** — builds the list cards and the detail card. Shows how unknown data becomes
-    `Belum ada info`.
+25. ⏳ **`src/lib/supabase.js`** — the only file that talks to Supabase. The client plus
+    `loadApprovedSpots()`, `insertPendingSpot()`, `bumpVerified()`, the `isUnknown()` helper and
+    the frozen `SPOT` field list. The whole backend in one place.
 
-26. ⏳ **`js/verify.js`** — the `Masih ada ✓` button. Small, but it is the one hard technical spot
-    (rate-limited write path).
+26. ⏳ **`src/composables/useSpots.js`** — the single shared state: approved spots, search +
+    type filters, the user's own pending spots. Read it to understand where data lives.
 
-27. ⏳ **`js/contribute.js`** — the add-spot flow: pin → form → success. Where `pending` is born.
+27. ⏳ **`src/composables/useGeolocation.js`** — the `navigator.geolocation` wrapper with the
+    Indonesian failure toast. Small and self-contained.
 
-28. ⏳ **`css/style.css`** — if OQ-7 confirms it exists: token overrides, map pins, sheet mechanics.
-    Bootstrap does the rest.
+28. ⏳ **`src/App.vue`** — the layout shell: two-pane desktop, bottom sheet on mobile. Mounts the
+    five components and wires props down / events up. Owned by the integrator in Wave 4.
 
-29. ⏳ **`data/playbook-spots.json`** — the real researched spots. Research data: do not rewrite or
-    delete casually.
+29. ⏳ **`src/components/MapPane.vue`** — Leaflet setup, colored pins, geolocate, and pin-drop
+    mode.
 
-30. ⏳ **`scripts/seed-spots.mjs`** — the offline Node script that fills the database from Overpass
-    plus the playbook JSON. Never runs in the browser.
+30. ⏳ **`src/components/SpotList.vue`** and ⏳ **`SpotDetail.vue`** — the list cards, the detail
+    card, and the `Masih ada ✓` button. Shows how unknown data becomes `Belum ada info`.
 
-31. ⏳ **`supabase/`** — table SQL, RLS policies, and the verification write path. The database is
+31. ⏳ **`src/components/AddSpotSheet.vue`** — the add-spot flow: banner → pin → form → success.
+    Where `pending` is born.
+
+32. ⏳ **`src/components/DarkModeToggle.vue`** — the `data-bs-theme` toggle persisted in
+    `localStorage`.
+
+33. ⏳ **`data/playbook-spots.json`** — the real researched spots. Research data: do not rewrite
+    or delete casually.
+
+34. ⏳ **`scripts/seed-spots.mjs`** — the offline Node script that fills the database from
+    Overpass plus the playbook JSON. Never runs in the browser.
+
+35. ⏳ **`supabase/`** — table SQL, RLS policies, and the verification write path. The database is
     the security boundary, not the browser.
 
-32. ⏳ **`prototype/index.html`** — optional clickable prototype with mock data and no backend
-    (gate G5). A safe place to learn before the real thing.
+36. ✅ **`prototype/index.html`** — clickable mock-data prototype with no backend
+    (gate G5 = yes, decided 2026-11-09 — built first, in Wave P, verified 2026-11-10). Plain JS
+    **on purpose**: since OQ-15 it is the frozen design reference, not the app's code style.
+
+36b. ✅ **`docs/prototype-verification.md`** — the Wave P sign-off record: every "Done when" item
+    checked in headless Chrome, plus an honest list of what a mock-data prototype cannot prove
+    (real phone, RLS, the approve-in-dashboard flow).
+
+36c. ✅ **`docs/build-reference.md`** — the one-stop digest for building or changing the app:
+    status, stack, contracts, RLS, design tokens, UI words, guardrails, sheet mechanics and the
+    pre-deploy gate in one file. A convenience summary only — the SPEC and the canonical docs
+    win on any conflict, and every section names its canonical owner.
 
 ---
 

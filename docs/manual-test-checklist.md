@@ -11,6 +11,11 @@ Run date: ____________   Device / browser: ______________________   Network: ___
 Build / commit: ____________________________   Tester: ______________________
 ```
 
+**Before you start:** run `npm run dev` from the project root and open the URL it prints
+(default `http://localhost:5173`). When you finish, stop the server: **Ctrl+C in the same
+terminal** (nothing is lost — files and database are untouched). Full walkthrough:
+`docs/setup.md` §4.
+
 ---
 
 ## A. The 7 checks from the SPEC
@@ -64,10 +69,9 @@ Build / commit: ____________________________   Tester: ______________________
       No login/signup screen, no photos, no reviews/ratings/comments, no ads.
 
 - [ ] **14. Desktop ≥992px.** The bottom sheet becomes a static left sidebar, map fills the rest.
-      Same DOM, no separate desktop code path. If gate G4 changed the mode, test the approved
-      three-mode layout instead.
+      Same DOM, no separate desktop code path (G4 confirmed 2026-11-09: always-on two-pane).
 
-- [ ] **15. Dark mode (only if OQ-5 says yes).** Toggle survives reload; text contrast ≥4.5:1 in
+- [ ] **15. Dark mode (OQ-5 = yes, decided 2026-11-09).** Toggle survives reload; text contrast ≥4.5:1 in
       both themes; focus outline visible.
 
 - [ ] **16. Contrast ≥4.5:1 for all text** in light mode. Check the semantic `--*-ink` tokens on
