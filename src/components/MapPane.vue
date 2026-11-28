@@ -281,7 +281,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div id="map" ref="mapEl" class="map-pane">
+  <div id="map" ref="mapEl" class="map-pane" role="region" aria-label="Peta spot singgah">
     <!-- A2: legend, shown once on desktop only -->
     <div class="sg-legend">
       <div class="sg-legend__title">Legenda</div>
@@ -298,6 +298,7 @@ onBeforeUnmount(() => {
       type="button"
       class="btn btn-light sg-geolocate"
       :disabled="geoLoading"
+      :aria-busy="geoLoading"
       aria-label="Lokasi saya"
       title="Lokasi saya"
       @click="onGeolocate"
@@ -436,12 +437,14 @@ onBeforeUnmount(() => {
   right: var(--singgah-map-inset);
   z-index: 1000;
   flex-direction: column;
-  gap: 6px;
-  padding: 10px 14px;
-  background: var(--bs-body-bg, #fff);
-  border: 1px solid var(--bs-border-color, #e4dfd2);
-  border-radius: 14px;
-  box-shadow: 0 4px 14px rgba(18, 51, 44, 0.12);
+  gap: 7px;
+  padding: 12px 14px;
+  background: var(--singgah-card, #fff);
+  border: 1px solid var(--singgah-line, #e4dfd2);
+  border-radius: var(--singgah-overlay-radius, 16px);
+  box-shadow: var(--singgah-shadow-soft, 0 8px 24px rgba(18, 51, 44, 0.12));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   font-size: 12.5px;
   color: var(--bs-body-color, #12332c);
 }
@@ -476,15 +479,18 @@ onBeforeUnmount(() => {
   left: var(--singgah-map-inset);
   bottom: var(--singgah-map-inset);
   z-index: 1000;
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   padding: 0;
-  border-radius: 50%;
+  border: 1px solid var(--singgah-line, #e4dfd2);
+  border-radius: 14px;
+  color: var(--singgah-ink, #12332c);
+  background: var(--singgah-card, #fff);
   font-size: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(18, 51, 44, 0.18);
+  box-shadow: var(--singgah-shadow-soft, 0 8px 24px rgba(18, 51, 44, 0.14));
 }
 
 /* locating spinner on the geolocate button (no English "Loading..." text allowed) */
