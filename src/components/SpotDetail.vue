@@ -58,79 +58,85 @@ const routeUrl = computed(
 </script>
 
 <template>
-  <!-- Panel melayang di atas peta; posisi akhir per layar dirapikan integrator (Wave 4, I3) -->
   <div v-if="spot" class="spot-detail-wrap position-absolute bottom-0 start-0 end-0 px-3 pb-3">
-    <article class="spot-detail" role="dialog" aria-label="Rincian spot">
+    <article
+      class="spot-detail"
+      role="dialog"
+      aria-labelledby="spot-detail-title"
+      tabindex="-1"
+    >
       <button type="button" class="close-btn" aria-label="Tutup" @click="emit('close')">
         <i class="bi bi-x-lg" aria-hidden="true"></i>
       </button>
 
-      <!-- Kepala: tile jenis berwarna + nama + label jenis teks (bukan isyarat warna saja) -->
-      <div class="d-flex align-items-start gap-3 mb-2 me-5">
+      <header class="detail-header">
         <span class="type-tile" :class="typeInfo ? typeInfo.cls : ''">
           <svg viewBox="0 0 24 24" aria-hidden="true" v-html="glyph"></svg>
         </span>
-        <div>
-          <h2 class="spot-name fs-5">{{ spot.name }}</h2>
-          <div class="spot-meta">{{ typeLabel }}</div>
+        <div class="detail-heading">
+          <span class="spot-type">{{ typeLabel }}</span>
+          <h2 id="spot-detail-title" class="spot-name">{{ spot.name }}</h2>
         </div>
-      </div>
+      </header>
 
-      <!-- Badge atribut ringkas (bentuk kartu mockup telepon) -->
-      <div class="d-flex flex-wrap gap-2 mb-2">
-        <span class="attr-badge" :class="typeInfo ? typeInfo.cls : ''">
-          <i class="bi bi-droplet" aria-hidden="true"></i>{{ waterValue }}
+      <section class="detail-grid" aria-label="Informasi spot">
+        <div class="detail-item">
+          <span class="detail-item__icon"><i class="bi bi-droplet" aria-hidden="true"></i></span>
+          <span class="detail-item__copy">
+            <span class="detail-label">Air</span>
+            <span :class="{ 'unknown-value': isBlank(spot.water) }">{{ waterValue }}</span>
+          </span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-item__icon"><i class="bi bi-clock" aria-hidden="true"></i></span>
+          <span class="detail-item__copy">
+            <span class="detail-label">Jam</span>
+            <span :class="{ 'unknown-value': isBlank(spot.hours) }">{{ hoursValue }}</span>
+          </span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-item__icon"><i class="bi bi-bicycle" aria-hidden="true"></i></span>
+          <span class="detail-item__copy">
+            <span class="detail-label">Parkir sepeda</span>
+            <span>{{ bikeValue }}</span>
+          </span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-item__icon"><i class="bi bi-gender-female" aria-hidden="true"></i></span>
+          <span class="detail-item__copy">
+            <span class="detail-label">Ramah perempuan</span>
+            <span :class="{ 'unknown-value': isBlank(spot.women_friendly) }">{{ womenValue }}</span>
+          </span>
+        </div>
+      </section>
+
+      <div class="note-box" :class="{ 'is-empty': !hasNotes }">
+        <i :class="hasNotes ? 'bi bi-info-circle' : 'bi bi-journal-text'" aria-hidden="true"></i>
+        <span class="detail-item__copy">
+          <span class="detail-label">Catatan</span>
+          <span>{{ notesValue }}</span>
         </span>
-        <span class="attr-badge" :class="typeInfo ? typeInfo.cls : ''">
-          <i class="bi bi-clock" aria-hidden="true"></i>{{ hoursValue }}
+      </div>
+
+      <div class="verify-panel">
+        <span class="verify-panel__icon"><i class="bi bi-shield-check" aria-hidden="true"></i></span>
+        <span>
+          <span class="detail-label">Status spot</span>
+          <span class="verify-line">{{ verifyLine }}</span>
         </span>
-        <span class="attr-badge" :class="typeInfo ? typeInfo.cls : ''">
-          <i class="bi bi-bicycle" aria-hidden="true"></i>{{ bikeValue }}
-        </span>
       </div>
 
-      <!-- B3: baris atribut (label: docs/ui-copy.md §2) — nilai kosong selalu 'Belum ada info' -->
-      <div class="attr-row">
-        <i class="bi bi-droplet" aria-hidden="true"></i>
-        <span class="label">Air</span>
-        <span :class="{ 'unknown-value': isBlank(spot.water) }">{{ waterValue }}</span>
-      </div>
-      <div class="attr-row">
-        <i class="bi bi-clock" aria-hidden="true"></i>
-        <span class="label">Jam</span>
-        <span :class="{ 'unknown-value': isBlank(spot.hours) }">{{ hoursValue }}</span>
-      </div>
-      <div class="attr-row">
-        <i class="bi bi-bicycle" aria-hidden="true"></i>
-        <span class="label">Parkir sepeda</span>
-        <span>{{ bikeValue }}</span>
-      </div>
-      <div class="attr-row">
-        <i class="bi bi-gender-female" aria-hidden="true"></i>
-        <span class="label">Ramah perempuan</span>
-        <span :class="{ 'unknown-value': isBlank(spot.women_friendly) }">{{ womenValue }}</span>
-      </div>
-
-      <!-- B4: catatan etiket dalam kotak amber (docs/design-system.md token amber) -->
-      <div v-if="hasNotes" class="note-box">
-        <i class="bi bi-info-circle" aria-hidden="true"></i>
-        <span>{{ notesValue }}</span>
-      </div>
-      <div v-else class="attr-row">
-        <i class="bi bi-journal-text" aria-hidden="true"></i>
-        <span class="label">Catatan</span>
-        <span class="unknown-value">{{ notesValue }}</span>
-      </div>
-
-      <div class="verify-line">{{ verifyLine }}</div>
-
-      <div class="d-flex flex-wrap gap-2">
-        <!-- B7: hanya emit verify(spot.id) — parent yang menulis, komponen merender dari prop -->
+      <div class="detail-actions">
         <button type="button" class="btn btn-outline-success" @click="onVerify">
           <i class="bi bi-shield-check" aria-hidden="true"></i> Masih ada ✓
         </button>
-        <!-- B5: buka Google Maps direction pakai koordinat baris ini sendiri -->
-        <a class="btn btn-primary" :href="routeUrl" target="_blank" rel="noopener">
+        <a
+          class="btn btn-primary"
+          :href="routeUrl"
+          target="_blank"
+          rel="noopener"
+          aria-label="Buka rute di tab baru"
+        >
           <i class="bi bi-signpost-split" aria-hidden="true"></i> Rute
         </a>
       </div>
@@ -232,4 +238,168 @@ const routeUrl = computed(
 
 /* Target sentuh tombol ≥ 44px (docs/design-system.md §5) */
 .spot-detail .btn { min-height: 44px; font-weight: 600; }
+
+/* Modern retouch: integrated detail panel with concise, non-duplicated information. */
+.spot-detail {
+  --sg-line: var(--singgah-line);
+  --sg-surface: var(--singgah-card);
+  --sg-surface-2: var(--singgah-surface-2);
+  --sg-ink: var(--singgah-ink);
+  --sg-ink2: var(--singgah-muted);
+  padding: 20px;
+  overflow-y: auto;
+  color: var(--sg-ink);
+}
+.spot-detail:focus {
+  outline: none;
+}
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 58px;
+  margin: 0 48px 20px 0;
+}
+.detail-heading {
+  min-width: 0;
+}
+.spot-detail .type-tile {
+  width: 50px;
+  height: 50px;
+  border-radius: 15px;
+}
+.spot-detail .type-tile svg {
+  width: 25px;
+  height: 25px;
+}
+.spot-type {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--sg-ink2);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.spot-detail .spot-name {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+}
+.close-btn {
+  top: 14px;
+  right: 14px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+}
+.close-btn:hover {
+  border-color: var(--sg-line);
+}
+.close-btn:focus-visible {
+  outline: 3px solid var(--bs-focus-ring-color);
+  outline-offset: 2px;
+}
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.detail-item {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 72px;
+  padding: 12px;
+  border: 1px solid var(--sg-line);
+  border-radius: 15px;
+  background: var(--sg-surface-2);
+}
+.detail-item__icon,
+.verify-panel__icon {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  color: var(--singgah-teal);
+  background: var(--singgah-primary-soft);
+}
+.detail-item__copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.82rem;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.detail-label {
+  display: block;
+  color: var(--sg-ink2);
+  font-size: 0.69rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+.unknown-value {
+  color: var(--sg-ink2);
+  font-weight: 550;
+}
+.note-box {
+  min-height: 66px;
+  margin: 0 0 12px;
+  padding: 13px 14px;
+  border: 1px solid rgba(146, 64, 14, 0.22);
+  border-radius: 15px;
+  align-items: flex-start;
+}
+.note-box.is-empty {
+  color: var(--sg-ink2);
+  background: var(--sg-surface-2);
+  border-color: var(--sg-line);
+}
+.verify-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  border: 1px solid var(--sg-line);
+  border-radius: 15px;
+  background: var(--sg-surface);
+}
+.verify-line {
+  display: block;
+  margin: 2px 0 0;
+  color: var(--sg-ink);
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+.detail-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.detail-actions .btn {
+  min-width: 0;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border-radius: 13px;
+  font-size: 0.84rem;
+}
+
+@media (max-width: 359.98px) {
+  .detail-grid,
+  .detail-actions {
+    grid-template-columns: 1fr;
+  }
+}
 </style>

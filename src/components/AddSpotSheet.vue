@@ -94,7 +94,10 @@ function onSubmit() {
   if (!el || !el.checkValidity()) {
     // nama kosong / hanya spasi (pattern) atau jenis belum dipilih memblokir submit;
     // Bootstrap menandai merah. Tanpa pattern, "   " lolos `required` lalu ditolak database.
-    if (el) el.classList.add('was-validated');
+    if (el) {
+      el.classList.add('was-validated');
+      nextTick(() => el.querySelector(':invalid')?.focus());
+    }
     return;
   }
   emit('submit', {
@@ -178,10 +181,10 @@ onBeforeUnmount(() => {
     <div v-if="active" class="add-veil" aria-hidden="true"></div>
 
     <!-- C1 + C2: banner langkah 1 — teks status, 'Lanjut' (disabled sampai ada pin), X batal -->
-    <div v-if="active && !formOpen" class="add-banner" role="status">
+    <div v-if="active && !formOpen" class="add-banner">
       <div class="d-flex align-items-start gap-2">
         <i class="bi bi-pin-map mt-1" aria-hidden="true"></i>
-        <div class="flex-grow-1">
+        <div class="pin-status flex-grow-1" role="status" aria-live="polite">
           <template v-if="pin">
             <div>Pin di titik ini?</div>
             <div class="add-coords">{{ pin.lat.toFixed(5) }}, {{ pin.lng.toFixed(5) }}</div>
@@ -335,7 +338,7 @@ onBeforeUnmount(() => {
             ></textarea>
           </div>
 
-          <div class="text-center">
+          <div class="submit-row">
             <button
               type="submit"
               class="btn btn-primary add-submit"
@@ -550,6 +553,124 @@ onBeforeUnmount(() => {
   margin: 24px auto 16px;
 }
 
+/* Modern retouch: focused contribution flow without changing its fields or payload. */
+.add-banner {
+  width: min(calc(100vw - 28px), 460px);
+  padding: 14px;
+  border-radius: 18px;
+  border-color: var(--singgah-line);
+  background: var(--singgah-card);
+  box-shadow: var(--singgah-shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.add-banner .bi-pin-map {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0 !important;
+  border-radius: 11px;
+  color: var(--singgah-teal);
+  background: var(--singgah-primary-soft);
+}
+.pin-status {
+  min-height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.add-banner .btn-primary {
+  min-height: 48px;
+  border-radius: 13px;
+}
+.add-offcanvas {
+  color: var(--singgah-ink);
+  background: var(--singgah-card);
+}
+.add-offcanvas .offcanvas-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  min-height: 72px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--singgah-line);
+  background: var(--singgah-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.add-offcanvas .offcanvas-title {
+  color: var(--singgah-ink);
+  letter-spacing: -0.03em;
+}
+.add-offcanvas .offcanvas-body {
+  padding: 20px;
+}
+.add-offcanvas .mb-3 {
+  margin-bottom: 1.15rem !important;
+}
+.add-offcanvas .form-label {
+  margin-bottom: 7px;
+  color: var(--singgah-ink);
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+.add-offcanvas .form-control,
+.add-offcanvas .form-select {
+  min-height: 50px;
+  border-color: var(--singgah-line);
+  border-radius: 14px;
+  background-color: var(--singgah-surface-2);
+  color: var(--singgah-ink);
+}
+.add-offcanvas textarea.form-control {
+  min-height: 104px;
+  line-height: 1.5;
+}
+.add-switch {
+  min-height: 54px;
+  padding: 5px 12px !important;
+  border: 1px solid var(--singgah-line);
+  border-radius: 14px;
+  background: var(--singgah-surface-2);
+}
+.chip-btn {
+  min-height: 46px;
+  border-color: var(--singgah-line);
+  border-radius: 13px;
+  background: var(--singgah-card);
+  color: var(--singgah-muted);
+}
+.btn-check:checked + .chip-btn {
+  box-shadow: inset 0 0 0 1px var(--bs-primary);
+}
+.submit-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 4px;
+  text-align: center;
+}
+.add-submit {
+  width: min(100%, 240px);
+  min-width: 0;
+  min-height: 48px !important;
+  border-radius: 13px;
+}
+.add-reassurance {
+  max-width: 320px;
+  color: var(--singgah-muted);
+  line-height: 1.5;
+}
+.success-circle {
+  width: 78px;
+  height: 78px;
+  margin-top: 18px;
+  font-size: 38px;
+  box-shadow: 0 10px 24px rgba(21, 128, 61, 0.13);
+}
+
 /* Penempatan offcanvas: bottom di ponsel <992px (bawaan), panel kanan di desktop ≥992px */
 @media (min-width: 992px) {
   .add-offcanvas.offcanvas-bottom {
@@ -557,12 +678,19 @@ onBeforeUnmount(() => {
     right: 0;
     bottom: auto;
     left: auto;
-    width: 430px;
+    width: 460px;
     height: 100dvh;
     max-height: none;
     border-top: 0;
     border-left: 1px solid var(--bs-border-color);
     transform: translateX(100%);
+  }
+  .add-offcanvas .submit-row {
+    align-items: flex-end;
+    text-align: right;
+  }
+  .add-offcanvas .add-submit {
+    width: 190px;
   }
   .add-offcanvas.offcanvas-bottom.showing,
   .add-offcanvas.offcanvas-bottom.show,
@@ -573,8 +701,8 @@ onBeforeUnmount(() => {
 @media (max-width: 991.98px) {
   .add-offcanvas.offcanvas-bottom {
     height: auto;
-    max-height: 88dvh;
-    border-radius: 18px 18px 0 0;
+    max-height: 92dvh;
+    border-radius: 24px 24px 0 0;
   }
 }
 </style>
